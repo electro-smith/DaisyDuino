@@ -20,7 +20,7 @@ void MyCallback(float **in, float **out, uint32_t size)
 void setup()
 {
     // Initialize for Daisy pod at 48kHz
-    num_channels = AUDIO.Init(DAISY_POD, 48000);
+    num_channels = AUDIO.Init(DAISY_POD, AUDIO_SR_48K);
     Audio.Start(MyCallback);
 }
 
