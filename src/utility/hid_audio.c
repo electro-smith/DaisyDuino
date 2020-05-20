@@ -1,5 +1,5 @@
 #include <string.h>
-#include "daisy.h" // todo figure out what to do about this.
+//#include "daisy.h" // todo figure out what to do about this.
 #include "daisy_core.h"
 #include "hid_audio.h"
 #include "dev_codec_pcm3060.h"
@@ -8,12 +8,46 @@
 #include "stm32h7xx_hal.h"
 #include "sys_dma.h"
 #include "util_hal_map.h"
+#include "stm32h7xx_hal_sai.h"
 
 #define DSY_AUDIO_DMA_BUFFER_SIZE_MAX \
     (DSY_AUDIO_BLOCK_SIZE_MAX * DSY_AUDIO_CHANNELS_MAX * 2)
 #define DSY_DMA_BUFFER_SECTOR __attribute__((section(".sram1_bss")))
 
 #define DSY_PROFILE_AUDIO_CALLBACK 1
+
+#define FBIPMAX 0.999985f	//close to 1.0f-LSB at 16 bit
+#define FBIPMIN (-FBIPMAX)
+#define S162F_SCALE 3.0517578125e-05f
+#define F2S16_SCALE 32767.0f
+#define F2S24_SCALE 8388608.0f
+#define S242F_SCALE 1.192092896e-07f
+#define S24SIGN 0x800000
+
+FORCE_INLINE float s162f(int16_t x)
+{
+	return (float)x * S162F_SCALE;
+}
+
+FORCE_INLINE int16_t f2s16(float x)
+{
+	x = x <= FBIPMIN ? FBIPMIN : x;
+	x = x >= FBIPMAX ? FBIPMAX : x;
+	return (int32_t)(x * F2S16_SCALE);
+}
+
+FORCE_INLINE float s242f(int32_t x)
+{
+	x = (x ^ S24SIGN) - S24SIGN; //sign extend aka ((x<<8)>>8)
+	return (float)x * S242F_SCALE;
+}
+FORCE_INLINE int32_t f2s24(float x) 
+{
+	x = x <= FBIPMIN ? FBIPMIN : x;
+	x = x >= FBIPMAX ? FBIPMAX : x;
+	return (int32_t)(x * F2S24_SCALE);
+}
+
 
 extern SAI_HandleTypeDef hsai_BlockA1;
 extern SAI_HandleTypeDef hsai_BlockB1;

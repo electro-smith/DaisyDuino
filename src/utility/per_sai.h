@@ -3,7 +3,7 @@
 #ifdef __cplusplus
  extern "C" {
 #endif
-#include "daisy_core.h"
+#include "utility/daisy_core.h"
 
 typedef enum
 {

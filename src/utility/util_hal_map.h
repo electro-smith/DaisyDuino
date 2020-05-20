@@ -4,6 +4,7 @@
 #include "stm32h7xx_hal.h"
 #include "daisy_core.h"
 #include "per_i2c.h"
+#include "utility/stm32h7xx_hal_sai.h"
 
 
 // externs of HAL handles...

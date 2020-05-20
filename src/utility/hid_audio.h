@@ -2,8 +2,8 @@
 #define DSY_AUDIO_H
 #include <stddef.h>
 #include <stdint.h>
-#include "per_sai.h"
-#include "per_i2c.h"
+#include "utility/per_sai.h"
+#include "utility/per_i2c.h"
 #ifdef __cplusplus
 extern "C"
 {

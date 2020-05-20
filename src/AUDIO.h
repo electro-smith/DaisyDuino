@@ -1,9 +1,10 @@
-#ifndef DSY_AUDIO_H
-#define DSY_AUDIO_H
+#ifndef DSY_ARDUINO_AUDIO_H
+#define DSY_ARDUINO_AUDIO_H
 
 // ENABLE HAL SAI 
 #define HAL_SAI_MODULE_ENABLED
 
+#include <stdio.h>
 #include "Arduino.h"
 
 enum DaisyAudioDevice {
@@ -21,6 +22,8 @@ enum DaisyAudioSampleRate {
     AUDIO_SR_LAST,
 };
 
+typedef void (*DaisyAudioCallback)(float**, float**, size_t);
+
 
 class AudioClass
 {
@@ -28,13 +31,14 @@ class AudioClass
         AudioClass();
 
         // Initializes the audio for the given platform, and returns the number of channels.
-        unsigned long init(DaisyAudioDevice device, DaisyAudioSampleRate sr);
+        size_t init(DaisyAudioDevice device, DaisyAudioSampleRate sr);
         void begin(DaisyAudioCallback cb);
         void end();
 
     private:
-        unsigned long _blocksize;
+        size_t _blocksize;
         DaisyAudioSampleRate _samplerate;
+        DaisyAudioDevice _device;
 };
 
 extern AudioClass AUDIO;
