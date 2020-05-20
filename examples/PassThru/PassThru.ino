@@ -1,8 +1,8 @@
 #include "AUDIO.h"
 
-int num_channels;
+unsigned long num_channels;
 
-void MyCallback(float **in, float **out, uint32_t size)
+void MyCallback(float **in, float **out, unsigned long size)
 {
     float *in_left, *in_right, *out_left, *out_right;
     in_left = in[0];
@@ -10,7 +10,7 @@ void MyCallback(float **in, float **out, uint32_t size)
     out_left = out[0];
     out_right = out[1];
 
-    for (int i = 0; i < size; i++)
+    for (unsigned long i = 0; i < size; i++)
     {
         out_left[i] = in_left[i];
         out_right[i] = in_right[i];
@@ -20,8 +20,8 @@ void MyCallback(float **in, float **out, uint32_t size)
 void setup()
 {
     // Initialize for Daisy pod at 48kHz
-    num_channels = AUDIO.Init(DAISY_POD, AUDIO_SR_48K);
-    Audio.Start(MyCallback);
+    num_channels = AUDIO.init(DAISY_POD, AUDIO_SR_48K);
+    AUDIO.begin(MyCallback);
 }
 
 void loop()

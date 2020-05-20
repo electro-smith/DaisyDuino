@@ -1,11 +1,12 @@
 #ifndef DSY_AUDIO_COM_H
 #define DSY_AUDIO_COM_H
-
+#define HAL_SAI_MODULE_ENABLED
+#include "hid_audio.h"
 // Callback Definition
-typedef void (*DaisyAudioCallback)(float**, float**, uint32_t);
+//typedef void (*DaisyAudioCallback)(dsy_audio_callback);
+typedef void (*DaisyAudioCallback)(dsy_audio_mc_callback);
 
-void dsy_audio_init();
-void dsy_audio_start();
-void dsy_audio_stop();
+void DsyAudioInit();
+
 
 #endif
