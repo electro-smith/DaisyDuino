@@ -22,7 +22,7 @@ Running the example programs works the same way that all Arduino examples work. 
 
 ## Built With
 
-* [Arduino](https://github.com/arduino/Arduino) - The web framework used
+* [Arduino](https://github.com/arduino/Arduino) - Open source physical computing platform
 * [stm32duino](https://github.com/stm32duino/Arduino_Core_STM32) - Arduino Support for STM32 MCUs
 
 ## Contributing
