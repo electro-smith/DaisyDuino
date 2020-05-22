@@ -34,6 +34,7 @@ class AudioClass
         size_t init(DaisyAudioDevice device, DaisyAudioSampleRate sr);
         void begin(DaisyAudioCallback cb);
         void end();
+        float get_samplerate();
 
     private:
         size_t _blocksize;

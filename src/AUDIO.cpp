@@ -114,3 +114,16 @@ void AudioClass::end()
         dsy_audio_stop(DSY_AUDIO_EXTERNAL);
     }
 }
+
+float AudioClass::get_samplerate()
+{
+    switch(_samplerate)
+    {
+        case AUDIO_SR_48K:
+            return 48000.0f;
+        case AUDIO_SR_96K:
+            return 96000.0f;
+        default:
+            return 48000.0f;
+    }
+}
