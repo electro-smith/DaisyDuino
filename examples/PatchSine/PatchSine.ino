@@ -13,7 +13,7 @@ void SineCallback(float **in, float **out, size_t size)
         // update phase
         phs = phs + phs_inc;
         if (phs > 2.0 * PI)
-            phs -= (2.0 * PI)
+            phs -= (2.0 * PI);
 
         // Set to outputs.
         out[0][i] = sinout;
