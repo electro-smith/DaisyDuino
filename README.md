@@ -16,9 +16,11 @@ https://www.arduino.cc/en/guide/libraries
 To add the Daisy board to your Arduino IDE, follow these instructions from stm32duino.
 https://github.com/stm32duino/wiki/wiki/Getting-Started
 
+Set the Board to "Generic STM32H7 Series"
+
 ## Running the examples
 
-Running the example programs works the same way that all Arduino examples work. Click file->examples, and then scroll all the way to the bottom to until you see the "Audio" tab. You can then select one of our audio specific example programs. 
+Running the example programs works the same way that all Arduino examples work. Click file->examples, and then scroll all the way to the bottom to until you see the "Audio" tab. You can then select one of our audio specific example programs.
 
 ## Built With
 
