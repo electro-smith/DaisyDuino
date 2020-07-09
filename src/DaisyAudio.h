@@ -6,7 +6,7 @@
 
 #include <stdio.h>
 #include "Arduino.h"
-#inculude "DaisyDSP.h"
+#include "DaisyDSP.h"
 
 enum DaisyAudioDevice {
     DAISY_SEED,
