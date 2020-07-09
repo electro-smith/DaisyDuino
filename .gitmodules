@@ -1,0 +1,3 @@
+[submodule "src/utility/DaisySP"]
+	path = src/utility/DaisySP
+	url = https://github.com/beserge/DaisySP

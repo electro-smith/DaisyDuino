@@ -2,6 +2,9 @@
 
 Adds Arduino support to the [Daisy Audio Platform.](https://www.electro-smith.com/daisy) This environment consists of an audio config library, DSP library, and board support using stm32duino.  
 
+# ArduinoDaisySP
+Arduino Wrapper for working with DaisySP DSP in Arduino
+
 ### Features
 
 * Circular DMA transfers and reception with user callback
