@@ -1,17 +1,17 @@
 #include "DaisyAudio.h"
-#include "DaisyDSP.h"
 
 size_t num_channels;
 
 static Oscillator osc, lfo;
 static MoogLadder flt;
 static AdEnv ad;
-static Parameter pitchParam, cutoffParam, lfoParam;
 
 int wave, mode;
 float vibrato, oscFreq, lfoFreq, lfoAmp, attack, release, cutoff;
 float oldk1, oldk2, k1, k2;
 bool selfCycle;
+
+DAISY.Pod pod;
 
 void ConditionalParameter(float oldVal, float newVal, float &param, float update);
 
@@ -46,9 +46,10 @@ void MyCallback(float **in, float **out, size_t size)
 void setup() {
     float sample_rate;
 
-    num_channels = AUDIO.init(DAISY_POD, AUDIO_SR_48K); 
-    sample_rate = AUDIO.get_samplerate();
-    
+    num_channels = DAISY.init(DAISY_POD, AUDIO_SR_48K); 
+    sample_rate = DAISY.get_samplerate();
+    pod = DAISY.pod;
+
     // Set global variables
     mode = 0;
     vibrato = 0.0f;
@@ -92,13 +93,25 @@ void setup() {
     ad.SetCurve(0.5);
 
     //set parameter parameters
-    cutoffParam.Init(pod.knob1, 100, 20000, cutoffParam.LOGARITHMIC);
-    pitchParam.Init(pod.knob2, 50, 5000, pitchParam.LOGARITHMIC);
-    lfoParam.Init(pod.knob1, 0.25, 1000, lfoParam.LOGARITHMIC);
-    
+//   cutoffParam.Init(pod.knob1, 100, 20000, cutoffParam.LOGARITHMIC);
+//    pitchParam.Init(pod.knob2, 50, 5000, pitchParam.LOGARITHMIC);
+//    lfoParam.Init(pod.knob1, 0.25, 1000, lfoParam.LOGARITHMIC);
+
+    //setup pins
+    pinMode(pod.encoder_click, INPUT_PULLUP);
+    for (int i = 0; i < 2; i++)
+    {
+	pinMode(pod.switches[i], INPUT_PULLUP);
+	pinMode(pod.encoder_inc[i], INPUT_PULLUP);
+
+	for (int j = 0; j < 3; j++)
+	{
+	    pinMode(pod.leds[i][j], OUTPUT);
+	}
+    }	
+
     //start the audio callback
-    pod.StartAdc();
-    Audio.begin(MyCallback);
+    DAISY.begin(MyCallback);
 }
 
 void loop() {
