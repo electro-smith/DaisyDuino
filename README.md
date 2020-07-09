@@ -1,26 +1,16 @@
 # ArduinoAudio
 
-Adds Arduino support on the Daisy audio platform. This environment consists of an audio config library, DSP library, and board support using stm32duino.  
+Adds Arduino support to the [Daisy Audio Platform.](https://www.electro-smith.com/daisy) This environment consists of an audio config library, DSP library, and board support using stm32duino.  
 
 ### Features
 
-* Circular DMA transfers and reception with user callback.
-* Configuration of samplerate.
-* flexible callback interface
+* Circular DMA transfers and reception with user callback
+* Configuration of samplerate
+* Flexible callback interface
 
 ## Getting Started
 
-The audio library can be installed just like any other Arduino library. Check out this tutorial for instructions. 
-https://www.arduino.cc/en/guide/libraries
-
-To add the Daisy board to your Arduino IDE, follow these instructions from stm32duino.
-https://github.com/stm32duino/wiki/wiki/Getting-Started
-
-Set the Board to "Generic STM32H7 Series"
-
-## Running the examples
-
-Running the example programs works the same way that all Arduino examples work. Click file->examples, and then scroll all the way to the bottom to until you see the "Audio" tab. You can then select one of our audio specific example programs.
+Follow the instructions in our [Getting Started Wiki page.](https://github.com/electro-smith/DaisyWiki/wiki/1a.-Getting-Started-(Arduino-Edition)) 
 
 ## Built With
 
@@ -29,7 +19,7 @@ Running the example programs works the same way that all Arduino examples work. 
 
 ## Contributing
 
-Please read our [Contribution Guidelines](https://github.com/andrewikenberry/Daisy_Wiki/wiki/2.-Contribution-Guidelines) for details on how to get involved!
+Please read our [Contribution Guidelines](https://github.com/electro-smith/DaisyWiki/wiki/6.-Contribution-Guidelines) for details on how to get involved!
 
 ## License
 
