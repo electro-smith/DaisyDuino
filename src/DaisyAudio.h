@@ -36,12 +36,23 @@ class AudioClass
         void end();
         float get_samplerate();
 
+	struct Pod
+	{
+	    int knobs[2];
+	    int switches[2];
+	    int leds[2][3]; //2 leds, RGB pins
+	    int encoder_click;
+	    int encoder_inc[2]; //A, B
+	};
+	Pod pod;
+	
     private:
         size_t _blocksize;
         DaisyAudioSampleRate _samplerate;
         DaisyAudioDevice _device;
+	void InitPins(DaisyAudioDevice device);
 };
 
-extern AudioClass AUDIO;
+extern AudioClass DAISY;
 
 #endif

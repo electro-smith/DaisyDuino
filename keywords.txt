@@ -6,7 +6,7 @@
 # Datatypes (KEYWORD1)
 ###################################
 
-AUDIO KEYWORD1
+DAISY KEYWORD1
 DaisyAudioDevice KEYWORD1
 DaisyAudioSampleRate KEYWORD1
 

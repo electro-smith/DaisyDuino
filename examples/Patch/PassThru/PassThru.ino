@@ -22,7 +22,7 @@ void setup()
     // Initialize for Daisy pod at 48kHz
     num_channels = AUDIO.init(DAISY_PATCH, AUDIO_SR_48K);
     pinMode(LED_BUILTIN, OUTPUT);
-    AUDIO.begin(MyCallback);
+    DAISY.begin(MyCallback);
     // Debug Stuff for now
     Serial.begin(9600);
 }

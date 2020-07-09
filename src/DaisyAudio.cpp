@@ -4,6 +4,7 @@
 #include "utility/sys_dma.h"
 #include "utility/per_gpio.h"
 
+
 #define PIN_AK4556_RESET 14
 #define PORT_AK4556_RESET DSY_GPIOB
 
@@ -13,11 +14,39 @@ dsy_sai_handle hsai;
 dsy_gpio ak4556_reset_pin;
 
 
-AudioClass AUDIO;
+AudioClass DAISY;
 
 AudioClass::AudioClass() : _blocksize{48}, _samplerate{AUDIO_SR_48K}
 {
     // Initializes the audio for the given platform, and returns the number of channels.
+}
+
+void AudioClass::InitPins(DaisyAudioDevice device)
+{
+    switch (device)
+    {
+        case DAISY_POD:
+	    pod.knobs[0] = 21;
+	    pod.knobs[1] = 15;
+
+	    pod.switches[0] = 27;
+	    pod.switches[1] = 28;
+
+	    pod.leds[0][0] = 20;
+	    pod.leds[0][1] = 19;
+	    pod.leds[0][2] = 18;
+	    pod.leds[1][0] = 17;
+	    pod.leds[1][1] = 24;
+	    pod.leds[1][2] = 23;
+	    
+	    pod.encoder_click = 13;
+	    pod.encoder_inc[0] = 26; //A
+	    pod.encoder_inc[1] = 25; //B
+	    break;
+
+        default:
+	    break;
+    }
 }
 
 size_t AudioClass::init(DaisyAudioDevice device, DaisyAudioSampleRate sr)
@@ -87,6 +116,9 @@ size_t AudioClass::init(DaisyAudioDevice device, DaisyAudioSampleRate sr)
         delay(1);
         dsy_gpio_write(&ak4556_reset_pin, 1);
     }
+
+    InitPins(device);
+    
     return device < DAISY_PATCH ? 2 : 4;
 }
 

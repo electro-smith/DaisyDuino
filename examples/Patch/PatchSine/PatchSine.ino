@@ -25,8 +25,8 @@ void SineCallback(float **in, float **out, size_t size)
 
 void setup()
 {
-    num_channels = AUDIO.init(DAISY_PATCH, AUDIO_SR_48K); 
-    AUDIO.begin(SineCallback);
+    num_channels = DAISY.init(DAISY_PATCH, AUDIO_SR_48K); 
+    DAISY.begin(SineCallback);
 }
 
 void loop()

@@ -39,12 +39,12 @@ void SineCallback(float **in, float **out, size_t size)
 
 void setup()
 {
-    num_channels = AUDIO.init(DAISY_PATCH, AUDIO_SR_48K); 
+    num_channels = DAISY.init(DAISY_PATCH, AUDIO_SR_48K); 
     osc[0].Init();
     osc[1].Init();
     osc[2].Init();
     osc[3].Init();
-    AUDIO.begin(SineCallback);
+    DAISY.begin(SineCallback);
     Serial.begin(9600);
 }
 
