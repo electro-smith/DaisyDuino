@@ -1,7 +1,6 @@
 #include "DaisyAudio.h"
 
-size_t num_channels;
-
+Pod pod;
 static Oscillator osc, lfo;
 static MoogLadder flt;
 static AdEnv ad;
@@ -10,8 +9,6 @@ int wave, mode;
 float vibrato, oscFreq, lfoFreq, lfoAmp, attack, release, cutoff;
 float oldk1, oldk2, k1, k2;
 bool selfCycle;
-
-DAISY.Pod pod;
 
 void ConditionalParameter(float oldVal, float newVal, float &param, float update);
 
@@ -33,22 +30,22 @@ void MyCallback(float **in, float **out, size_t size)
 {
     Controls();
 
-    for (size_t i = 0; i < size; i+= 2)
+    for (size_t i = 0; i < size; i++)
     {
         float sig;
-	NexSamples(sig);
-	
-        out[chn][i] = sig;
-	out[chn][i+1] = sig;
+        NextSamples(sig);
+
+        out[0][i] = sig;
+        out[1][i] = sig;
     }
 }
 
 void setup() {
-    float sample_rate;
+    float sample_rate, callback_rate;
 
-    num_channels = DAISY.init(DAISY_POD, AUDIO_SR_48K); 
+    DAISY.init(DAISY_POD, AUDIO_SR_48K); 
     sample_rate = DAISY.get_samplerate();
-    pod = DAISY.pod;
+    callback_rate = DAISY.get_callbackrate();
 
     // Set global variables
     mode = 0;
@@ -64,7 +61,7 @@ void setup() {
     selfCycle = false;
     
     //Init everything
-    pod.Init();
+    pod.Init(callback_rate);
     osc.Init(sample_rate);
     flt.Init(sample_rate);
     ad.Init(sample_rate);
@@ -98,24 +95,26 @@ void setup() {
 //    lfoParam.Init(pod.knob1, 0.25, 1000, lfoParam.LOGARITHMIC);
 
     //setup pins
-    pinMode(pod.encoder_click, INPUT_PULLUP);
-    for (int i = 0; i < 2; i++)
-    {
-	pinMode(pod.switches[i], INPUT_PULLUP);
-	pinMode(pod.encoder_inc[i], INPUT_PULLUP);
+    pinMode(PIN_POD_ENC_CLICK, INPUT_PULLUP);
+    pinMode(PIN_POD_ENC_A, INPUT_PULLUP);
+    pinMode(PIN_POD_ENC_B, INPUT_PULLUP); 
 
-	for (int j = 0; j < 3; j++)
-	{
-	    pinMode(pod.leds[i][j], OUTPUT);
-	}
-    }	
+    pinMode(PIN_POD_SWITCH_1, INPUT_PULLUP);
+    pinMode(PIN_POD_SWITCH_2, INPUT_PULLUP); 
+
+    pinMode(PIN_POD_LED_1_RED, OUTPUT);
+    pinMode(PIN_POD_LED_1_GREEN, OUTPUT);
+    pinMode(PIN_POD_LED_1_BLUE, OUTPUT);
+
+    pinMode(PIN_POD_LED_2_RED, OUTPUT);
+    pinMode(PIN_POD_LED_2_GREEN, OUTPUT);
+    pinMode(PIN_POD_LED_2_BLUE, OUTPUT);
 
     //start the audio callback
     DAISY.begin(MyCallback);
 }
 
-void loop() {
-}
+void loop() {}
 
 //Updates values if knob had changed
 void ConditionalParameter(float oldVal, float newVal, float &param, float update)
@@ -130,6 +129,9 @@ void ConditionalParameter(float oldVal, float newVal, float &param, float update
 //Controls Helpers
 void UpdateEncoder()
 {
+    pod.encoder.ProcessInc(digitalRead(PIN_POD_ENC_A), digitalRead(PIN_POD_ENC_B));
+    pod.encoder.ProcessClick(digitalRead(PIN_POD_ENC_CLICK));
+
     wave += pod.encoder.RisingEdge();
     wave %= osc.WAVE_POLYBLEP_TRI;
 
@@ -147,51 +149,54 @@ void UpdateEncoder()
 
 void UpdateKnobs()
 {
-    k1 = pod.knob1.Process();
-    k2 = pod.knob2.Process();
+    k1 = analogRead(PIN_POD_POT_1);
+    k2 = analogRead(PIN_POD_POT_2);
 
     switch (mode)
     {
         case 0:
-	    ConditionalParameter(oldk1, k1, cutoff, cutoffParam.Process());
-	    ConditionalParameter(oldk2, k2, oscFreq, pitchParam.Process());
-	    flt.SetFreq(cutoff);
-	    break;
+            ConditionalParameter(oldk1, k1, cutoff, k1 * 20000);
+            ConditionalParameter(oldk2, k2, oscFreq, k2 * 5000);
+            flt.SetFreq(cutoff);
+            break;
         case 1:
-	    ConditionalParameter(oldk1, k1, attack, pod.knob1.Process());
-	    ConditionalParameter(oldk2, k2, release, pod.knob2.Process());
-	    ad.SetTime(ADENV_SEG_ATTACK, attack);
-	    ad.SetTime(ADENV_SEG_DECAY, release);
-	    break;
-	case 2:
-	    ConditionalParameter(oldk1, k1, lfoFreq, lfoParam.Process());
-	    ConditionalParameter(oldk2, k2, lfoAmp, pod.knob2.Process());
-	    lfo.SetFreq(lfoFreq);
-	    lfo.SetAmp(lfoAmp * 100);
-	default:
-	    break;
+            ConditionalParameter(oldk1, k1, attack, k1);
+            ConditionalParameter(oldk2, k2, release, k2);
+            ad.SetTime(ADENV_SEG_ATTACK, attack);
+            ad.SetTime(ADENV_SEG_DECAY, release);
+            break;
+        case 2:
+            ConditionalParameter(oldk1, k1, lfoFreq, k1 * 1000 + .25);
+            ConditionalParameter(oldk2, k2, lfoAmp, k2 * 100);
+            lfo.SetFreq(lfoFreq);
+            lfo.SetAmp(lfoAmp);
+        default:
+            break;
     }
 }
 
 void UpdateLeds()
 {
-    pod.led1.Set(mode == 2, mode == 1, mode == 0);
-    pod.led2.Set(0, selfCycle, selfCycle);
+//    pod.led1.Set(mode == 2, mode == 1, mode == 0);
+//    pod.led2.Set(0, selfCycle, selfCycle);
     
     oldk1 = k1;
     oldk2 = k2;
     
-    pod.UpdateLeds();
+//    pod.UpdateLeds();
 }
 
 void UpdateButtons()
 {
-    if (pod.button2.RisingEdge() || (selfCycle && !ad.IsRunning()))
+    pod.button1.Process(digitalRead(PIN_POD_SWITCH_1));
+    pod.button2.Process(digitalRead(PIN_POD_SWITCH_2));
+
+    if (pod.button1.RisingEdge() || (selfCycle && !ad.IsRunning()))
     {
-  	ad.Trigger();
+        ad.Trigger();
     }
 
-    if (pod.button1.RisingEdge())
+    if (pod.button2.RisingEdge())
     {
         selfCycle = !selfCycle;
     }
@@ -199,9 +204,6 @@ void UpdateButtons()
 
 void Controls()
 {
-    pod.UpdateAnalogControls();
-    pod.DebounceControls();
-    
     UpdateEncoder();
 
     UpdateKnobs();
