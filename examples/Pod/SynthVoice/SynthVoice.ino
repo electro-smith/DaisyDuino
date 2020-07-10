@@ -149,8 +149,8 @@ void UpdateEncoder()
 
 void UpdateKnobs()
 {
-    k1 = analogRead(PIN_POD_POT_1);
-    k2 = analogRead(PIN_POD_POT_2);
+    k1 = (float)analogRead(PIN_POD_POT_1) / 1023.f; //10 bit reading
+    k2 = (float)analogRead(PIN_POD_POT_2) / 1023.f;
 
     switch (mode)
     {

@@ -115,14 +115,15 @@ class Encoder
 class Pod
 {
 public:
-    Switch switches[2];
+    Switch button1;
+    Switch button2;
     
     Encoder encoder;
     
     void Init(float control_update_rate)
     {
-        switches[0].Init(control_update_rate, true);
-	switches[1].Init(control_update_rate, true);
+        button1.Init(control_update_rate, true);
+	button2.Init(control_update_rate, true);
 
 	encoder.Init(control_update_rate);
     }
