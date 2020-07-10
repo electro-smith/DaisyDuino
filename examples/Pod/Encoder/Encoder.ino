@@ -39,10 +39,10 @@ void SetColor()
 
 void loop()
 {
-    pod.encSwitch.Process(digitalRead(pod.encClickPin));
-    pod.enc.Process(digitalRead(pod.encIncPins[0]), digitalRead(pod.encIncPins[1]));
+    pod.enc.ProcessClick(digitalRead(pod.encClickPin));
+    pod.enc.ProcessInc(digitalRead(pod.encIncPins[0]), digitalRead(pod.encIncPins[1]));
 
-    if (pod.encSwitch.RisingEdge())
+    if (pod.enc.RisingEdge())
     {
         color = 0;
     }

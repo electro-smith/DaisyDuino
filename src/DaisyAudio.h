@@ -34,35 +34,6 @@ typedef void (*DaisyAudioCallback)(float**, float**, size_t);
 
 //just does the increment stuff
 //the user will use the switch for the pressed themselves
-class Encoder
-{
-    public:
-
-    void Init()
-    {
-	inc_ = 0;
-	a_ = b_ = 0xff;
-    }
-    
-    void Process(uint8_t a_in, uint8_t b_in)
-    {
-	a_ = (a_ << 1) | (a_in);
-	b_ = (b_ << 1) | (b_in);
-
-	inc_ = 0;
-	
-	if((b_ == 0x7f) && (a_  == 0x00))
-	    inc_ = 1;
-	else if ((a_ == 0x7f) && (b_ == 0x00))
-	    inc_ = -1;
-    }
-
-    int32_t Increment() { return inc_; }
-    
-    private:    
-        uint8_t a_, b_;
-	int32_t inc_;
-};
 
 class Switch
 {
@@ -101,6 +72,49 @@ class Switch
 	uint8_t state_;
 };
 
+class Encoder
+{
+    public:
+
+    void Init(float update_rate)
+    {
+	inc_ = 0;
+	a_ = b_ = 0xff;
+
+	encSwitch.Init(update_rate, true);
+    }
+    
+    void ProcessInc(uint8_t a_in, uint8_t b_in)
+    {
+	a_ = (a_ << 1) | (a_in);
+	b_ = (b_ << 1) | (b_in);
+
+	inc_ = 0;
+	
+	if((b_ == 0x7f) && (a_  == 0x00))
+	    inc_ = 1;
+	else if ((a_ == 0x7f) && (b_ == 0x00))
+	    inc_ = -1;
+    }
+
+    int32_t Increment() { return inc_; }
+    
+    void ProcessClick(uint8_t in) { return encSwitch.Process(in); }
+    
+    bool RisingEdge()  { return encSwitch.RisingEdge(); }
+	
+    bool FallingEdge() { return encSwitch.FallingEdge(); }
+    
+    bool Pressed()     { return encSwitch.Pressed(); }
+    
+    float TimeHeldMs() { return encSwitch.TimeHeldMs(); }
+	
+    private:    
+        Switch encSwitch;
+        uint8_t a_, b_;
+	int32_t inc_;
+};
+
 class Pod
 {
 public:
@@ -137,8 +151,7 @@ public:
         switches[0].Init(control_update_rate, true);
 	switches[1].Init(control_update_rate, true);
 
-	encSwitch.Init(control_update_rate, true);
-	enc.Init();
+	enc.Init(control_update_rate);
     }
 };
 
