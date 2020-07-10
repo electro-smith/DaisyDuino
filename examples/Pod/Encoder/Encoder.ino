@@ -4,9 +4,6 @@ Pod pod;
 
 uint8_t color;
 
-Encoder enc; //turn the encoder
-Switch sw; //press the encoder
-
 void setup()
 {
     DAISY.init(DAISY_POD, AUDIO_SR_48K); 
@@ -41,15 +38,15 @@ void SetColor()
 
 void loop()
 {
-    pod.enc.ProcessClick(digitalRead(PIN_POD_ENC_CLICK));
-    pod.enc.ProcessInc(digitalRead(PIN_POD_ENC_A), digitalRead(PIN_POD_ENC_B));
+    pod.encoder.ProcessClick(digitalRead(PIN_POD_ENC_CLICK));
+    pod.encoder.ProcessInc(digitalRead(PIN_POD_ENC_A), digitalRead(PIN_POD_ENC_B));
 
-    if (pod.enc.RisingEdge())
+    if (pod.encoder.RisingEdge())
     {
         color = 0;
     }
 
-    color += pod.enc.Increment();
+    color += pod.encoder.Increment();
     color = (color % 8 + 8) % 8;
 
     SetColor();

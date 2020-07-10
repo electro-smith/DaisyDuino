@@ -28,13 +28,9 @@ typedef void (*DaisyAudioCallback)(float**, float**, size_t);
 
 
 //TODO
-// encoder increment
-// updateanalogcontrols?
-// PWM for leds would be nice
-
-
-//just does the increment stuff
-//the user will use the switch for the pressed themselves
+// updateanalogcontrols? (likely covered by analogRead)
+// Parameter would be nice
+// PWM for leds would be nice too
 
 class Switch
 {
@@ -121,14 +117,14 @@ class Pod
 public:
     Switch switches[2];
     
-    Encoder enc;
+    Encoder encoder;
     
     void Init(float control_update_rate)
     {
         switches[0].Init(control_update_rate, true);
 	switches[1].Init(control_update_rate, true);
 
-	enc.Init(control_update_rate);
+	encoder.Init(control_update_rate);
     }
 };
 
@@ -142,6 +138,7 @@ class AudioClass
         void begin(DaisyAudioCallback cb);
         void end();
         float get_samplerate();
+ 	inline float get_callbackrate() { return get_samplerate() / _blocksize; }
 	
     private:
         size_t _blocksize;
