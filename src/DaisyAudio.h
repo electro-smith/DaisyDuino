@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include "Arduino.h"
 #include "DaisyDSP.h"
+#include "daisy_pod.h"
 
 enum DaisyAudioDevice {
     DAISY_SEED,
@@ -118,36 +119,12 @@ class Encoder
 class Pod
 {
 public:
-    int knobPins[2];
-    int switchPins[2];
-    int ledPins[2][3]; //2 leds, RGB pins
-    int encClickPin;
-    int encIncPins[2]; //A, B
-
     Switch switches[2];
     
-    Switch encSwitch;
     Encoder enc;
     
     void Init(float control_update_rate)
     {
-	knobPins[0] = 21;
-	knobPins[1] = 15;
-	
-	switchPins[0] = 27;
-	switchPins[1] = 28;
-	
-	ledPins[0][0] = 20;
-	ledPins[0][1] = 19;
-	ledPins[0][2] = 18;
-	ledPins[1][0] = 17;
-	ledPins[1][1] = 24;
-	ledPins[1][2] = 23;
-	
-	encClickPin = 13;
-	encIncPins[0] = 26; //A
-	encIncPins[1] = 25; //B
-	    
         switches[0].Init(control_update_rate, true);
 	switches[1].Init(control_update_rate, true);
 

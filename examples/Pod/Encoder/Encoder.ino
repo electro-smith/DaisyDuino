@@ -15,32 +15,34 @@ void setup()
     color = 0;
 
     //setup I/O
-    for (int i = 0; i < 3; i++)
-    {
-        pinMode(pod.ledPins[0][i], OUTPUT);
-        pinMode(pod.ledPins[1][i], OUTPUT);
-    }
+    pinMode(PIN_POD_LED_1_RED, OUTPUT);
+    pinMode(PIN_POD_LED_1_GREEN, OUTPUT);
+    pinMode(PIN_POD_LED_1_BLUE, OUTPUT);
 
-    pinMode(pod.encIncPins[0], INPUT_PULLUP);
-    pinMode(pod.encIncPins[1], INPUT_PULLUP);
-    pinMode(pod.encClickPin, INPUT_PULLUP);
+    pinMode(PIN_POD_LED_2_RED, OUTPUT);
+    pinMode(PIN_POD_LED_2_GREEN, OUTPUT);
+    pinMode(PIN_POD_LED_2_BLUE, OUTPUT);
+
+    pinMode(PIN_POD_ENC_CLICK, INPUT_PULLUP);
+    pinMode(PIN_POD_ENC_A, INPUT_PULLUP);
+    pinMode(PIN_POD_ENC_B, INPUT_PULLUP);
 }
 
 void SetColor()
 {
-    digitalWrite(pod.ledPins[0][0], (color & B100) != B100);
-    digitalWrite(pod.ledPins[0][1], (color & B010) != B010);
-    digitalWrite(pod.ledPins[0][2], (color & B001) != B001);
+    digitalWrite(PIN_POD_LED_1_RED, (color & B100) != B100);
+    digitalWrite(PIN_POD_LED_1_GREEN, (color & B010) != B010);
+    digitalWrite(PIN_POD_LED_1_BLUE, (color & B001) != B001);
 
-    digitalWrite(pod.ledPins[1][0], (color & B100) != B100);
-    digitalWrite(pod.ledPins[1][1], (color & B010) != B010);
-    digitalWrite(pod.ledPins[1][2], (color & B001) != B001);
+    digitalWrite(PIN_POD_LED_2_RED, (color & B100) != B100);
+    digitalWrite(PIN_POD_LED_2_GREEN, (color & B010) != B010);
+    digitalWrite(PIN_POD_LED_2_BLUE, (color & B001) != B001);
 }
 
 void loop()
 {
-    pod.enc.ProcessClick(digitalRead(pod.encClickPin));
-    pod.enc.ProcessInc(digitalRead(pod.encIncPins[0]), digitalRead(pod.encIncPins[1]));
+    pod.enc.ProcessClick(digitalRead(PIN_POD_ENC_CLICK));
+    pod.enc.ProcessInc(digitalRead(PIN_POD_ENC_A), digitalRead(PIN_POD_ENC_B));
 
     if (pod.enc.RisingEdge())
     {
