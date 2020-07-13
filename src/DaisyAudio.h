@@ -88,10 +88,14 @@ class Encoder
 
 	inc_ = 0;
 	
-	if((b_ == 0x7f) && (a_  == 0x00))
+	if((a_ & 0x0f) == 0x0e && (b_ & 0x07) == 0x00)
+	{
 	    inc_ = 1;
-	else if ((a_ == 0x7f) && (b_ == 0x00))
+	}
+	else if((b_ & 0x0f) == 0x0e && (a_ & 0x07) == 0x00)
+	{
 	    inc_ = -1;
+	}
     }
 
     int32_t Increment() { return inc_; }

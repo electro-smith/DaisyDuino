@@ -24,7 +24,7 @@ static void AudioCallback(float **in, float **out, size_t size)
     hw.button2.Process(digitalRead(PIN_POD_SWITCH_2));
 
     waveform += hw.encoder.Increment();
-    waveform = DSY_CLAMP(waveform, 0, NUM_WAVEFORMS);
+    waveform = (waveform % NUM_WAVEFORMS + NUM_WAVEFORMS ) % NUM_WAVEFORMS;
     osc.SetWaveform(waveforms[waveform]);
 
     if(hw.button2.RisingEdge())
