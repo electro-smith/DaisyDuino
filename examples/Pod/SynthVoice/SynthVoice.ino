@@ -177,13 +177,17 @@ void UpdateKnobs()
 
 void UpdateLeds()
 {
-//    pod.led1.Set(mode == 2, mode == 1, mode == 0);
-//    pod.led2.Set(0, selfCycle, selfCycle);
-    
+    //Pod LEDS are active low, so these are all backwards
+    digitalWrite(PIN_POD_LED_1_RED, mode != 2);
+    digitalWrite(PIN_POD_LED_1_GREEN, mode != 1);
+    digitalWrite(PIN_POD_LED_1_BLUE, mode != 0);
+
+    digitalWrite(PIN_POD_LED_2_RED, HIGH);
+    digitalWrite(PIN_POD_LED_2_GREEN, !selfCycle);
+    digitalWrite(PIN_POD_LED_2_BLUE, !selfCycle);    
+
     oldk1 = k1;
-    oldk2 = k2;
-    
-//    pod.UpdateLeds();
+    oldk2 = k2;    
 }
 
 void UpdateButtons()
