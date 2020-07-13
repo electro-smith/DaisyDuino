@@ -18,10 +18,7 @@ static int     waveform, octave;
 
 static void AudioCallback(float **in, float **out, size_t size)
 {
-    hw.encoder.ProcessInc(digitalRead(PIN_POD_ENC_A), digitalRead(PIN_POD_ENC_B));
-    hw.encoder.ProcessClick(digitalRead(PIN_POD_ENC_CLICK));
-    hw.button1.Process(digitalRead(PIN_POD_SWITCH_1));
-    hw.button2.Process(digitalRead(PIN_POD_SWITCH_2));
+    hw.Debounce();
 
     waveform += hw.encoder.Increment();
     waveform = (waveform % NUM_WAVEFORMS + NUM_WAVEFORMS ) % NUM_WAVEFORMS;
@@ -66,14 +63,6 @@ void setup()
 
     hw.Init(callback_rate);
     InitSynth(samplerate);
-
-    //setup pins
-    pinMode(PIN_POD_ENC_CLICK, INPUT_PULLUP);
-    pinMode(PIN_POD_ENC_A, INPUT_PULLUP);
-    pinMode(PIN_POD_ENC_B, INPUT_PULLUP); 
-
-    pinMode(PIN_POD_SWITCH_1, INPUT_PULLUP);
-    pinMode(PIN_POD_SWITCH_2, INPUT_PULLUP); 
 
     DAISY.begin(AudioCallback);
 }

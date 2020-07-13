@@ -19,10 +19,6 @@ void setup()
     pinMode(PIN_POD_LED_2_RED, OUTPUT);
     pinMode(PIN_POD_LED_2_GREEN, OUTPUT);
     pinMode(PIN_POD_LED_2_BLUE, OUTPUT);
-
-    pinMode(PIN_POD_ENC_CLICK, INPUT_PULLUP);
-    pinMode(PIN_POD_ENC_A, INPUT_PULLUP);
-    pinMode(PIN_POD_ENC_B, INPUT_PULLUP);
 }
 
 void SetColor()
@@ -38,8 +34,7 @@ void SetColor()
 
 void loop()
 {
-    pod.encoder.ProcessClick(digitalRead(PIN_POD_ENC_CLICK));
-    pod.encoder.ProcessInc(digitalRead(PIN_POD_ENC_A), digitalRead(PIN_POD_ENC_B));
+    pod.Debounce();
 
     if (pod.encoder.RisingEdge())
     {

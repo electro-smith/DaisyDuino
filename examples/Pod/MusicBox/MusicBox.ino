@@ -22,7 +22,7 @@ float        sig, rawsig, filtsig, sendsig, wetvl, wetvr;
 float        vamt, dec, time;
 static void  audio(float **in, float **out, size_t size)
 {
-    hw.button1.Process(digitalRead(PIN_POD_SWITCH_1));
+    hw.Debounce();
 
     if(hw.button1.RisingEdge())
     {
@@ -83,9 +83,6 @@ void setup()
 
     InitSynth(samplerate);
     hw.Init(callback_rate);
-
-    //set button pin
-    pinMode(PIN_POD_SWITCH_1, INPUT_PULLUP);
 
     DAISY.begin(audio);
 }

@@ -94,14 +94,7 @@ void setup() {
 //    pitchParam.Init(pod.knob2, 50, 5000, pitchParam.LOGARITHMIC);
 //    lfoParam.Init(pod.knob1, 0.25, 1000, lfoParam.LOGARITHMIC);
 
-    //setup pins
-    pinMode(PIN_POD_ENC_CLICK, INPUT_PULLUP);
-    pinMode(PIN_POD_ENC_A, INPUT_PULLUP);
-    pinMode(PIN_POD_ENC_B, INPUT_PULLUP); 
-
-    pinMode(PIN_POD_SWITCH_1, INPUT_PULLUP);
-    pinMode(PIN_POD_SWITCH_2, INPUT_PULLUP); 
-
+    //led pins
     pinMode(PIN_POD_LED_1_RED, OUTPUT);
     pinMode(PIN_POD_LED_1_GREEN, OUTPUT);
     pinMode(PIN_POD_LED_1_BLUE, OUTPUT);
@@ -129,8 +122,7 @@ void ConditionalParameter(float oldVal, float newVal, float &param, float update
 //Controls Helpers
 void UpdateEncoder()
 {
-    pod.encoder.ProcessInc(digitalRead(PIN_POD_ENC_A), digitalRead(PIN_POD_ENC_B));
-    pod.encoder.ProcessClick(digitalRead(PIN_POD_ENC_CLICK));
+    pod.Debounce();
 
     wave += pod.encoder.RisingEdge();
     wave %= osc.WAVE_POLYBLEP_TRI;

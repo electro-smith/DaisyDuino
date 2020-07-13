@@ -35,17 +35,20 @@ typedef void (*DaisyAudioCallback)(float**, float**, size_t);
 class Switch
 {
     public:
-        void Init(float update_rate, bool invert)
+        void Init(float update_rate, bool invert, uint8_t pin)
 	{
 	    flip_ = invert;
 	    time_per_update_ = 1.f / update_rate;
 	    state_ = 0;
 	    time_held_ = 0.f;
+	    pin_ = pin;
+	    pinMode(pin, INPUT_PULLUP);
 	}
 
 	//debounces and processes input
-	void Process(uint8_t in)
+	void Debounce()
 	{
+	    uint8_t in = digitalRead(pin_);
 	    state_ = (state_ << 1) | (flip_ ? !in : in);
 	    
 	    if (state_ == 0x7f || state_ == 0x80)
@@ -66,23 +69,34 @@ class Switch
     private:
 	bool flip_;
 	float time_per_update_, time_held_;
-	uint8_t state_;
+	uint8_t state_, pin_;
 };
 
 class Encoder
 {
     public:
 
-    void Init(float update_rate)
+    void Init(float update_rate, uint8_t pinA, uint8_t pinB, uint8_t pinClick)
     {
 	inc_ = 0;
 	a_ = b_ = 0xff;
 
-	encSwitch.Init(update_rate, true);
+	pinA_ = pinA;
+	pinB_ = pinB;
+
+	pinMode(pinA, INPUT_PULLUP);
+	pinMode(pinB, INPUT_PULLUP);
+	
+	encSwitch.Init(update_rate, true, pinClick);
     }
     
-    void ProcessInc(uint8_t a_in, uint8_t b_in)
+    void Debounce()
     {
+	uint8_t a_in = digitalRead(pinA_);
+	uint8_t b_in = digitalRead(pinB_);
+
+	encSwitch.Debounce();
+	
 	a_ = (a_ << 1) | (a_in);
 	b_ = (b_ << 1) | (b_in);
 
@@ -99,9 +113,7 @@ class Encoder
     }
 
     int32_t Increment() { return inc_; }
-    
-    void ProcessClick(uint8_t in) { return encSwitch.Process(in); }
-    
+        
     bool RisingEdge()  { return encSwitch.RisingEdge(); }
 	
     bool FallingEdge() { return encSwitch.FallingEdge(); }
@@ -112,7 +124,7 @@ class Encoder
 	
     private:    
         Switch encSwitch;
-        uint8_t a_, b_;
+        uint8_t a_, b_, pinA_, pinB_;
 	int32_t inc_;
 };
 
@@ -126,11 +138,19 @@ public:
     
     void Init(float control_update_rate)
     {
-        button1.Init(control_update_rate, true);
-	button2.Init(control_update_rate, true);
+        button1.Init(control_update_rate, true, PIN_POD_SWITCH_1);
+	button2.Init(control_update_rate, true, PIN_POD_SWITCH_2);
 
-	encoder.Init(control_update_rate);
+	encoder.Init(control_update_rate, PIN_POD_ENC_A, PIN_POD_ENC_B, PIN_POD_ENC_CLICK);
     }
+
+    void Debounce()
+    {
+        button1.Debounce();
+	button2.Debounce();
+	encoder.Debounce();
+    }
+    
 };
 
 class AudioClass
