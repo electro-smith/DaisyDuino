@@ -2,7 +2,7 @@
 
 #define NUM_WAVEFORMS 4
 
-Pod   hw;
+DaisyPod   hw;
 Oscillator osc;
 
 uint8_t waveforms[NUM_WAVEFORMS] = {

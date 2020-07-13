@@ -1,6 +1,6 @@
 #include "DaisyAudio.h"
 
-Pod pod;
+DaisyPod pod;
 
 uint8_t color;
 

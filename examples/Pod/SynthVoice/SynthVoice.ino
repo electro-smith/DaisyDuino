@@ -1,6 +1,6 @@
 #include "DaisyAudio.h"
 
-Pod pod;
+DaisyPod pod;
 static Oscillator osc, lfo;
 static MoogLadder flt;
 static AdEnv ad;

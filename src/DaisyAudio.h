@@ -116,7 +116,7 @@ class Encoder
 	int32_t inc_;
 };
 
-class Pod
+class DaisyPod
 {
 public:
     Switch button1;
