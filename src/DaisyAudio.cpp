@@ -3,7 +3,6 @@
 #include "utility/hid_audio.h"
 #include "utility/sys_dma.h"
 #include "utility/per_gpio.h"
-#include "utility/dev_sdram.h"
 
 #define PIN_AK4556_RESET 14
 #define PORT_AK4556_RESET DSY_GPIOB

@@ -8,6 +8,7 @@
 #include "Arduino.h"
 #include "DaisyDSP.h"
 #include "daisy_pod.h"
+#include "utility/dev_sdram.h"
 
 enum DaisyAudioDevice {
     DAISY_SEED,
@@ -170,6 +171,7 @@ class AudioClass
         DaisyAudioSampleRate _samplerate;
         DaisyAudioDevice _device;
 
+        dsy_sdram_handle sdram_handle;
 	void ConfigureSdram();
 };
 
