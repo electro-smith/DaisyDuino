@@ -28,25 +28,28 @@ static void AudioCallback(float **in, float **out, size_t size)
 
     for(size_t i = 0; i < size; i++)
     {
-        NextSamples(output, in, i);   
-	
+        output = NextSamples(in, i);   
+
         // left and right outs
         out[0][i] = out[1][i] = output;
     }
 }
 
-int main(void)
+void setup()
 {
-    // initialize pod hardware and oscillator daisysp module
+    float callback_rate;
+    DAISY.init(DAISY_POD, AUDIO_SR_48K); 
+    callback_rate = DAISY.get_callbackrate();
 
-    pod.Init();
+    pod.Init(callback_rate);
     ResetBuffer();
 
     // start callback
-    pod.StartAdc();
-    pod.StartAudio(AudioCallback);
+    DAISY.begin(AudioCallback);
+}
 
-    while(1) {}
+void loop()
+{
 }
 
 //Resets the buffer
@@ -76,7 +79,7 @@ void UpdateButtons()
             len   = 0;
         }
 
-	res = true;
+        res = true;
         play = true;
         rec  = !rec;
     }
@@ -85,14 +88,14 @@ void UpdateButtons()
     if(pod.button1.TimeHeldMs() >= 1000 && res)
     {
         ResetBuffer();
-	res = false;
+        res = false;
     }
     
     //button2 pressed and not empty buffer
     if(pod.button2.RisingEdge() && !(!rec && first))
     {
         play = !play;
-	rec = false;
+        rec = false;
     }
 }
 
@@ -101,49 +104,51 @@ void Controls()
 {
     pod.DebounceControls();
 
-    drywet = analogRead(PIN_POD_POT_1);
+    drywet = (float)analogRead(PIN_POD_POT_1) / 1023.f;
 
     UpdateButtons();
 
     //leds
-    pod.led1.Set(0, play == true, 0);
-    pod.led2.Set(rec == true, 0, 0);
+    pod.led1.Set(rec, false, false);
+    pod.led2.Set(false, play, false);
 }
 
-void WriteBuffer(float* in, size_t i)
+void WriteBuffer(float** in, size_t i)
 {
-    buf[pos] = buf[pos] * 0.5 + in[i] * 0.5;
+    buf[pos] = buf[pos] * 0.5 + in[0][i] * 0.5;
     if(first)
     {
-	len++;
+        len++;
     }
 }
 
-void NextSamples(float &output, float* in, size_t i)
+float NextSamples(float** in, size_t i)
 {
     if (rec)
     {
-	WriteBuffer(in, i);
+        WriteBuffer(in, i);
     }
     
-    output = buf[pos];
+    float output = buf[pos];
     
     //automatic looptime
     if(len >= MAX_SIZE)
     {
         first = false;
-	mod   = MAX_SIZE;
-	len   = 0;
+        mod   = MAX_SIZE;
+        len   = 0;
     }
     
     if(play)
     {
-	pos++;
-	pos %= mod;
+        pos++;
+        pos %= mod;
     }
 
     if (!rec)
     {
-	output = output * drywet + in[i] * (1 -drywet);
+        output = output * drywet + in[0][i] * (1 -drywet);
     }
+
+    return output;
 }

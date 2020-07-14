@@ -1,7 +1,7 @@
 #ifndef DSY_ARDUINO_AUDIO_H
 #define DSY_ARDUINO_AUDIO_H
 
-// ENABLE HAL SAI 
+// ENABLE HAL MODULES
 #define HAL_SAI_MODULE_ENABLED
 
 #include <stdio.h>

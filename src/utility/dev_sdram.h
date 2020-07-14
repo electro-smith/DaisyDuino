@@ -53,15 +53,17 @@ SECTIONS
      } > SDRAM
 }
 */
+
 #ifndef RAM_AS4C16M16SA_H
 #define RAM_AS4C16M16SA_H /**< & */
 #ifdef __cplusplus
 extern "C"
 {
 #endif
+        
 #include <stdint.h>
 #include "daisy_core.h"
-
+    
     /** @addtogroup sdram
     @{
     */

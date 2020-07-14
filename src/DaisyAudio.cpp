@@ -22,10 +22,11 @@ AudioClass::AudioClass() : _blocksize{48}, _samplerate{AUDIO_SR_48K}
 void AudioClass::ConfigureSdram()
 {
     dsy_gpio_pin *pin_group;
-    dsy_sdram_handle sdram_handle;
     sdram_handle.state             = DSY_SDRAM_STATE_ENABLE;
     pin_group                      = sdram_handle.pin_config;
     pin_group[DSY_SDRAM_PIN_SDNWE] = dsy_pin(DSY_GPIOH, 5);
+
+    dsy_sdram_init(&sdram_handle);
 }
 
 size_t AudioClass::init(DaisyAudioDevice device, DaisyAudioSampleRate sr)
