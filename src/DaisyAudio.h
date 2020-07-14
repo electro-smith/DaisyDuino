@@ -33,6 +33,32 @@ typedef void (*DaisyAudioCallback)(float**, float**, size_t);
 // Parameter would be nice
 // PWM for leds would be nice too
 
+class Led
+{
+    public:
+        void Init(uint8_t pin_r, uint8_t pin_g, uint8_t pin_b)
+	{
+            pin_r_ = pin_r;
+	    pin_g_ = pin_g;
+	    pin_b_ = pin_b;
+
+	    pinMode(pin_r, OUTPUT);
+	    pinMode(pin_g, OUTPUT);
+	    pinMode(pin_b, OUTPUT);
+	}
+
+	//no PWM for now
+        void Set(bool r, bool g, bool b)
+	{
+	    digitalWrite(pin_r_, !r);
+	    digitalWrite(pin_g_, !g);
+	    digitalWrite(pin_b_, !b);
+	}
+	
+    private:
+        uint8_t pin_r_, pin_g_, pin_b_;
+};
+
 class Switch
 {
     public:
@@ -136,6 +162,9 @@ public:
     Switch button2;
     
     Encoder encoder;
+
+    Led led1;
+    Led led2;
     
     void Init(float control_update_rate)
     {
@@ -143,9 +172,12 @@ public:
 	button2.Init(control_update_rate, true, PIN_POD_SWITCH_2);
 
 	encoder.Init(control_update_rate, PIN_POD_ENC_A, PIN_POD_ENC_B, PIN_POD_ENC_CLICK);
+
+	led1.Init(PIN_POD_LED_1_RED, PIN_POD_LED_1_GREEN, PIN_POD_LED_1_BLUE);
+	led2.Init(PIN_POD_LED_2_RED, PIN_POD_LED_2_GREEN, PIN_POD_LED_2_BLUE);
     }
 
-    void Debounce()
+    void DebounceControls()
     {
         button1.Debounce();
 	button2.Debounce();

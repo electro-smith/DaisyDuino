@@ -22,7 +22,7 @@ float        sig, rawsig, filtsig, sendsig, wetvl, wetvr;
 float        vamt, dec, time;
 static void  audio(float **in, float **out, size_t size)
 {
-    hw.Debounce();
+    hw.DebounceControls();
 
     if(hw.button1.RisingEdge())
     {

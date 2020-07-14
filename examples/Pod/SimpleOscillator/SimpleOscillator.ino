@@ -18,7 +18,7 @@ static int     waveform, octave;
 
 static void AudioCallback(float **in, float **out, size_t size)
 {
-    hw.Debounce();
+    hw.DebounceControls();
 
     waveform += hw.encoder.Increment();
     waveform = (waveform % NUM_WAVEFORMS + NUM_WAVEFORMS ) % NUM_WAVEFORMS;

@@ -94,15 +94,6 @@ void setup() {
 //    pitchParam.Init(pod.knob2, 50, 5000, pitchParam.LOGARITHMIC);
 //    lfoParam.Init(pod.knob1, 0.25, 1000, lfoParam.LOGARITHMIC);
 
-    //led pins
-    pinMode(PIN_POD_LED_1_RED, OUTPUT);
-    pinMode(PIN_POD_LED_1_GREEN, OUTPUT);
-    pinMode(PIN_POD_LED_1_BLUE, OUTPUT);
-
-    pinMode(PIN_POD_LED_2_RED, OUTPUT);
-    pinMode(PIN_POD_LED_2_GREEN, OUTPUT);
-    pinMode(PIN_POD_LED_2_BLUE, OUTPUT);
-
     //start the audio callback
     DAISY.begin(MyCallback);
 }
@@ -122,8 +113,6 @@ void ConditionalParameter(float oldVal, float newVal, float &param, float update
 //Controls Helpers
 void UpdateEncoder()
 {
-    pod.Debounce();
-
     wave += pod.encoder.RisingEdge();
     wave %= osc.WAVE_POLYBLEP_TRI;
 
@@ -169,14 +158,8 @@ void UpdateKnobs()
 
 void UpdateLeds()
 {
-    //Pod LEDS are active low, so these are all backwards
-    digitalWrite(PIN_POD_LED_1_RED, mode != 2);
-    digitalWrite(PIN_POD_LED_1_GREEN, mode != 1);
-    digitalWrite(PIN_POD_LED_1_BLUE, mode != 0);
-
-    digitalWrite(PIN_POD_LED_2_RED, HIGH);
-    digitalWrite(PIN_POD_LED_2_GREEN, !selfCycle);
-    digitalWrite(PIN_POD_LED_2_BLUE, !selfCycle);    
+    pod.led1.Set(mode == 2, mode == 1, mode == 0);
+    pod.led2.Set(false, selfCycle, selfCycle);
 
     oldk1 = k1;
     oldk2 = k2;    
@@ -184,9 +167,6 @@ void UpdateLeds()
 
 void UpdateButtons()
 {
-    pod.button1.Process(digitalRead(PIN_POD_SWITCH_1));
-    pod.button2.Process(digitalRead(PIN_POD_SWITCH_2));
-
     if (pod.button1.RisingEdge() || (selfCycle && !ad.IsRunning()))
     {
         ad.Trigger();
@@ -200,6 +180,8 @@ void UpdateButtons()
 
 void Controls()
 {
+    pod.DebounceControls();
+
     UpdateEncoder();
 
     UpdateKnobs();

@@ -10,31 +10,17 @@ void setup()
     pod.Init(1000);
 
     color = 0;
-
-    //setup I/O
-    pinMode(PIN_POD_LED_1_RED, OUTPUT);
-    pinMode(PIN_POD_LED_1_GREEN, OUTPUT);
-    pinMode(PIN_POD_LED_1_BLUE, OUTPUT);
-
-    pinMode(PIN_POD_LED_2_RED, OUTPUT);
-    pinMode(PIN_POD_LED_2_GREEN, OUTPUT);
-    pinMode(PIN_POD_LED_2_BLUE, OUTPUT);
 }
 
 void SetColor()
 {
-    digitalWrite(PIN_POD_LED_1_RED, (color & B100) != B100);
-    digitalWrite(PIN_POD_LED_1_GREEN, (color & B010) != B010);
-    digitalWrite(PIN_POD_LED_1_BLUE, (color & B001) != B001);
-
-    digitalWrite(PIN_POD_LED_2_RED, (color & B100) != B100);
-    digitalWrite(PIN_POD_LED_2_GREEN, (color & B010) != B010);
-    digitalWrite(PIN_POD_LED_2_BLUE, (color & B001) != B001);
+    pod.led1.Set((color & B100) == B100, (color & B010) == B010, (color & B001) == B001);
+    pod.led2.Set((color & B100) == B100, (color & B010) == B010, (color & B001) == B001);
 }
 
 void loop()
 {
-    pod.Debounce();
+    pod.DebounceControls();
 
     if (pod.encoder.RisingEdge())
     {
