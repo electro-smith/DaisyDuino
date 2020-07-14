@@ -169,7 +169,8 @@ class AudioClass
         size_t _blocksize;
         DaisyAudioSampleRate _samplerate;
         DaisyAudioDevice _device;
-	void InitPins(DaisyAudioDevice device);
+
+	void ConfigureSdram();
 };
 
 extern AudioClass DAISY;
