@@ -1,9 +1,11 @@
-#define HAL_SDRAM_MODULE_ENABLED
+/*#define HAL_SDRAM_MODULE_ENABLED
 #define HAL_DMA_MODULE_ENABLED
 #define HAL_MDMA_MODULE_ENABLED
 
-#include <stm32h7xx_hal_conf.h>
-#include <stm32h7xx_hal_sdram.h>
+#include <stm32h7xx_hal.h>
+#include <stm32h7xx_hal_def.h> */
+#include <stm32h7xx_hal_conf_template.h> 
+
 #include "dev_sdram.h"
 #include "util_hal_map.h"
 //#include "libdaisy.h"
