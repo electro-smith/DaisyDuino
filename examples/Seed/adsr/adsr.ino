@@ -1,5 +1,6 @@
 #include "DaisyAudio.h"
 
+DaisyHardware hw;
 
 size_t num_channels;
 
@@ -35,7 +36,8 @@ void MyCallback(float **in, float **out, size_t size)
 void setup() {
     float samplerate;
     // Initialize for Daisy pod at 48kHz
-    num_channels = DAISY.init(DAISY_SEED, AUDIO_SR_48K);
+    hw  = DAISY.init(DAISY_SEED, AUDIO_SR_48K);
+    num_channels = hw.num_channels;
     samplerate = DAISY.get_samplerate();
 
     env.Init(samplerate);

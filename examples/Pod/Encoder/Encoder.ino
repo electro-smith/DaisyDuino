@@ -1,33 +1,32 @@
 #include "DaisyAudio.h"
 
-DaisyPod pod;
-
 uint8_t color;
+
+DaisyHardware hw;
 
 void setup()
 {
-    DAISY.init(DAISY_POD, AUDIO_SR_48K); 
-    pod.Init(1000);
+    hw = DAISY.init(DAISY_POD, AUDIO_SR_48K); 
 
     color = 0;
 }
 
 void SetColor()
 {
-    pod.led1.Set((color & B100) == B100, (color & B010) == B010, (color & B001) == B001);
-    pod.led2.Set((color & B100) == B100, (color & B010) == B010, (color & B001) == B001);
+    hw.led[0].Set((color & B100) == B100, (color & B010) == B010, (color & B001) == B001);
+    hw.led[1].Set((color & B100) == B100, (color & B010) == B010, (color & B001) == B001);
 }
 
 void loop()
 {
-    pod.DebounceControls();
+    hw.DebounceControls();
 
-    if (pod.encoder.RisingEdge())
+    if (hw.encoder.RisingEdge())
     {
         color = 0;
     }
 
-    color += pod.encoder.Increment();
+    color += hw.encoder.Increment();
     color = (color % 8 + 8) % 8;
 
     SetColor();

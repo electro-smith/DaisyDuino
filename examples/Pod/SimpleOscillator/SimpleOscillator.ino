@@ -2,7 +2,7 @@
 
 #define NUM_WAVEFORMS 4
 
-DaisyPod   hw;
+DaisyHardware   hw;
 Oscillator osc;
 
 uint8_t waveforms[NUM_WAVEFORMS] = {
@@ -24,9 +24,9 @@ static void AudioCallback(float **in, float **out, size_t size)
     waveform = (waveform % NUM_WAVEFORMS + NUM_WAVEFORMS ) % NUM_WAVEFORMS;
     osc.SetWaveform(waveforms[waveform]);
 
-    if(hw.button2.RisingEdge())
+    if(hw.buttons[1].RisingEdge())
         octave++;
-    if(hw.button1.RisingEdge())
+    if(hw.buttons[0].RisingEdge())
         octave--;
     octave = DSY_CLAMP(octave, 0, 4);
 
@@ -57,11 +57,12 @@ void InitSynth(float samplerate)
 void setup()
 {
     float samplerate, callback_rate;
-    DAISY.init(DAISY_POD, AUDIO_SR_48K);
+    hw = DAISY.init(DAISY_POD, AUDIO_SR_48K);
     samplerate = DAISY.get_samplerate();
-    callback_rate = DAISY.get_callbackrate();
 
-    hw.Init(callback_rate);
+    hw.leds[0].Set(false,false,false);
+    hw.leds[1].Set(false,false,false);
+
     InitSynth(samplerate);
 
     DAISY.begin(AudioCallback);

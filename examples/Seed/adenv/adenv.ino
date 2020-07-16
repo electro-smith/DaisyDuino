@@ -2,6 +2,8 @@
 
 size_t num_channels;
 
+DaisyHardware hw;
+
 static Metro tick;
 static AdEnv adenv;
 static Oscillator osc;
@@ -29,7 +31,8 @@ void MyCallback(float **in, float **out, size_t size)
 void setup() {
     float sample_rate;
     // Initialize for Daisy pod at 48kHz
-    num_channels = DAISY.init(DAISY_PATCH, AUDIO_SR_48K);
+    hw = DAISY.init(DAISY_PATCH, AUDIO_SR_48K);
+    num_channels = hw.num_channels;
     sample_rate = DAISY.get_samplerate();
     
     adenv.Init(sample_rate);

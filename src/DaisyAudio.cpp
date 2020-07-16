@@ -29,7 +29,7 @@ void AudioClass::ConfigureSdram()
     //dsy_sdram_init(&sdram_handle);
 }
 
-size_t AudioClass::init(DaisyAudioDevice device, DaisyAudioSampleRate sr)
+DaisyHardware AudioClass::init(DaisyAudioDevice device, DaisyAudioSampleRate sr)
 {
     // Set Audio Device, num channels, etc.
     // Only difference is Daisy Patch has second AK4556 and 4 channels
@@ -72,8 +72,6 @@ size_t AudioClass::init(DaisyAudioDevice device, DaisyAudioSampleRate sr)
         hsai.a_direction[DSY_SAI_2] = DSY_AUDIO_TX;
         hsai.b_direction[DSY_SAI_2] = DSY_AUDIO_RX;
         hsai.sync_config[DSY_SAI_2] = DSY_AUDIO_SYNC_MASTER;
-
-
     }
 
 	// Other
@@ -99,7 +97,10 @@ size_t AudioClass::init(DaisyAudioDevice device, DaisyAudioSampleRate sr)
 
     ConfigureSdram();
     
-    return device < DAISY_PATCH ? 2 : 4;
+    DaisyHardware hw;
+    hw.Init(get_callbackrate(), device);
+
+    return hw;
 }
 
 void AudioClass::begin(DaisyAudioCallback cb)

@@ -155,35 +155,61 @@ class Encoder
 	int32_t inc_;
 };
 
-class DaisyPod
+class DaisyHardware
 {
 public:
-    Switch button1;
-    Switch button2;
-    
+    Switch buttons[2];
     Encoder encoder;
+    Led leds[2];
 
-    Led led1;
-    Led led2;
-    
-    void Init(float control_update_rate)
+    int num_channels;
+    int numSwitches, numLeds;
+
+    void Init(float control_update_rate, DaisyAudioDevice device)
     {
-        button1.Init(control_update_rate, true, PIN_POD_SWITCH_1);
-	button2.Init(control_update_rate, true, PIN_POD_SWITCH_2);
+	device_ = device;
+	num_channels = 2;
+	
+	switch (device){
+	    case DAISY_SEED:
+		break;
+		
+	    case DAISY_POD:
+	        buttons[0].Init(control_update_rate, true, PIN_POD_SWITCH_1);
+	        buttons[1].Init(control_update_rate, true, PIN_POD_SWITCH_2);
 
-	encoder.Init(control_update_rate, PIN_POD_ENC_A, PIN_POD_ENC_B, PIN_POD_ENC_CLICK);
+		encoder.Init(control_update_rate, PIN_POD_ENC_A, PIN_POD_ENC_B, PIN_POD_ENC_CLICK);
 
-	led1.Init(PIN_POD_LED_1_RED, PIN_POD_LED_1_GREEN, PIN_POD_LED_1_BLUE);
-	led2.Init(PIN_POD_LED_2_RED, PIN_POD_LED_2_GREEN, PIN_POD_LED_2_BLUE);
+		leds[0].Init(PIN_POD_LED_1_RED, PIN_POD_LED_1_GREEN, PIN_POD_LED_1_BLUE);    
+	        leds[1].Init(PIN_POD_LED_2_RED, PIN_POD_LED_2_GREEN, PIN_POD_LED_2_BLUE);
+
+		numSwitches = numLeds = 2;
+		break;
+
+	    case DAISY_PETAL:
+		break;
+	    case DAISY_FIELD:
+		break;
+	    case DAISY_PATCH:
+		num_channels = 4;
+		break;
+	    default:
+		break;
+	}
     }
 
     void DebounceControls()
     {
-        button1.Debounce();
-	button2.Debounce();
+	for (int i = 0; i < numSwitches; i++)
+	{
+	    buttons[i].Debounce();
+	}
+	
 	encoder.Debounce();
     }
-    
+
+private:
+    DaisyAudioDevice device_;
 };
 
 class AudioClass
@@ -191,8 +217,8 @@ class AudioClass
     public:
         AudioClass();
 
-        // Initializes the audio for the given platform, and returns the number of channels.
-        size_t init(DaisyAudioDevice device, DaisyAudioSampleRate sr);
+        // Initializes the audio for the given platform, and returns a DaisyHardware object
+        DaisyHardware init(DaisyAudioDevice device, DaisyAudioSampleRate sr);
         void begin(DaisyAudioCallback cb);
         void end();
         float get_samplerate();

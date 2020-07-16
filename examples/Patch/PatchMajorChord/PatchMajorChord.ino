@@ -2,7 +2,7 @@
 
 #define NUM_OUTS 4
 
-float mtof(float m) { return pow(2, (m -69.0) / 12.0) * 440.0; }
+DaisyHardware hw;
 
 class Sine
 {
@@ -39,7 +39,8 @@ void SineCallback(float **in, float **out, size_t size)
 
 void setup()
 {
-    num_channels = DAISY.init(DAISY_PATCH, AUDIO_SR_48K); 
+    hw = DAISY.init(DAISY_PATCH, AUDIO_SR_48K); 
+    num_channels = hw.num_channels;
     osc[0].Init();
     osc[1].Init();
     osc[2].Init();

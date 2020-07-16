@@ -1,5 +1,6 @@
 #include "DaisyAudio.h"
 
+DaisyHardware hw;
 
 size_t num_channels;
 
@@ -40,7 +41,8 @@ void setup() {
     float sample_rate;
 
     // Initialize for Daisy pod at 48kHz
-    num_channels = DAISY.init(DAISY_SEED, AUDIO_SR_48K);
+    hw = DAISY.init(DAISY_SEED, AUDIO_SR_48K);
+    num_channels = hw.num_channels;
     sample_rate = DAISY.get_samplerate();
 
 

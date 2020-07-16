@@ -1,6 +1,6 @@
 #include "DaisyAudio.h"
 
-DaisyPod   hw;
+DaisyHardware   hw;
 Oscillator osc;
 Svf        filt;
 ReverbSc   verb;
@@ -24,7 +24,7 @@ static void  audio(float **in, float **out, size_t size)
 {
     hw.DebounceControls();
 
-    if(hw.button1.RisingEdge())
+    if(hw.buttons[0].RisingEdge())
     {
         freq = mtof(48.0f + get_new_note());
         osc.SetFreq(freq);
@@ -77,12 +77,13 @@ void InitSynth(float samplerate)
 void setup()
 {
     float samplerate, callback_rate;
-    DAISY.init(DAISY_POD, AUDIO_SR_48K);
-    samplerate = DAISY.get_samplerate();
-    callback_rate = DAISY.get_callbackrate();
+    hw = DAISY.init(DAISY_POD, AUDIO_SR_48K);
 
+    hw.leds[0].Set(false,false,false);
+    hw.leds[1].Set(false,false,false);
+
+    samplerate = DAISY.get_samplerate();
     InitSynth(samplerate);
-    hw.Init(callback_rate);
 
     DAISY.begin(audio);
 }

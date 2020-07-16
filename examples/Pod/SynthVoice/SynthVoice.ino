@@ -1,6 +1,6 @@
 #include "DaisyAudio.h"
 
-DaisyPod pod;
+DaisyHardware pod;
 static Oscillator osc, lfo;
 static MoogLadder flt;
 static AdEnv ad;
@@ -43,7 +43,7 @@ void MyCallback(float **in, float **out, size_t size)
 void setup() {
     float sample_rate, callback_rate;
 
-    DAISY.init(DAISY_POD, AUDIO_SR_48K); 
+    pod = DAISY.init(DAISY_POD, AUDIO_SR_48K); 
     sample_rate = DAISY.get_samplerate();
     callback_rate = DAISY.get_callbackrate();
 
@@ -61,7 +61,6 @@ void setup() {
     selfCycle = false;
     
     //Init everything
-    pod.Init(callback_rate);
     osc.Init(sample_rate);
     flt.Init(sample_rate);
     ad.Init(sample_rate);
@@ -88,11 +87,6 @@ void setup() {
     ad.SetMax(1);
     ad.SetMin(0);
     ad.SetCurve(0.5);
-
-    //set parameter parameters
-//   cutoffParam.Init(pod.knob1, 100, 20000, cutoffParam.LOGARITHMIC);
-//    pitchParam.Init(pod.knob2, 50, 5000, pitchParam.LOGARITHMIC);
-//    lfoParam.Init(pod.knob1, 0.25, 1000, lfoParam.LOGARITHMIC);
 
     //start the audio callback
     DAISY.begin(MyCallback);
@@ -158,8 +152,8 @@ void UpdateKnobs()
 
 void UpdateLeds()
 {
-    pod.led1.Set(mode == 2, mode == 1, mode == 0);
-    pod.led2.Set(false, selfCycle, selfCycle);
+    pod.leds[0].Set(mode == 2, mode == 1, mode == 0);
+    pod.leds[1].Set(false, selfCycle, selfCycle);
 
     oldk1 = k1;
     oldk2 = k2;    
@@ -167,12 +161,12 @@ void UpdateLeds()
 
 void UpdateButtons()
 {
-    if (pod.button1.RisingEdge() || (selfCycle && !ad.IsRunning()))
+    if (pod.buttons[0].RisingEdge() || (selfCycle && !ad.IsRunning()))
     {
         ad.Trigger();
     }
 
-    if (pod.button2.RisingEdge())
+    if (pod.buttons[1].RisingEdge())
     {
         selfCycle = !selfCycle;
     }

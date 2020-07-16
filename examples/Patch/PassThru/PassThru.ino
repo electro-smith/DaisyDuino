@@ -2,6 +2,8 @@
 
 size_t num_channels;
 
+DaisyHardware hw;
+
 void MyCallback(float **in, float **out, size_t size)
 {
     float *in_left, *in_right, *out_left, *out_right;
@@ -20,7 +22,8 @@ void MyCallback(float **in, float **out, size_t size)
 void setup()
 {
     // Initialize for Daisy pod at 48kHz
-    num_channels = AUDIO.init(DAISY_PATCH, AUDIO_SR_48K);
+    hw = DAISY.init(DAISY_PATCH, AUDIO_SR_48K);
+    num_channels = hw.num_channels;
     pinMode(LED_BUILTIN, OUTPUT);
     DAISY.begin(MyCallback);
     // Debug Stuff for now
