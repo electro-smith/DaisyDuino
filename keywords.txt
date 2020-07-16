@@ -9,6 +9,11 @@
 DAISY	KEYWORD1
 DaisyAudioDevice	KEYWORD1
 DaisyAudioSampleRate	KEYWORD1
+DaisySeed		KEYWORD1
+DaisyPod		KEYWORD1
+DaisyPatch		KEYWORD1
+DaisyField		KEYWORD1
+DaisyPetal		KEYWORD1
 
 AdEnv	KEYWORD1
 Adsr	KEYWORD1
