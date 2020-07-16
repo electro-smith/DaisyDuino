@@ -1,4 +1,4 @@
-#include "DaisyAudio.h"
+#include "DaisyDuino.h"
 
 uint8_t color;
 
@@ -13,8 +13,8 @@ void setup()
 
 void SetColor()
 {
-    hw.led[0].Set((color & B100) == B100, (color & B010) == B010, (color & B001) == B001);
-    hw.led[1].Set((color & B100) == B100, (color & B010) == B010, (color & B001) == B001);
+    hw.leds[0].Set((color & B100) == B100, (color & B010) == B010, (color & B001) == B001);
+    hw.leds[1].Set((color & B100) == B100, (color & B010) == B010, (color & B001) == B001);
 }
 
 void loop()

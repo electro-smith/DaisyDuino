@@ -1,4 +1,4 @@
-#include "DaisyAudio.h"
+#include "DaisyDuino.h"
 
 #define NUM_OUTS 4
 

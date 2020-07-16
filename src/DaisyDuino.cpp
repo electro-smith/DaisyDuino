@@ -1,4 +1,4 @@
-#include "DaisyAudio.h"
+#include "DaisyDuino.h"
 
 #include "utility/hid_audio.h"
 #include "utility/sys_dma.h"
@@ -29,7 +29,7 @@ void AudioClass::ConfigureSdram()
     //dsy_sdram_init(&sdram_handle);
 }
 
-DaisyHardware AudioClass::init(DaisyAudioDevice device, DaisyAudioSampleRate sr)
+DaisyHardware AudioClass::init(DaisyDuinoDevice device, DaisyDuinoSampleRate sr)
 {
     // Set Audio Device, num channels, etc.
     // Only difference is Daisy Patch has second AK4556 and 4 channels
@@ -103,7 +103,7 @@ DaisyHardware AudioClass::init(DaisyAudioDevice device, DaisyAudioSampleRate sr)
     return hw;
 }
 
-void AudioClass::begin(DaisyAudioCallback cb)
+void AudioClass::begin(DaisyDuinoCallback cb)
 {
     if (_device == DAISY_PATCH)
     {

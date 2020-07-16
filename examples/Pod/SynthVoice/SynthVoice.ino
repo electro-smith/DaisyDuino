@@ -1,4 +1,4 @@
-#include "DaisyAudio.h"
+#include "DaisyDuino.h"
 
 DaisyHardware pod;
 static Oscillator osc, lfo;

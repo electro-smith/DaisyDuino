@@ -10,7 +10,7 @@
 #include "daisy_pod.h"
 #include "utility/dev_sdram.h"
 
-enum DaisyAudioDevice {
+enum DaisyDuinoDevice {
     DAISY_SEED,
     DAISY_POD,
     DAISY_PETAL,
@@ -19,13 +19,13 @@ enum DaisyAudioDevice {
     DAISY_LAST,
 };
 
-enum DaisyAudioSampleRate {
+enum DaisyDuinoSampleRate {
     AUDIO_SR_48K,
     AUDIO_SR_96K,
     AUDIO_SR_LAST,
 };
 
-typedef void (*DaisyAudioCallback)(float**, float**, size_t);
+typedef void (*DaisyDuinoCallback)(float**, float**, size_t);
 
 
 //TODO
@@ -165,7 +165,7 @@ public:
     int num_channels;
     int numSwitches, numLeds;
 
-    void Init(float control_update_rate, DaisyAudioDevice device)
+    void Init(float control_update_rate, DaisyDuinoDevice device)
     {
 	device_ = device;
 	num_channels = 2;
@@ -209,7 +209,7 @@ public:
     }
 
 private:
-    DaisyAudioDevice device_;
+    DaisyDuinoDevice device_;
 };
 
 class AudioClass
@@ -218,16 +218,16 @@ class AudioClass
         AudioClass();
 
         // Initializes the audio for the given platform, and returns a DaisyHardware object
-        DaisyHardware init(DaisyAudioDevice device, DaisyAudioSampleRate sr);
-        void begin(DaisyAudioCallback cb);
+        DaisyHardware init(DaisyDuinoDevice device, DaisyDuinoSampleRate sr);
+        void begin(DaisyDuinoCallback cb);
         void end();
         float get_samplerate();
  	inline float get_callbackrate() { return get_samplerate() / _blocksize; }
 	
     private:
         size_t _blocksize;
-        DaisyAudioSampleRate _samplerate;
-        DaisyAudioDevice _device;
+        DaisyDuinoSampleRate _samplerate;
+        DaisyDuinoDevice _device;
 
         dsy_sdram_handle sdram_handle;
 	void ConfigureSdram();
