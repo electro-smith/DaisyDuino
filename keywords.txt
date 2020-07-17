@@ -7,13 +7,9 @@
 ###################################
 
 DAISY	KEYWORD1
-DaisyAudioDevice	KEYWORD1
-DaisyAudioSampleRate	KEYWORD1
-DaisySeed		KEYWORD1
-DaisyPod		KEYWORD1
-DaisyPatch		KEYWORD1
-DaisyField		KEYWORD1
-DaisyPetal		KEYWORD1
+DaisyDuinoDevice	KEYWORD1
+DaisyDuinoSampleRate	KEYWORD1
+DaisyHardware		KEYWORD1
 
 AdEnv	KEYWORD1
 Adsr	KEYWORD1
@@ -51,6 +47,27 @@ end	KEYWORD2
 
 Init	KEYWORD2
 Process	KEYWORD2
+SetFreq	KEYWORD2
+SetAmp	KEYWORD2
+
+Debounce	KEYWORD2
+Increment	KEYWORD2
+RisingEdge	KEYWORD2
+FallingEdge	KEYWORD2
+Pressed		KEYWORD2
+TimeHeldMs	KEYWORD2
+Set		KEYWORD2
+DebounceControls	KEYWORD2
+
+mtof		KEYWORD2
+DSY_CLAMP		KEYWORD2
+fmax			KEYWORD2
+fmin			KEYWORD2
+fclamp			KEYWORD2
+fastpower		KEYWORD2
+fastroot		KEYWORD2
+fonepole		KEYWORD2
+soft_saturate		KEYWORD2
 
 ###################################
 # Constants (LITERAL1)
@@ -71,3 +88,6 @@ POD_NUM_LEDS		LITERAL1
 PIN_POD_ENC_A		LITERAL1
 PIN_POD_ENC_B		LITERAL1
 PIN_POD_ENC_CLICK	LITERAL1
+PI_F			LITERAL1
+TWOPI_F			LITERAL1
+HALFPI_F		LITERAL1
