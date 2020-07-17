@@ -6,6 +6,8 @@ size_t num_channels;
 
 static Oscillator osc;
 
+float pitchknob;
+
 void MyCallback(float **in, float **out, size_t size)
 {
     // Convert Pitchknob MIDI Note Number to frequency
@@ -24,7 +26,7 @@ void MyCallback(float **in, float **out, size_t size)
 void setup() {
     float sample_rate;
     // Initialize for Daisy pod at 48kHz
-    hw = DAISY.init(DAISY_PATCH, AUDIO_SR_48K);
+    hw = DAISY.init(DAISY_SEED, AUDIO_SR_48K);
     num_channels = hw.num_channels;
     sample_rate = DAISY.get_samplerate();
 
