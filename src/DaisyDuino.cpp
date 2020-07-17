@@ -1,4 +1,4 @@
-#include "DaisyAudio.h"
+#include "DaisyDuino.h"
 
 #include "utility/hid_audio.h"
 #include "utility/sys_dma.h"
@@ -12,15 +12,24 @@ dsy_sai_handle hsai;
 
 dsy_gpio ak4556_reset_pin;
 
-
-AudioClass AUDIO;
+AudioClass DAISY;
 
 AudioClass::AudioClass() : _blocksize{48}, _samplerate{AUDIO_SR_48K}
 {
     // Initializes the audio for the given platform, and returns the number of channels.
 }
 
-size_t AudioClass::init(DaisyAudioDevice device, DaisyAudioSampleRate sr)
+void AudioClass::ConfigureSdram()
+{
+    dsy_gpio_pin *pin_group;
+    sdram_handle.state             = DSY_SDRAM_STATE_ENABLE;
+    pin_group                      = sdram_handle.pin_config;
+    pin_group[DSY_SDRAM_PIN_SDNWE] = dsy_pin(DSY_GPIOH, 5);
+
+    //dsy_sdram_init(&sdram_handle);
+}
+
+DaisyHardware AudioClass::init(DaisyDuinoDevice device, DaisyDuinoSampleRate sr)
 {
     // Set Audio Device, num channels, etc.
     // Only difference is Daisy Patch has second AK4556 and 4 channels
@@ -63,8 +72,6 @@ size_t AudioClass::init(DaisyAudioDevice device, DaisyAudioSampleRate sr)
         hsai.a_direction[DSY_SAI_2] = DSY_AUDIO_TX;
         hsai.b_direction[DSY_SAI_2] = DSY_AUDIO_RX;
         hsai.sync_config[DSY_SAI_2] = DSY_AUDIO_SYNC_MASTER;
-
-
     }
 
 	// Other
@@ -87,10 +94,16 @@ size_t AudioClass::init(DaisyAudioDevice device, DaisyAudioSampleRate sr)
         delay(1);
         dsy_gpio_write(&ak4556_reset_pin, 1);
     }
-    return device < DAISY_PATCH ? 2 : 4;
+
+    ConfigureSdram();
+    
+    DaisyHardware hw;
+    hw.Init(get_callbackrate(), device);
+
+    return hw;
 }
 
-void AudioClass::begin(DaisyAudioCallback cb)
+void AudioClass::begin(DaisyDuinoCallback cb)
 {
     if (_device == DAISY_PATCH)
     {

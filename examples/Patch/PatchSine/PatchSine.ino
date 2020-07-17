@@ -1,4 +1,6 @@
-#include "DaisyAudio.h"
+#include "DaisyDuino.h"
+
+DaisyHardware hw;
 
 size_t num_channels;
 float phs_inc, phs, sinout;
@@ -25,8 +27,9 @@ void SineCallback(float **in, float **out, size_t size)
 
 void setup()
 {
-    num_channels = AUDIO.init(DAISY_PATCH, AUDIO_SR_48K); 
-    AUDIO.begin(SineCallback);
+    hw = DAISY.init(DAISY_PATCH, AUDIO_SR_48K); 
+    num_channels = hw.num_channels;
+    DAISY.begin(SineCallback);
 }
 
 void loop()
