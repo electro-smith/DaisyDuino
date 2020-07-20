@@ -1,3 +1,10 @@
+// Title: Button
+// Description: Turn an led on and off with a button
+// Hardware: DaisySeed
+// Author: Ben Sergentanis
+// Breadboard: https://raw.githubusercontent.com/electro-smith/DaisyExamples/master/seed/Button/resources/Button_bb.png
+// Schematic: https://raw.githubusercontent.com/electro-smith/DaisyExamples/master/seed/Button/resources/Button_schem.png
+
 #include "DaisyDuino.h"
 
 Switch button;
