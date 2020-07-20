@@ -1,3 +1,13 @@
+// Title: SimpleButton
+// Description: Turn leds on and off with buttons
+// Hardware: Daisy Pod
+// Author: Ben Sergentanis 
+// Controls: 
+// Button 1: Hold to turn led 1 On
+// Button 2: Latching led 2 On/Off
+// Diagram: https://raw.githubusercontent.com/electro-smith/DaisyExamples/master/pod/SimpleButton/resources/SimpleButton.png
+
+
 #include "DaisyDuino.h"
 
 DaisyHardware hw;

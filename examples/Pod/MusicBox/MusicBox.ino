@@ -1,3 +1,13 @@
+// Title: Music Box
+// Description: Lovely melodies from random notes
+// Hardware: Daisy Pod
+// Author: Stephen Hensley 
+// Controls: 
+// Button 1: Trigger next note
+// Knob 1: Decay time
+// Knob 2: Reverb amount
+// Diagram: https://raw.githubusercontent.com/electro-smith/DaisyExamples/master/pod/MusicBox/resources/MusicBox.png
+
 #include "DaisyDuino.h"
 
 DaisyHardware   hw;

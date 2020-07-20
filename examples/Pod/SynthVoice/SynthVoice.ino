@@ -1,3 +1,16 @@
+// Title: SynthVoice
+// Description: Synth voice with adenv, vibrato, pitch and filter
+// Hardware: Daisy Pod
+// Author: Ben Sergentanis 
+// Controls:
+// Encoder Press: Cycle waveforms
+// Encoder: Control mode: 1,2,3
+// Knob 1: Cutoff, Attack time, vibrato freq
+// Knob 2: Pitch, Decay time, vibrato depth
+// Button 1: Trigger envelope
+// Button 2: Cycle envelope
+// Diagram: https://raw.githubusercontent.com/electro-smith/DaisyExamples/master/pod/SynthVoice/resources/SynthVoice.png
+
 #include "DaisyDuino.h"
 
 DaisyHardware pod;
