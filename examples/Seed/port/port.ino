@@ -1,3 +1,8 @@
+// Title: port
+// Description: Slides between random notes
+// Hardware: Daisy Seed
+// Author: Stephen Hensley
+
 #include "DaisyDuino.h"
 
 DaisyHardware hw;

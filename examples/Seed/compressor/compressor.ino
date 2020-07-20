@@ -1,3 +1,8 @@
+// Title: compressor
+// Description: 
+// Hardware: Daisy Seed
+// Author: Stephen Hensley
+
 #include "DaisyDuino.h"
 
 DaisyHardware hw;

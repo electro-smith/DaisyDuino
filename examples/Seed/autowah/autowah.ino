@@ -1,3 +1,8 @@
+// Title: autowah
+// Description: Wahs automatically
+// Hardware: Daisy Seed
+// Author: Stephen Hensley
+
 #include "DaisyDuino.h"
 
 DaisyHardware hw;

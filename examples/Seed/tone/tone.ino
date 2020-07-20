@@ -1,3 +1,8 @@
+// Title: tone
+// Description: Sweeps gentle lowpass filter
+// Hardware: Daisy Seed
+// Author: Stephen Hensley
+
 #include "DaisyDuino.h"
 
 DaisyHardware hw;

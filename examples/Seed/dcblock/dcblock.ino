@@ -1,3 +1,8 @@
+// Title: dcblock
+// Description: Removes offset from signals
+// Hardware: Daisy Seed
+// Author: Stephen Hensley
+
 #include "DaisyDuino.h"
 
 DaisyHardware hw;

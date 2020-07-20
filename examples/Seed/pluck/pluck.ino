@@ -1,3 +1,8 @@
+// Title: pluck
+// Description: Plucked major chord
+// Hardware: Daisy Seed
+// Author: Stephen Hensley
+
 #include "DaisyDuino.h"
 
 DaisyHardware hw;

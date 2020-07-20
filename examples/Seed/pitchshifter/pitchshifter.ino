@@ -1,3 +1,8 @@
+// Title: pitchshifter
+// Description: Pitchshift input audio up an octave
+// Hardware: Daisy Seed
+// Author: Ben Sergentanis
+
 #include "DaisyDuino.h"
 
 DaisyHardware hw;

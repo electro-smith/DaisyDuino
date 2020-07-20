@@ -1,3 +1,8 @@
+// Title: metro
+// Description: Sets oscillator to random notes on a steady clock
+// Hardware: Daisy Seed
+// Author: Stephen Hensley
+
 #include "DaisyDuino.h"
 
 DaisyHardware hw;

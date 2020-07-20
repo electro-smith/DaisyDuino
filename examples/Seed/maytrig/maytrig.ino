@@ -1,3 +1,8 @@
+// Title: maytrig
+// Description: Probabilistically triggers an adenv
+// Hardware: Daisy Seed
+// Author: Ben Sergentanis
+
 #include "DaisyDuino.h"
 
 DaisyHardware hw;

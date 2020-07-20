@@ -1,3 +1,8 @@
+// Title: bypass
+// Description: Passes left and right in to left and right out
+// Hardware: Daisy Seed
+// Author: Stephen Hensley
+
 #include "DaisyDuino.h"
 
 DaisyHardware hw;

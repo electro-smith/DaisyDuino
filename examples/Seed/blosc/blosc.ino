@@ -1,3 +1,8 @@
+// Title: blosc
+// Description: Band limited oscillator. Avoids aliasing issues.
+// Hardware: Daisy Seed
+// Author: Ben Sergentanis
+
 #include "DaisyDuino.h"
 
 DaisyHardware hw;

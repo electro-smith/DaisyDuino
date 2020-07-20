@@ -1,3 +1,8 @@
+// Title: decimator
+// Description: Generates a pure sine wave, and then crushes 8 bits, and variably downsamples the tone.
+// Hardware: Daisy Seed
+// Author: Stephen Hensley
+
 #include "DaisyDuino.h"
 
 DaisyHardware hw;

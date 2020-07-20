@@ -1,3 +1,8 @@
+// Title: reverbsc
+// Description: Applies reverb to input signal
+// Hardware: Daisy Seed
+// Author: Stephen Hensley
+
 #include "DaisyDuino.h"
 
 DaisyHardware hw;

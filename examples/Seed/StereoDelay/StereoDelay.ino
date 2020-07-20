@@ -1,3 +1,8 @@
+// Title: StereoDelay
+// Description: Applies stereo delay to input signal
+// Hardware: Daisy Seed
+// Author: Stephen Hensley
+
 #include "DaisyDuino.h"
 
 DaisyHardware hw;
