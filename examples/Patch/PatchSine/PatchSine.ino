@@ -1,3 +1,8 @@
+// Title: PatchSine
+// Description: Generates a sine wave on all 4 outputs
+// Hardware: Daisy Patch
+// Author: Stephen Hensley
+
 #include "DaisyDuino.h"
 
 DaisyHardware hw;
