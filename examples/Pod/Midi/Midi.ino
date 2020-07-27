@@ -1,3 +1,7 @@
+// Requires the arduino MIDI Library by Francois Best and lathoub. FortySevenEffects on Github
+// This example simply triggers the envelope and changes the note when MIDI messages come in
+// It works with the TRS midi on the Daisy Pod, NOT the USB Midi
+
 #include <MIDI.h>
 #include "DaisyDuino.h"
 
@@ -12,14 +16,14 @@ static void AudioCallback(float **in, float **out, size_t size)
 {
     for (int i = 0; i < size; i++)
     {
-        out[0][i] = out[1][i] = osc.Process();
+        out[0][i] = out[1][i] = osc.Process() * env.Process();
     }
 }
 
 void handleNoteOn(byte inChannel, byte inNote, byte inVelocity)
 {
     env.Trigger();
-    osc.SetFreq(60 * ((float)inNote / 12.f));
+    osc.SetFreq(mtof(inNote));
 }
 
 void setup()
@@ -37,6 +41,9 @@ void setup()
     env.SetMax(1);
     env.SetMin(0);
     env.SetCurve(0);
+
+    hw.leds[0].Set(0,0,0);
+    hw.leds[1].Set(0,0,0);
 
     MIDI.setHandleNoteOn(handleNoteOn);
     MIDI.begin(MIDI_CHANNEL_OMNI);  // Listen to all incoming messages
