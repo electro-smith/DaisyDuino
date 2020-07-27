@@ -1,3 +1,8 @@
+// Title: atone
+// Description: Simple high pass filter controlled by lfo
+// Hardware: Daisy Seed
+// Author: Ben Sergentanis
+
 #include "DaisyDuino.h"
 
 DaisyHardware hw;

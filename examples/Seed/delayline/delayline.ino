@@ -1,3 +1,8 @@
+// Title: delayline
+// Description: Delays a pinged osc signal
+// Hardware: Daisy Seed
+// Author: Stephen Hensley
+
 #include "DaisyDuino.h"
 
 DaisyHardware hw;

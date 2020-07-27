@@ -1,3 +1,8 @@
+// Title: phasor
+// Description: Control osc pitch with ramp wave
+// Hardware: Daisy Seed
+// Author: Stephen Hensley
+
 #include "DaisyDuino.h"
 
 DaisyHardware hw;

@@ -1,3 +1,8 @@
+// Title: moogladder
+// Description: Sweeps the cutoff with an lfo
+// Hardware: Daisy Seed
+// Author: Ben Sergentanis
+
 #include "DaisyDuino.h"
 
 DaisyHardware hw;

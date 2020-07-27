@@ -1,3 +1,8 @@
+// Title: crossfade
+// Description: Fades between a saw and a sine oscillator
+// Hardware: Daisy Seed
+// Author: Stephen Hensley
+
 #include "DaisyDuino.h"
 
 DaisyHardware hw;

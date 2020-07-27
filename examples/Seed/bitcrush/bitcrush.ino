@@ -1,3 +1,8 @@
+// Title: bitcrush
+// Description: Steps through different bitdepth and downsample settings
+// Hardware: Daisy Seed
+// Author: Ben Sergentanis
+
 #include "DaisyDuino.h"
 
 DaisyHardware hw;

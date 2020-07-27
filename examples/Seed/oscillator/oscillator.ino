@@ -1,3 +1,10 @@
+// Title: oscillator
+// Description: Control a sine wave freq with a knob
+// Hardware: Daisy Seed
+// Author: Ben Sergentanis
+// Breadboard https://raw.githubusercontent.com/electro-smith/DaisyExamples/master/seed/Osc/resources/Osc_bb.png
+// Schematic: https://raw.githubusercontent.com/electro-smith/DaisyExamples/master/seed/Osc/resources/Osc_schem.png
+
 #include "DaisyDuino.h"
 
 DaisyHardware hw;

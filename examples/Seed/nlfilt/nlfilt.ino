@@ -1,3 +1,8 @@
+// Title: nlfilt
+// Description: Random osc notes through nonlinear filter
+// Hardware: Daisy Seed
+// Author: Stephen Hensley
+
 #include "DaisyDuino.h"
 
 DaisyHardware hw;

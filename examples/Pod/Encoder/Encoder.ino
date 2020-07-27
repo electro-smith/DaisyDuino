@@ -1,3 +1,12 @@
+// Title: Encoder
+// Description: Sets leds based on encoder
+// Hardware: Daisy Pod
+// Author: Ben Sergentanis 
+// Controls: 
+// Encoder Turn: Change led color 
+// Encoder Press: Set leds off
+// Diagram: https://raw.githubusercontent.com/electro-smith/DaisyExamples/master/pod/Encoder/resources/Encoder.png
+
 #include "DaisyDuino.h"
 
 uint8_t color;

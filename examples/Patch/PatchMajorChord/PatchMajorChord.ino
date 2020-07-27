@@ -1,3 +1,11 @@
+// Title: PatchMajorChord
+// Description: Sine wave major chord generator
+// Hardware: Daisy Patch
+// Controls:
+// Ctrl 1: Pitch
+// Out 1-4: Root, M3, P5, M7
+// Author: Stephen Hensley
+
 #include "DaisyDuino.h"
 
 #define NUM_OUTS 4

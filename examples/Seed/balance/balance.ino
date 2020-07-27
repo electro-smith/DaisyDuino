@@ -1,3 +1,8 @@
+// Title: balance
+// Description: Sets one signal to the level of another
+// Hardware: Daisy Seed
+// Author: Ben Sergentanis
+
 #include "DaisyDuino.h"
 
 DaisyHardware hw;

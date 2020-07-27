@@ -1,3 +1,8 @@
+// Title: adsr
+// Description: Triangle wave controlled by adsr envelope
+// Hardware: Daisy Seed
+// Author: Ben Sergentanis
+
 #include "DaisyDuino.h"
 
 DaisyHardware hw;

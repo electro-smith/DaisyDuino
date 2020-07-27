@@ -1,3 +1,8 @@
+// Title: svf
+// Description: Lowpass out left, highpass out right
+// Hardware: Daisy Seed
+// Author: Stephen Hensley
+
 #include "DaisyDuino.h"
 
 DaisyHardware hw;

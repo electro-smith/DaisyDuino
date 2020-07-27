@@ -1,3 +1,8 @@
+// Title: whitenoise
+// Description: Generates whitenoise
+// Hardware: Daisy Seed
+// Author: Stephen Hensley
+
 #include "DaisyDuino.h"
 
 DaisyHardware hw;

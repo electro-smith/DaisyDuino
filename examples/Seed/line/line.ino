@@ -1,3 +1,8 @@
+// Title: line
+// Description: Generates a straight line between 2 points, then uses that to set an osc pitch
+// Hardware: Daisy Seed
+// Author: Stephen Hensley
+
 #include "DaisyDuino.h"
 
 DaisyHardware hw;

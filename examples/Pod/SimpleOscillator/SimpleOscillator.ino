@@ -1,3 +1,14 @@
+// Title: SimpleOscillator
+// Description: Oscillator with pitch and waveforms
+// Hardware: Daisy Pod
+// Author: Stephen Hensley 
+// Controls:
+// Knob 1: Oscillator pitch
+// Encoder: Waveform select. Sine, tri, saw, square
+// Button 1: Octave down
+// Button 2: Octave up
+// Diagram: https://raw.githubusercontent.com/electro-smith/DaisyExamples/master/pod/SimpleOscillator/resources/SimpleOscillator.png
+
 #include "DaisyDuino.h"
 
 #define NUM_WAVEFORMS 4

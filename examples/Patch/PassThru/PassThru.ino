@@ -1,3 +1,8 @@
+// Title: PassThru
+// Description: Passes in 1 to out 1 and in 2 to out 2
+// Hardware: Daisy Patch
+// Author: Stephen Hensley
+
 #include "DaisyDuino.h"
 
 size_t num_channels;
