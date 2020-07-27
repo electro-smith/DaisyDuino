@@ -8,6 +8,7 @@
 #include "Arduino.h"
 #include "DaisyDSP.h"
 #include "daisy_pod.h"
+#include "daisy_patch.h"
 #include "utility/dev_sdram.h"
 
 enum DaisyDuinoDevice {
@@ -191,6 +192,7 @@ public:
 	    case DAISY_FIELD:
 		break;
 	    case DAISY_PATCH:
+		encoder.Init(control_update_rate, PIN_PATCH_ENC_A, PIN_PATCH_ENC_B, PIN_PATCH_ENC_CLICK, INPUT_PULLUP, INPUT_PULLUP, INPUT_PULLUP);
 		num_channels = 4;
 		break;
 	    default:
