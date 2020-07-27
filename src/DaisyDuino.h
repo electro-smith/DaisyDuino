@@ -62,14 +62,14 @@ class Led
 class Switch
 {
     public:
-        void Init(float update_rate, bool invert, uint8_t pin)
+        void Init(float update_rate, bool invert, uint8_t pin, uint8_t mode)
 	{
 	    flip_ = invert;
 	    time_per_update_ = 1.f / update_rate;
 	    state_ = 0;
 	    time_held_ = 0.f;
 	    pin_ = pin;
-	    pinMode(pin, INPUT_PULLUP);
+	    pinMode(pin, mode);
 	}
 
 	//debounces and processes input
@@ -103,7 +103,7 @@ class Encoder
 {
     public:
 
-    void Init(float update_rate, uint8_t pinA, uint8_t pinB, uint8_t pinClick)
+    void Init(float update_rate, uint8_t pinA, uint8_t pinB, uint8_t pinClick, uint8_t modeA, uint8_t modeB, uint8_t modeC)
     {
 	inc_ = 0;
 	a_ = b_ = 0xff;
@@ -111,10 +111,10 @@ class Encoder
 	pinA_ = pinA;
 	pinB_ = pinB;
 
-	pinMode(pinA, INPUT_PULLUP);
-	pinMode(pinB, INPUT_PULLUP);
+	pinMode(pinA, modeA);
+	pinMode(pinB, modeB);
 	
-	encSwitch.Init(update_rate, true, pinClick);
+	encSwitch.Init(update_rate, true, pinClick, modeC);
     }
     
     void Debounce()
@@ -175,10 +175,10 @@ public:
 		break;
 		
 	    case DAISY_POD:
-	        buttons[0].Init(control_update_rate, true, PIN_POD_SWITCH_1);
-	        buttons[1].Init(control_update_rate, true, PIN_POD_SWITCH_2);
+	        buttons[0].Init(control_update_rate, true, PIN_POD_SWITCH_1, INPUT_PULLUP);
+	        buttons[1].Init(control_update_rate, true, PIN_POD_SWITCH_2, INPUT_PULLUP);
 
-		encoder.Init(control_update_rate, PIN_POD_ENC_A, PIN_POD_ENC_B, PIN_POD_ENC_CLICK);
+		encoder.Init(control_update_rate, PIN_POD_ENC_A, PIN_POD_ENC_B, PIN_POD_ENC_CLICK, INPUT_PULLUP, INPUT_PULLUP, INPUT_PULLUP);
 
 		leds[0].Init(PIN_POD_LED_1_RED, PIN_POD_LED_1_GREEN, PIN_POD_LED_1_BLUE);    
 	        leds[1].Init(PIN_POD_LED_2_RED, PIN_POD_LED_2_GREEN, PIN_POD_LED_2_BLUE);
