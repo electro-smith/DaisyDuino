@@ -12,23 +12,10 @@ void setup()
 {    
     led_pin = 28;
     knob_pin = 21;
-
-    //We'll plug our led into pin 28.
-    pinMode(led_pin, OUTPUT);
 }
 
-void loop(){
-    // The led brightness will be a value 0 - 1023
-    unsigned int brightness = analogRead(knob_pin);
-
-    //simple PWM led brightness
-    for (int i = 0; i < brightness; i++)
-    {
-        digitalWrite(led_pin, HIGH);
-    }
-    
-    for (int i = 0; i < 1023 - brightness; i++)
-    {
-        digitalWrite(led_pin, LOW);
-    }
+void loop()
+{
+    //we map the 10 bit input value to a 8 bit PWM output
+    analogWrite(led_pin, analogRead(knob_pin) / 4);
 }
