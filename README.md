@@ -17,6 +17,10 @@ Follow the instructions in our [Getting Started Wiki page.](https://github.com/e
 * [Arduino](https://github.com/arduino/Arduino) - Open source physical computing platform
 * [stm32duino](https://github.com/stm32duino/Arduino_Core_STM32) - Arduino Support for STM32 MCUs
 
+### Additional Dependancies
+
+MIDI examples require the [FortySevenEffects MIDI Library](https://github.com/FortySevenEffects/arduino_midi_library). This library can be installed with the Arduino Library Manager.
+
 ## Contributing
 
 Please read our [Contribution Guidelines](https://github.com/electro-smith/DaisyWiki/wiki/6.-Contribution-Guidelines) for details on how to get involved!
