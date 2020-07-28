@@ -1,17 +1,16 @@
-#include <U8g2lib.h>
+// Title: Oled
+// Description: Bounces a character around the screen.
+// Hardware: Daisy Patch
+// Author: Ben Sergentanis
+// Diagram: https://raw.githubusercontent.com/electro-smith/DaisyExamples/master/patch/Oled/resources/Oled.png
 
-#ifdef U8X8_HAVE_HW_SPI
-#include <SPI.h>
-#endif
-#ifdef U8X8_HAVE_HW_I2C
-#include <Wire.h>
-#endif
+#include <U8g2lib.h>
 #include "DaisyDuino.h"
 
 DaisyHardware hw;
 
 //the magic incantation
-U8G2_SSD1309_128X64_NONAME2_F_4W_SW_SPI u8g2(U8G2_R0, /* clock=*/ 8, /* data=*/ 10, /* cs=*/ 7, /* dc=*/ 9, /* reset=*/ 30);
+U8G2_SSD1309_128X64_NONAME2_F_4W_SW_SPI oled(U8G2_R0, /* clock=*/ 8, /* data=*/ 10, /* cs=*/ 7, /* dc=*/ 9, /* reset=*/ 30);
 
 int x, y;
 int xvel, yvel;
@@ -25,18 +24,18 @@ void setup()
     xvel = yvel = -1;
     pos = 0;
 
-    u8g2.setFont(u8g2_font_inb16_mf);
-    u8g2.setFontDirection(0);
-    u8g2.setFontMode(1);
-    u8g2.begin();
+    oled.setFont(u8g2_font_inb16_mf);
+    oled.setFontDirection(0);
+    oled.setFontMode(1);
+    oled.begin();
 }
 
 void loop()
 {
-    u8g2.clearBuffer();
+    oled.clearBuffer();
 
     char c[] = {str[pos]};
-    u8g2.drawStr(x, y, c);
+    oled.drawStr(x, y, c);
     x += xvel;
     y += yvel;
 
@@ -52,18 +51,6 @@ void loop()
         pos %= 10;
     }
 
-    u8g2.sendBuffer();
+    oled.sendBuffer();
     delay(5);
-} 
-
-
-
-// Title: Oled
-// Description: 
-// Hardware: Daisy Patch
-// Author: Ben Sergentanis
-// Controls: 
-// Button 1: Trigger next note
-// Knob 1: Decay time
-// Knob 2: Reverb amount
-// Diagram: https://raw.githubusercontent.com/electro-smith/DaisyExamples/master/pod/MusicBox/resources/MusicBox.png
+}
