@@ -1,4 +1,4 @@
-![](https://github.com/andrewikenberry/daisyduino/blob/master/resources/assets/banner.png)
+![](https://github.com/electro-smith/daisyduino/blob/master/resources/assets/banner.png)
 
 ## Arduino Support for the [Daisy Audio Platform](https://www.electro-smith.com/daisy) 
 
