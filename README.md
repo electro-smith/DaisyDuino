@@ -1,12 +1,12 @@
-# DaisyDuino
+![](https://github.com/andrewikenberry/daisyduino/blob/master/resources/assets/banner.png)
 
-Adds Arduino support to the [Daisy Audio Platform.](https://www.electro-smith.com/daisy) This environment consists of an audio config library, DSP library, and board support using stm32duino.  
+## Arduino Support for the [Daisy Audio Platform](https://www.electro-smith.com/daisy) 
 
 ### Features
-
-* Circular DMA transfers and reception with user callback
-* Configuration of samplerate
-* Flexible callback interface
+- DSP library full of synthesis blocks, effects processors, and more
+- Configurable audio callback
+- Board support and helper functions for Daisy hardware platforms
+- Example programs
 
 ## Getting Started
 
@@ -16,10 +16,11 @@ Follow the instructions in our [Getting Started Wiki page.](https://github.com/e
 
 * [Arduino](https://github.com/arduino/Arduino) - Open source physical computing platform
 * [stm32duino](https://github.com/stm32duino/Arduino_Core_STM32) - Arduino Support for STM32 MCUs
+* [DaisySP](https://github.com/electro-smith/DaisySP) - Embedded DSP library for the Daisy ecosystem and beyond
 
-### Additional Dependancies
+### Additional Dependencies
 
-MIDI examples require the [FortySevenEffects MIDI Library](https://github.com/FortySevenEffects/arduino_midi_library). This library can be installed with the Arduino Library Manager.
+MIDI examples require the [FortySevenEffects MIDI Library](https://github.com/FortySevenEffects/arduino_midi_library). This library can be installed within the Arduino Library Manager.
 
 ## Contributing
 
