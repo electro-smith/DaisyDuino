@@ -2,7 +2,6 @@
 // Description: Bounces a character around the screen.
 // Hardware: Daisy Patch
 // Author: Ben Sergentanis
-// Diagram: https://raw.githubusercontent.com/electro-smith/DaisyExamples/master/patch/Oled/resources/Oled.png
 
 #include <U8g2lib.h>
 #include "DaisyDuino.h"
