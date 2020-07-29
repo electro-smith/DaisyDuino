@@ -1,3 +1,9 @@
+// Title: Encoder
+// Description: Demonstrates usage of encoder and OLED
+// Hardware: Daisy Patch
+// Author: Ben Sergentanis
+
+
 //  The paged mode contains all of the same features as the full buffer mode, but runs much faster.
 //  It is still a *bit* slow, and is probably not recommended over the leaner 8x8 mode
 //  8x8 mode is much less feature rich, but it's blazing fast, and is therefore recommended for use
