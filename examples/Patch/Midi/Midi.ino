@@ -27,7 +27,7 @@ static void AudioCallback(float **in, float **out, size_t size)
         // Assign Synthesized Waveform to all four outputs.
         for (size_t chn = 0; chn < num_channels; chn++)
         {
-            out[0][i] = out[1][i] = osc.Process() * env.Process();
+            out[0][i] = out[1][i] = out[2][i] = out[3][i] = osc.Process() * env.Process();
         }
     }
 }
