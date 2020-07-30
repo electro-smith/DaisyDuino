@@ -1,14 +1,8 @@
 // Title: Midi
-// Description: Vco with amplitude, waveforms, fine tune, and pitch
+// Description: TRS Midi Input. Triggers envelope and changes pitch on incoming MIDI notes
 // Hardware: Daisy Patch
 // Author: Ben Sergentanis
-// Diagram: https://raw.githubusercontent.com/electro-smith/DaisyExamples/master/patch/Vco/resources/Vco.png
-//
-// Controls
-// Ctrl1: Pitch
-// Ctrl2: Fine Tune
-// Ctrl3: Waveform
-// Ctrl4: Amplitude
+// Diagram: https://raw.githubusercontent.com/electro-smith/DaisyExamples/master/patch/Midi/resources/Midi.png
 
 
 #include <U8g2lib.h>
