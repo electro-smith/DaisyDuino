@@ -8,6 +8,7 @@
 #include "Arduino.h"
 #include "DaisyDSP.h"
 #include "daisy_pod.h"
+#include "daisy_patch.h"
 #include "utility/dev_sdram.h"
 
 enum DaisyDuinoDevice {
@@ -155,13 +156,44 @@ class Encoder
 	int32_t inc_;
 };
 
+class GateIn
+{
+    public:
+    void Init(uint8_t pin, uint8_t mode, bool invert)
+    {
+	pinMode(pin, mode);
+	pin_ = pin;
+	invert_ = invert;
+
+	prev_state_ = state_ = false;
+    }
+
+    bool State()
+    {
+	return invert_ ? !digitalRead(pin_) : digitalRead(pin_);
+    }
+    
+    bool Trig()
+    {
+	prev_state_ = state_;
+	bool state_ = State();
+	return state_ && !prev_state_;
+    }
+
+    private:
+        float update_rate_;
+	bool invert_, state_, prev_state_;
+	uint8_t pin_;
+};
+
 class DaisyHardware
 {
 public:
     Switch buttons[2];
     Encoder encoder;
     Led leds[2];
-
+    GateIn gateIns[2];
+    
     int num_channels;
     int numSwitches, numLeds;
 
@@ -191,6 +223,10 @@ public:
 	    case DAISY_FIELD:
 		break;
 	    case DAISY_PATCH:
+		encoder.Init(control_update_rate, PIN_PATCH_ENC_A, PIN_PATCH_ENC_B, PIN_PATCH_ENC_CLICK, INPUT_PULLUP, INPUT_PULLUP, INPUT_PULLUP);
+		gateIns[0].Init(20, INPUT, true);
+		gateIns[1].Init(19, INPUT, true);
+		numSwitches = numLeds = 0;
 		num_channels = 4;
 		break;
 	    default:
