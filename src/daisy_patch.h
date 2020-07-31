@@ -16,3 +16,6 @@
 #define PIN_PATCH_CTRL_2 16
 #define PIN_PATCH_CTRL_3 21
 #define PIN_PATCH_CTRL_4 18
+
+#define PIN_PATCH_CV_OUT_1 23
+#define PIN_PATCH_CV_OUT_2 22
