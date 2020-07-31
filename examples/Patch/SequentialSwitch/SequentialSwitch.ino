@@ -2,6 +2,7 @@
 // Description: Switch between inputs on triggers
 // Hardware: Daisy Patch
 // Author: Ben Sergentanis
+// https://raw.githubusercontent.com/electro-smith/DaisyExamples/master/patch/SequentialSwitch/resources/SequentialSwitch.png
 // Controls
 //
 // Gate In 1: Next In/Out

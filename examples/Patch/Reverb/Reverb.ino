@@ -2,7 +2,7 @@
 // Description: Stereo Reverb
 // Hardware: Daisy Patch
 // Author: Stephen Hensley
-// Diagram: https://raw.githubusercontent.com/electro-smith/DaisyExamples/master/patch/PolyOsc/resources/PolyOsc.png
+// Diagram: https://raw.githubusercontent.com/electro-smith/DaisyExamples/master/patch/verb/resources/verb.png
 // Controls
 // Ctrl 1: Dry/Wet
 // Ctrl 2: Send Amount

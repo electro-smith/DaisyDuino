@@ -2,6 +2,7 @@
 // Description: Whitenoise with resonant Highpass and Lowpass filters
 // Hardware: Daisy Patch
 // Author: Ben Sergentanis
+https://raw.githubusercontent.com/electro-smith/DaisyExamples/master/patch/Noise/resources/Noise.png
 // Controls
 // Ctrl 1: Lowpass Cutoff
 // Ctrl 2: Lowpass Resonance
