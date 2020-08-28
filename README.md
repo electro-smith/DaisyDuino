@@ -12,6 +12,16 @@
 
 Follow the instructions in our [Getting Started Wiki page.](https://github.com/electro-smith/DaisyWiki/wiki/1a.-Getting-Started-(Arduino-Edition)) 
 
+## Support
+
+Here are some ways to get support and connect with other users and developers:
+
+- Join the [Daisy Forum](https://forum.electro-smith.com/)
+
+- Make a [GitHub Issue](https://github.com/electro-smith/DaisyDuino/issues) 
+
+- Join the [Daisy Slack Workspace](https://join.slack.com/t/es-daisy/shared_invite/zt-f9cfm1g4-DgdCok1h1Rj4fpX90~IOww)
+
 ## Built With
 
 * [Arduino](https://github.com/arduino/Arduino) - Open source physical computing platform
