@@ -8,6 +8,7 @@
 #include "Arduino.h"
 #include "DaisyDSP.h"
 #include "daisy_pod.h"
+#include "daisy_patch.h"
 #include "utility/dev_sdram.h"
 
 enum DaisyDuinoDevice {
@@ -155,20 +156,49 @@ class Encoder
 	int32_t inc_;
 };
 
+class GateIn
+{
+    public:
+    void Init(uint8_t pin, uint8_t mode, bool invert)
+    {
+		sw.Init(1, invert, pin, mode);
+    }
+
+    bool State()
+    {
+		return sw.Pressed();
+    }
+    
+    bool Trig()
+    {
+		return sw.RisingEdge();
+	}
+	
+	void Debounce()
+	{
+		sw.Debounce();
+	}
+
+    private:
+        Switch sw;
+};
+
 class DaisyHardware
 {
 public:
     Switch buttons[2];
     Encoder encoder;
     Led leds[2];
-
+    GateIn gateIns[2];
+    
     int num_channels;
-    int numSwitches, numLeds;
+    int numSwitches, numLeds, numGates;
 
     void Init(float control_update_rate, DaisyDuinoDevice device)
     {
 	device_ = device;
 	num_channels = 2;
+	numGates = 0;
 	
 	switch (device){
 	    case DAISY_SEED:
@@ -177,21 +207,28 @@ public:
 	    case DAISY_POD:
 	        buttons[0].Init(control_update_rate, true, PIN_POD_SWITCH_1, INPUT_PULLUP);
 	        buttons[1].Init(control_update_rate, true, PIN_POD_SWITCH_2, INPUT_PULLUP);
+				
+			encoder.Init(control_update_rate, PIN_POD_ENC_A, PIN_POD_ENC_B, PIN_POD_ENC_CLICK, INPUT_PULLUP, INPUT_PULLUP, INPUT_PULLUP);
 
-		encoder.Init(control_update_rate, PIN_POD_ENC_A, PIN_POD_ENC_B, PIN_POD_ENC_CLICK, INPUT_PULLUP, INPUT_PULLUP, INPUT_PULLUP);
-
-		leds[0].Init(PIN_POD_LED_1_RED, PIN_POD_LED_1_GREEN, PIN_POD_LED_1_BLUE);    
+			leds[0].Init(PIN_POD_LED_1_RED, PIN_POD_LED_1_GREEN, PIN_POD_LED_1_BLUE);    
 	        leds[1].Init(PIN_POD_LED_2_RED, PIN_POD_LED_2_GREEN, PIN_POD_LED_2_BLUE);
 
-		numSwitches = numLeds = 2;
-		break;
+			numSwitches = numLeds = 2;
+			break;
 
 	    case DAISY_PETAL:
 		break;
-	    case DAISY_FIELD:
+	    
+		case DAISY_FIELD:
 		break;
-	    case DAISY_PATCH:
-		num_channels = 4;
+	    
+		case DAISY_PATCH:
+			encoder.Init(control_update_rate, PIN_PATCH_ENC_A, PIN_PATCH_ENC_B, PIN_PATCH_ENC_CLICK, INPUT_PULLUP, INPUT_PULLUP, INPUT_PULLUP);
+			gateIns[0].Init(20, INPUT, true);
+			gateIns[1].Init(19, INPUT, true);
+			numSwitches = numLeds = 0;
+			numGates = 2;
+			num_channels = 4;
 		break;
 	    default:
 		break;
@@ -205,8 +242,12 @@ public:
 	    buttons[i].Debounce();
 	}
 	
-	encoder.Debounce();
-    }
+		encoder.Debounce();
+		for (int i = 0; i < numGates; i++)
+		{
+			gateIns[i].Debounce();
+		}
+	}
 
 private:
     DaisyDuinoDevice device_;
