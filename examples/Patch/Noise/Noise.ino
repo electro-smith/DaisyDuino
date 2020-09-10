@@ -40,7 +40,7 @@ struct filter{
     void UpdateControls()
     {
         filt.SetFreq(((1023.f - analogRead(cutKnob_)) / 1023.f) * 12000 + 20);
-        filt.SetRes((1023.f - analogRead(resKnob_)) / 1024.f);
+        filt.SetRes(0.3 + ((1023.f - analogRead(resKnob_)) / 1023.f) * 0.7);
     }
 
     float Process(float in)

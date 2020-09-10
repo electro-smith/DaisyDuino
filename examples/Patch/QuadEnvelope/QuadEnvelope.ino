@@ -88,7 +88,7 @@ void AudioCallback(float **in, float **out, size_t size)
         {
             //The envelopes effect the outputs in pairs
             out[chn * 2][i] = in[chn * 2][i] * envelopes[chn].envSig;
-            out[chn * 2 + 1][i] = in[chn * 2 + 1][i] * envelopes[chn].envSig;     
+            out[chn * 2 + 1][i] = in[chn * 2 + 1][i] * envelopes[chn * 2 + 1].envSig;     
         }
     }
 }

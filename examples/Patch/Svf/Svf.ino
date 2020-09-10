@@ -23,6 +23,12 @@ float GetCtrl(uint8_t pin)
     return (1023.f - analogRead(pin)) / 1023.f;
 }
 
+// Floating point implementation of Arduino map function
+static float fmap(float x, float in_min, float in_max, float out_min, float out_max)
+{
+  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
 static void AudioCallback(float **in, float **out, size_t size)
 {
     for (size_t i = 0; i < size; i++)
@@ -61,8 +67,8 @@ void loop()
 {
     //get new control values
     float cutoff = GetCtrl(PIN_PATCH_CTRL_1) * 20000.f;
-    float res = map(GetCtrl(PIN_PATCH_CTRL_2), 0, 1, .3, .99);
-    float drive = map(GetCtrl(PIN_PATCH_CTRL_3), 0, 1, .3, 1);
+    float res = fmap(GetCtrl(PIN_PATCH_CTRL_2), 0, 1, .3, .99);
+    float drive = fmap(GetCtrl(PIN_PATCH_CTRL_3), 0, 1, .3, 1);
 
     //Set filter to the values we got
     svf.SetFreq(cutoff);

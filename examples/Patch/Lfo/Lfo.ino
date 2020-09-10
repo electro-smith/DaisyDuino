@@ -67,8 +67,8 @@ static void AudioCallback(float **in, float **out, size_t size)
 {
     for (size_t i = 0; i < size; i++)
     {
-        lfos[0].Process(PIN_PATCH_CV_OUT_1);
-        lfos[1].Process(PIN_PATCH_CV_OUT_2);
+        lfos[0].Process(PIN_PATCH_CV_1);
+        lfos[1].Process(PIN_PATCH_CV_2);
     }
 }
 

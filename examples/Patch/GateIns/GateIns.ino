@@ -26,7 +26,7 @@ void setup() {
 }
 
 void loop() {
-
+    hw.DebounceControls();
     bool newState = hw.gateIns[0].State();
     if (newState != state)
     {

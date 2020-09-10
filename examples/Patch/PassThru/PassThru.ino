@@ -11,16 +11,12 @@ DaisyHardware hw;
 
 void MyCallback(float **in, float **out, size_t size)
 {
-    float *in_left, *in_right, *out_left, *out_right;
-    in_left = in[0];
-    in_right = in[1];
-    out_left = out[0];
-    out_right = out[1];
-
     for (size_t i = 0; i < size; i++)
     {
-        out_left[i] = in_left[i];
-        out_right[i] = in_right[i];
+        for (size_t chn = 0; chn < num_channels; chn++)
+        {
+            out[chn][i] = in[chn][i];
+        }
     }
 }
 
