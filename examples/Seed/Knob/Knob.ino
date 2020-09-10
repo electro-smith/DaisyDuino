@@ -12,6 +12,8 @@ void setup()
 {    
     led_pin = 28;
     knob_pin = 21;
+    pinMode(led_pin, OUTPUT);
+    pinMode(knob_pin, INPUT);
 }
 
 void loop()
