@@ -3,6 +3,7 @@
 #include "utility/hid_audio.h"
 #include "utility/sys_dma.h"
 #include "utility/per_gpio.h"
+#include "utility/sys_mpu.h"
 
 #define PIN_AK4556_RESET 14
 #define PORT_AK4556_RESET DSY_GPIOB
@@ -26,7 +27,7 @@ void AudioClass::ConfigureSdram()
     pin_group                      = sdram_handle.pin_config;
     pin_group[DSY_SDRAM_PIN_SDNWE] = dsy_pin(DSY_GPIOH, 5);
 
-    //dsy_sdram_init(&sdram_handle);
+    dsy_sdram_init(&sdram_handle);
 }
 
 DaisyHardware AudioClass::init(DaisyDuinoDevice device, DaisyDuinoSampleRate sr)
@@ -34,13 +35,15 @@ DaisyHardware AudioClass::init(DaisyDuinoDevice device, DaisyDuinoSampleRate sr)
     // Set Audio Device, num channels, etc.
     // Only difference is Daisy Patch has second AK4556 and 4 channels
     HAL_Init();
-    SCB_DisableDCache();
+    SCB_DisableDCache(); // Still needs to wait for linker..
     _samplerate = sr;
     _device = device;
     _blocksize = 48; // default
     haudio.sai = &hsai;
     haudio.block_size = _blocksize;
     dsy_dma_init(); // may interfere with core STM32 Arduino stuff...
+    dsy_mpu_init();
+    
     // Set up audio
     // SAI1
     dsy_gpio_pin *pin_group;
