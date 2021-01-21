@@ -1,11 +1,12 @@
+//major, minor, aug, dim triads
+//M7, m7, dom7, M/m7, Dim 7, half dim 7
+
 #include "DaisyDuino.h"
 
 DaisyHardware hw;
 Oscillator osc[4];
-Parameter p_freq, p_inversion;
 int notes[4];
 int chord[10][3];
-Color colors[10];
 int chordNum = 0;
 
 void UpdateControls();
@@ -31,8 +32,6 @@ static void AudioCallback(float **in, float **out, size_t size) {
 void InitSynth(float samplerate) {
   // Init freq Parameter to knob1 using MIDI note numbers
   // min 10, max 127, curve linear
-  p_freq.Init(hw.knob1, 0, 127, Parameter::LINEAR);
-  p_inversion.Init(hw.knob2, 0, 5, Parameter::LINEAR);
 
   for (int i = 0; i < 4; i++) {
     osc[i].Init(samplerate);
@@ -75,15 +74,6 @@ void InitChords() {
   chord[8][2] = 9;
 }
 
-void InitColors() {
-  for (int i = 0; i < 7; i++) {
-    colors[i].Init((Color::PresetColor)i);
-  }
-  colors[7].Init(1, 1, 0);
-  colors[8].Init(1, 0, 1);
-  colors[9].Init(0, .7, .4);
-}
-
 void setup() {
   float samplerate;
 
@@ -93,7 +83,6 @@ void setup() {
 
   InitSynth(samplerate);
   InitChords();
-  InitColors();
 
   // start callbacks
   DAISY.begin(AudioCallback);
@@ -111,8 +100,8 @@ void UpdateEncoder() {
 }
 
 void UpdateKnobs() {
-  int freq = (int)p_freq.Process();
-  int inversion = (int)p_inversion.Process();
+  int freq = (analogRead(PIN_POD_POT_1) / 1023) * 127;
+  int inversion = (analogRead(PIN_POD_POT_2) / 1023) * 5;  
 
   notes[0] = freq + (12 * (inversion >= 1));
   notes[1] = freq + chord[chordNum][0] + (12 * (inversion >= 2));
@@ -121,14 +110,12 @@ void UpdateKnobs() {
 }
 
 void UpdateLeds() {
-  hw.led1.SetColor(colors[chordNum]);
-  hw.led2.SetColor(colors[chordNum]);
-  hw.UpdateLeds();
+  hw.leds[0].Set(chordNum & 1, chordNum & 2, chordNum & 4);
+  hw.leds[1].Set(chordNum > 3, 0, 0);
 }
 
 void UpdateControls() {
-  hw.ProcessAnalogControls();
-  hw.ProcessDigitalControls();
+  hw.DebounceControls();
 
   UpdateEncoder();
   UpdateKnobs();
