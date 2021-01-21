@@ -5,16 +5,12 @@
 
 #endif
 
-// Interleaved audio definitions
-#define LEFT (i)
-#define RIGHT (i + 1)
-
 static DaisyHardware seed;
 static Drip drip;
 static Metro tick;
 bool gate;
 
-static void AudioCallback(float *in, float *out, size_t size) {
+static void AudioCallback(float **in, float **out, size_t size) {
   float output;
   bool trig;
   for (size_t i = 0; i < size; i += 2) {
@@ -27,8 +23,7 @@ static void AudioCallback(float *in, float *out, size_t size) {
 
     output = drip.Process(trig);
 
-    out[LEFT] = output;
-    out[RIGHT] = output;
+	out[0][i] = out[1][i] = output;
   }
 }
 

@@ -4,7 +4,7 @@ static DaisyHardware seed;
 Fm2 osc;
 Oscillator lfo1, lfo2, lfo3;
 
-static void AudioCallback(float *in, float *out, size_t size) {
+static void AudioCallback(float **in, float **out, size_t size) {
   float output;
   for (size_t i = 0; i < size; i += 2) {
     float lfo1out = lfo1.Process();
@@ -16,7 +16,7 @@ static void AudioCallback(float *in, float *out, size_t size) {
     osc.SetFrequency((lfo3out + 1) * 220.f + 440.f);
 
     output = osc.Process();
-    out[i] = out[i + 1] = output;
+    out[0][i] = out[1][i] = output;
   }
 }
 

@@ -7,16 +7,12 @@
 
 #endif
 
-// Interleaved audio definitions
-#define LEFT (i)
-#define RIGHT (i + 1)
-
 static DaisyHardware seed;
 static Jitter jitter;
 static Oscillator osc;
 bool gate;
 
-static void AudioCallback(float *in, float *out, size_t size) {
+static void AudioCallback(float **in, float **out, size_t size) {
   float osc_out, jitter_out;
   for (size_t i = 0; i < size; i += 2) {
     // Use jitter to control the amplitude of the oscillator.
@@ -24,8 +20,8 @@ static void AudioCallback(float *in, float *out, size_t size) {
     osc.SetAmp(jitter_out);
     osc_out = osc.Process();
 
-    out[LEFT] = osc_out;
-    out[RIGHT] = osc_out;
+    out[0][i] = osc_out;
+    out[1][i] = osc_out;
   }
 }
 

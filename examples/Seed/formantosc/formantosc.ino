@@ -8,7 +8,7 @@ static Oscillator lfo;
 float freqs[3][2] = {{390, 2300}, {610, 1900}, {820, 1530}};
 int idx = 0;
 
-static void AudioCallback(float *in, float *out, size_t size) {
+static void AudioCallback(float **in, float **out, size_t size) {
   for (size_t i = 0; i < size; i += 2) {
     if (tick.Process()) {
       idx = (idx + 1) % 3;
@@ -19,7 +19,7 @@ static void AudioCallback(float *in, float *out, size_t size) {
 
     form[0].SetFormantFreq(freqs[idx][0]);
     form[1].SetFormantFreq(freqs[idx][1]);
-    out[i] = out[i + 1] = (form[0].Process() * .6f + form[1].Process() * .4f);
+    out[0][i] = out[1][i] = (form[0].Process() * .6f + form[1].Process() * .4f);
   }
 }
 

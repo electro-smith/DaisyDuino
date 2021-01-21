@@ -29,5 +29,4 @@ void setup() {
   DAISY.begin(AudioCallback);
 }
 
-void loop (){
-}
+void loop() {}

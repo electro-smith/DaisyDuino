@@ -8,7 +8,7 @@ static AdEnv env;
 float scale[] = {55.f, 65.41f, 73.42f, 82.41f, 98.f, 110.f};
 int note = 0;
 
-static void AudioCallback(float *in, float *out, size_t size) {
+static void AudioCallback(float **in, float **out, size_t size) {
   for (size_t i = 0; i < size; i += 2) {
     // retrig env on EOC and go to next note
     if (!env.GetCurrentSegment()) {
@@ -24,7 +24,7 @@ static void AudioCallback(float *in, float *out, size_t size) {
       harm.SetSingleAmp(1.f / ((float)dist * 10.f), i);
     }
 
-    out[i] = out[i + 1] = harm.Process();
+    out[0][i] = out[1][i] = harm.Process();
   }
 }
 

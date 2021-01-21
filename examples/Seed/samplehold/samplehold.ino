@@ -1,9 +1,5 @@
 #include "DaisyDuino.h"
 
-// Interleaved audio definitions
-#define LEFT (i)
-#define RIGHT (i + 1)
-
 static DaisyHardware seed;
 static Oscillator osc;
 static Metro tick;
@@ -13,7 +9,7 @@ static SampleHold sh;
 
 float osc_out = 0;
 
-static void AudioCallback(float *in, float *out, size_t size) {
+static void AudioCallback(float **in, float **out, size_t size) {
   float osc_out, env_out;
   for (size_t i = 0; i < size; i += 2) {
     uint8_t trig = tick.Process();
@@ -32,8 +28,8 @@ static void AudioCallback(float *in, float *out, size_t size) {
     osc.SetAmp(env_out);
     osc_out = osc.Process();
 
-    out[LEFT] = osc_out;
-    out[RIGHT] = osc_out;
+    out[0]][i] = osc_out;
+    out[1][i] = osc_out;
   }
 }
 

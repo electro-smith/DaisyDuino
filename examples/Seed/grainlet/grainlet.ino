@@ -10,7 +10,7 @@ float notes[] = {329.63f, 392.f,   440.f,   392.f,
                  587.33f, 523.25f, 587.33f, 659.25};
 int idx = 0;
 
-static void AudioCallback(float *in, float *out, size_t size) {
+static void AudioCallback(float **in, float **out, size_t size) {
   for (size_t i = 0; i < size; i += 2) {
     if (tick.Process()) {
       grainlet.SetFreq(notes[idx] * .5f);
@@ -24,8 +24,8 @@ static void AudioCallback(float *in, float *out, size_t size) {
     subgrainlet.SetShape(.5f - sig * .5f);
     subgrainlet.SetFormantFreq(2000.f * sig);
 
-    out[i] = grainlet.Process();
-    out[i + 1] = subgrainlet.Process();
+    out[0][i] = grainlet.Process();
+    out[1][i] = subgrainlet.Process();
   }
 }
 
