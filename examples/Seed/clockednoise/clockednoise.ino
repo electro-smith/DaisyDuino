@@ -1,37 +1,29 @@
 
 #include "DaisyDuino.h"
 
-
-
-
-DaisyHardware    hw;
+DaisyHardware hw;
 ClockedNoise noise;
-Oscillator   lfo;
+Oscillator lfo;
 
-void AudioCallback(float **in, float **out, size_t size)
-{
-    for(size_t i = 0; i < size; i++)
-    {
-        noise.SetFreq(fabsf(lfo.Process()));
-        out[0][i] = out[1][i] = noise.Process();
-    }
+void AudioCallback(float **in, float **out, size_t size) {
+  for (size_t i = 0; i < size; i++) {
+    noise.SetFreq(fabsf(lfo.Process()));
+    out[0][i] = out[1][i] = noise.Process();
+  }
 }
 
-void setup()
-{
-    hw = DAISY.init(DAISY_SEED, AUDIO_SR_48K);
-    
-    float sample_rate = DAISY.get_samplerate();
+void setup() {
+  hw = DAISY.init(DAISY_SEED, AUDIO_SR_48K);
 
-    noise.Init(sample_rate);
+  float sample_rate = DAISY.get_samplerate();
 
-    lfo.Init(sample_rate);
-    lfo.SetAmp(sample_rate / 3.f);
-    lfo.SetFreq(.125f);
+  noise.Init(sample_rate);
 
-    DAISY.begin(AudioCallback);
-    
+  lfo.Init(sample_rate);
+  lfo.SetAmp(sample_rate / 3.f);
+  lfo.SetFreq(.125f);
+
+  DAISY.begin(AudioCallback);
 }
 
-void loop() {
-}
+void loop() {}

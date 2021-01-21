@@ -1,41 +1,32 @@
 
 #include "DaisyDuino.h"
 
-
-
-
-DaisyHardware             hw;
+DaisyHardware hw;
 VariableSawOscillator varisaw;
-Oscillator            lfo;
+Oscillator lfo;
 
-void AudioCallback(float **in, float **out, size_t size)
-{
-    for(size_t i = 0; i < size; i++)
-    {
-        float sig = lfo.Process();
-        varisaw.SetPW(sig);
+void AudioCallback(float **in, float **out, size_t size) {
+  for (size_t i = 0; i < size; i++) {
+    float sig = lfo.Process();
+    varisaw.SetPW(sig);
 
-        out[0][i] = out[1][i] = varisaw.Process();
-    }
+    out[0][i] = out[1][i] = varisaw.Process();
+  }
 }
 
-void setup()
-{
-    hw = DAISY.init(DAISY_SEED, AUDIO_SR_48K);
-    
-    float sample_rate = DAISY.get_samplerate();
+void setup() {
+  hw = DAISY.init(DAISY_SEED, AUDIO_SR_48K);
 
-    varisaw.Init(sample_rate);
-    varisaw.SetFreq(62.5f);
-    varisaw.SetWaveshape(1.f);
+  float sample_rate = DAISY.get_samplerate();
 
-    lfo.Init(sample_rate);
-    lfo.SetAmp(1.f);
-    lfo.SetFreq(1.f);
+  varisaw.Init(sample_rate);
+  varisaw.SetFreq(62.5f);
+  varisaw.SetWaveshape(1.f);
 
-    DAISY.begin(AudioCallback);
-    
+  lfo.Init(sample_rate);
+  lfo.SetAmp(1.f);
+  lfo.SetFreq(1.f);
+
+  DAISY.begin(AudioCallback);
 }
-void loop() {
-}
-
+void loop() {}

@@ -1,59 +1,46 @@
 #include "DaisyDuino.h"
 
-
-
-
-
-static DaisyHardware  seed;
-Comb              flt;
+static DaisyHardware seed;
+Comb flt;
 static WhiteNoise noise;
 
 float buf[9600];
 
-static void AudioCallback(float *in, float *out, size_t size)
-{
-    float output;
-    for(size_t i = 0; i < size; i += 2)
-    {
-        output = noise.Process();
+static void AudioCallback(float *in, float *out, size_t size) {
+  float output;
+  for (size_t i = 0; i < size; i += 2) {
+    output = noise.Process();
 
-        output = 0.5 * flt.Process(output);
+    output = 0.5 * flt.Process(output);
 
-        // left out
-        out[i] = output;
+    // left out
+    out[i] = output;
 
-        // right out
-        out[i + 1] = output;
-    }
+    // right out
+    out[i + 1] = output;
+  }
 }
 
-void setup()
-{
-    // initialize seed hardware and daisysp modules
-    float sample_rate;
-    seed = DAISY.init(DAISY_SEED, AUDIO_SR_48K);
-    
-    sample_rate = DAISY.get_samplerate();
+void setup() {
+  // initialize seed hardware and daisysp modules
+  float sample_rate;
+  seed = DAISY.init(DAISY_SEED, AUDIO_SR_48K);
 
-    for(int i = 0; i < 9600; i++)
-    {
-        buf[i] = 0.0f;
-    }
+  sample_rate = DAISY.get_samplerate();
 
-    // initialize Comb object
-    flt.Init(sample_rate, buf, 9600);
-    flt.SetFreq(500);
+  for (int i = 0; i < 9600; i++) {
+    buf[i] = 0.0f;
+  }
 
-    //initialize noise
-    noise.Init();
+  // initialize Comb object
+  flt.Init(sample_rate, buf, 9600);
+  flt.SetFreq(500);
 
-    // start callback
-    DAISY.begin(AudioCallback);
+  // initialize noise
+  noise.Init();
 
-
-    
+  // start callback
+  DAISY.begin(AudioCallback);
 }
 
-void loop() {
-}
-
+void loop() {}

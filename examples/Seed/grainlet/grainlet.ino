@@ -1,64 +1,54 @@
 
 #include "DaisyDuino.h"
 
-
-
-
-DaisyHardware          hw;
+DaisyHardware hw;
 GrainletOscillator grainlet, subgrainlet;
-Oscillator         lfo;
-Metro              tick;
+Oscillator lfo;
+Metro tick;
 
-float notes[]
-    = {329.63f, 392.f, 440.f, 392.f, 587.33f, 523.25f, 587.33f, 659.25};
+float notes[] = {329.63f, 392.f,   440.f,   392.f,
+                 587.33f, 523.25f, 587.33f, 659.25};
 int idx = 0;
 
-static void AudioCallback(float *in, float *out, size_t size)
-{
-    for(size_t i = 0; i < size; i += 2)
-    {
-        if(tick.Process())
-        {
-            grainlet.SetFreq(notes[idx] * .5f);
-            subgrainlet.SetFreq(notes[idx] * .25f);
-            idx = (idx + 1) % 8;
-        }
-
-        float sig = fabsf(lfo.Process());
-        grainlet.SetShape(sig * .5f);
-        grainlet.SetFormantFreq(2000.f - 2000.f * sig);
-        subgrainlet.SetShape(.5f - sig * .5f);
-        subgrainlet.SetFormantFreq(2000.f * sig);
-
-        out[i]     = grainlet.Process();
-        out[i + 1] = subgrainlet.Process();
+static void AudioCallback(float *in, float *out, size_t size) {
+  for (size_t i = 0; i < size; i += 2) {
+    if (tick.Process()) {
+      grainlet.SetFreq(notes[idx] * .5f);
+      subgrainlet.SetFreq(notes[idx] * .25f);
+      idx = (idx + 1) % 8;
     }
+
+    float sig = fabsf(lfo.Process());
+    grainlet.SetShape(sig * .5f);
+    grainlet.SetFormantFreq(2000.f - 2000.f * sig);
+    subgrainlet.SetShape(.5f - sig * .5f);
+    subgrainlet.SetFormantFreq(2000.f * sig);
+
+    out[i] = grainlet.Process();
+    out[i + 1] = subgrainlet.Process();
+  }
 }
 
-void setup()
-{
-    hw = DAISY.init(DAISY_SEED, AUDIO_SR_48K);
-    
-    float sample_rate = DAISY.get_samplerate();
+void setup() {
+  hw = DAISY.init(DAISY_SEED, AUDIO_SR_48K);
 
-    grainlet.Init(sample_rate);
-    grainlet.SetBleed(.5f);
+  float sample_rate = DAISY.get_samplerate();
 
-    subgrainlet.Init(sample_rate);
-    subgrainlet.SetBleed(1.f);
+  grainlet.Init(sample_rate);
+  grainlet.SetBleed(.5f);
 
-    grainlet.SetFreq(notes[idx] * .5f);
-    subgrainlet.SetFreq(notes[idx] * .25f);
+  subgrainlet.Init(sample_rate);
+  subgrainlet.SetBleed(1.f);
 
-    lfo.Init(sample_rate);
-    lfo.SetAmp(1.f);
-    lfo.SetFreq(.125f);
+  grainlet.SetFreq(notes[idx] * .5f);
+  subgrainlet.SetFreq(notes[idx] * .25f);
 
-    tick.Init(11.f, sample_rate);
+  lfo.Init(sample_rate);
+  lfo.SetAmp(1.f);
+  lfo.SetFreq(.125f);
 
-    DAISY.begin(AudioCallback);
-    
+  tick.Init(11.f, sample_rate);
+
+  DAISY.begin(AudioCallback);
 }
-void loop() {
-}
-
+void loop() {}
