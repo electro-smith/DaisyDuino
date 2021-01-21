@@ -115,3 +115,6 @@ void setup()
     // Loop forever
     for(;;) {}
 }
+
+void loop() {
+}

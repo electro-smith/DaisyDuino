@@ -88,3 +88,7 @@ void setup()
         sampler.Prepare();
     }
 }
+
+void loop() {
+}
+
