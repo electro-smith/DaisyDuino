@@ -6,18 +6,14 @@ static WhiteNoise noise;
 
 float buf[9600];
 
-static void AudioCallback(float *in, float *out, size_t size) {
+static void AudioCallback(float **in, float **out, size_t size) {
   float output;
   for (size_t i = 0; i < size; i += 2) {
     output = noise.Process();
 
     output = 0.5 * flt.Process(output);
 
-    // left out
-    out[i] = output;
-
-    // right out
-    out[i + 1] = output;
+    out[0][i] = out[1][i] = output;
   }
 }
 
