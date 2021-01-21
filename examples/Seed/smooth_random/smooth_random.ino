@@ -1,10 +1,10 @@
-#include "daisy_seed.h"
-#include "daisysp.h"
+
+#include "DaisyDuino.h"
 
 using namespace daisy;
 using namespace daisysp;
 
-DaisySeed hw;
+DaisyHardware hw;
 
 SmoothRandomGenerator smooth;
 Oscillator            osc;
@@ -18,11 +18,11 @@ void AudioCallback(float **in, float **out, size_t size)
     }
 }
 
-int main(void)
+void setup()
 {
-    hw.Configure();
-    hw.Init();
-    float sample_rate = hw.AudioSampleRate();
+    hw = DAISY.init(DAISY_SEED, AUDIO_SR_48K);
+    
+    float sample_rate = DAISY.get_samplerate();
 
     smooth.Init(sample_rate);
     smooth.SetFreq(.75f);
@@ -30,6 +30,6 @@ int main(void)
     osc.Init(sample_rate);
     osc.SetFreq(440.f);
 
-    hw.StartAudio(AudioCallback);
+    DAISY.begin(AudioCallback);
     while(1) {}
 }

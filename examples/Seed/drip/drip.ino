@@ -1,5 +1,5 @@
-#include "daisysp.h"
-#include "daisy_seed.h"
+#include "DaisyDuino.h"
+
 
 // Shortening long macro for sample rate
 #ifndef sample_rate
@@ -13,7 +13,7 @@
 using namespace daisysp;
 using namespace daisy;
 
-static DaisySeed seed;
+static DaisyHardware seed;
 static Drip      drip;
 static Metro     tick;
 bool             gate;
@@ -41,13 +41,13 @@ static void AudioCallback(float *in, float *out, size_t size)
     }
 }
 
-int main(void)
+void setup()
 {
     // initialize seed hardware and daisysp modules
     float sample_rate;
-    seed.Configure();
-    seed.Init();
-    sample_rate = seed.AudioSampleRate();
+    seed = DAISY.init(DAISY_SEED, AUDIO_SR_48K);
+    
+    sample_rate = DAISY.get_samplerate();
 
     // Set up metro to pulse every second
     tick.Init(1.0f, sample_rate);
@@ -55,7 +55,7 @@ int main(void)
     drip.Init(sample_rate, .1);
 
     // start callback
-    seed.StartAudio(AudioCallback);
+    DAISY.begin(AudioCallback);
 
     while(1) {}
 }

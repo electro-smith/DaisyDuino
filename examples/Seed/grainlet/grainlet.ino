@@ -1,10 +1,10 @@
-#include "daisy_seed.h"
-#include "daisysp.h"
+
+#include "DaisyDuino.h"
 
 using namespace daisy;
 using namespace daisysp;
 
-DaisySeed          hw;
+DaisyHardware          hw;
 GrainletOscillator grainlet, subgrainlet;
 Oscillator         lfo;
 Metro              tick;
@@ -35,11 +35,11 @@ static void AudioCallback(float *in, float *out, size_t size)
     }
 }
 
-int main(void)
+void setup()
 {
-    hw.Configure();
-    hw.Init();
-    float sample_rate = hw.AudioSampleRate();
+    hw = DAISY.init(DAISY_SEED, AUDIO_SR_48K);
+    
+    float sample_rate = DAISY.get_samplerate();
 
     grainlet.Init(sample_rate);
     grainlet.SetBleed(.5f);
@@ -56,6 +56,6 @@ int main(void)
 
     tick.Init(11.f, sample_rate);
 
-    hw.StartAudio(AudioCallback);
+    DAISY.begin(AudioCallback);
     while(1) {}
 }

@@ -1,13 +1,13 @@
-#include "daisy_seed.h"
-#include "daisysp.h"
+
+#include "DaisyDuino.h"
 
 // Use the daisy namespace to prevent having to type
 // daisy:: before all libdaisy functions
 using namespace daisy;
 using namespace daisysp;
 
-// Declare a DaisySeed object called hardware
-DaisySeed hardware;
+// Declare a DaisyHardware object called hardware
+DaisyHardware hardware;
 
 Oscillator osc;
 WhiteNoise noise;
@@ -65,7 +65,7 @@ void AudioCallback(float* in, float* out, size_t size)
     }
 }
 
-int main(void)
+void setup()
 {
     // Configure and Initialize the Daisy Seed
     // These are separate to allow reconfiguration of any of the internal

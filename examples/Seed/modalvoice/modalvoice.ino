@@ -1,11 +1,11 @@
-#include "daisy_seed.h"
-#include "daisysp.h"
+
+#include "DaisyDuino.h"
 #include <stdlib.h>
 
 using namespace daisy;
 using namespace daisysp;
 
-DaisySeed  hw;
+DaisyHardware  hw;
 ModalVoice modal;
 Metro      tick;
 Oscillator lfo;
@@ -37,11 +37,11 @@ void AudioCallback(float **in, float **out, size_t size)
     }
 }
 
-int main(void)
+void setup()
 {
-    hw.Configure();
-    hw.Init();
-    float sample_rate = hw.AudioSampleRate();
+    hw = DAISY.init(DAISY_SEED, AUDIO_SR_48K);
+    
+    float sample_rate = DAISY.get_samplerate();
 
     modal.Init(sample_rate);
     modal.SetDamping(.5);
@@ -53,6 +53,6 @@ int main(void)
     lfo.SetFreq(.005f);
     lfo.SetAmp(1.f);
 
-    hw.StartAudio(AudioCallback);
+    DAISY.begin(AudioCallback);
     while(1) {}
 }

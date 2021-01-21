@@ -65,11 +65,11 @@ void AudioCallback(float *in, float *out, size_t size)
 }
 
 
-int main(void)
+void setup()
 {
     // Init hardware
     size_t blocksize = 48;
-    hw.Init();
+    
     //    hw.ClearLeds();
     sdcard.Init();
     sampler.Init();
@@ -80,7 +80,7 @@ int main(void)
 
     // Init Audio
     hw.SetAudioBlockSize(blocksize);
-    hw.StartAudio(AudioCallback);
+    DAISY.begin(AudioCallback);
     // Loop forever...
     for(;;)
     {

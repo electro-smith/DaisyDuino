@@ -1,11 +1,11 @@
-#include "daisysp.h"
-#include "daisy_seed.h"
+#include "DaisyDuino.h"
+
 #include <algorithm>
 
 using namespace daisysp;
 using namespace daisy;
 
-static DaisySeed seed;
+static DaisyHardware seed;
 
 // Helper Modules
 static Metro      tick;
@@ -45,13 +45,13 @@ static void AudioCallback(float **in, float **out, size_t size)
     }
 }
 
-int main(void)
+void setup()
 {
     // initialize seed hardware and daisysp modules
     float sample_rate;
-    seed.Configure();
-    seed.Init();
-    sample_rate = seed.AudioSampleRate();
+    seed = DAISY.init(DAISY_SEED, AUDIO_SR_48K);
+    
+    sample_rate = DAISY.get_samplerate();
 
     // Set up Metro to pulse every second
     tick.Init(2.0f, sample_rate);
@@ -70,7 +70,7 @@ int main(void)
     arp_idx = 0;
 
     // start callback
-    seed.StartAudio(AudioCallback);
+    DAISY.begin(AudioCallback);
 
 
     while(1) {}

@@ -1,10 +1,10 @@
-#include "daisy_seed.h"
-#include "daisysp.h"
+
+#include "DaisyDuino.h"
 
 using namespace daisy;
 using namespace daisysp;
 
-DaisySeed      hw;
+DaisyHardware      hw;
 OscillatorBank osc[3];
 AdEnv          env;
 Metro          tick;
@@ -34,11 +34,11 @@ void AudioCallback(float **in, float **out, size_t size)
     }
 }
 
-int main(void)
+void setup()
 {
-    hw.Configure();
-    hw.Init();
-    float sample_rate = hw.AudioSampleRate();
+    hw = DAISY.init(DAISY_SEED, AUDIO_SR_48K);
+    
+    float sample_rate = DAISY.get_samplerate();
 
     float amp[7] = {.15f, 0.15f, 0.0f, 0.33f, 0.0f, 0.15f, 0.15f};
     for(int i = 0; i < 3; i++)
@@ -58,6 +58,6 @@ int main(void)
     env.SetMax(.3f);
     env.SetCurve(0.f); // linear
 
-    hw.StartAudio(AudioCallback);
+    DAISY.begin(AudioCallback);
     while(1) {}
 }

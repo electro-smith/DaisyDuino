@@ -1,10 +1,10 @@
-#include "daisysp.h"
-#include "daisy_seed.h"
+#include "DaisyDuino.h"
+
 
 using namespace daisysp;
 using namespace daisy;
 
-static DaisySeed seed;
+static DaisyHardware seed;
 Fm2              osc;
 Oscillator       lfo1, lfo2, lfo3;
 
@@ -26,13 +26,13 @@ static void AudioCallback(float *in, float *out, size_t size)
     }
 }
 
-int main(void)
+void setup()
 {
     // initialize seed hardware and daisysp modules
     float sample_rate;
-    seed.Configure();
-    seed.Init();
-    sample_rate = seed.AudioSampleRate();
+    seed = DAISY.init(DAISY_SEED, AUDIO_SR_48K);
+    
+    sample_rate = DAISY.get_samplerate();
 
     osc.Init(sample_rate);
     lfo1.Init(sample_rate);
@@ -49,6 +49,6 @@ int main(void)
     lfo3.SetWaveform(Oscillator::WAVE_SQUARE);
 
     // start callback
-    seed.StartAudio(AudioCallback);
+    DAISY.begin(AudioCallback);
     while(1) {}
 }

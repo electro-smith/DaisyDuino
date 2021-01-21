@@ -1,5 +1,5 @@
-#include "daisysp.h"
-#include "daisy_seed.h"
+#include "DaisyDuino.h"
+
 
 // Interleaved audio definitions
 #define LEFT (i)
@@ -8,7 +8,7 @@
 using namespace daisysp;
 using namespace daisy;
 
-static DaisySeed  seed;
+static DaisyHardware  seed;
 static Oscillator osc;
 static Metro      tick;
 static WhiteNoise noise;
@@ -44,13 +44,13 @@ static void AudioCallback(float *in, float *out, size_t size)
     }
 }
 
-int main(void)
+void setup()
 {
     // initialize seed hardware and daisysp modules
     float sample_rate;
-    seed.Configure();
-    seed.Init();
-    sample_rate = seed.AudioSampleRate();
+    seed = DAISY.init(DAISY_SEED, AUDIO_SR_48K);
+    
+    sample_rate = DAISY.get_samplerate();
     env.Init(sample_rate);
     osc.Init(sample_rate);
     tick.Init(1, sample_rate);
@@ -70,7 +70,7 @@ int main(void)
     noise.Init();
 
     // start callback
-    seed.StartAudio(AudioCallback);
+    DAISY.begin(AudioCallback);
 
 
     while(1) {}
