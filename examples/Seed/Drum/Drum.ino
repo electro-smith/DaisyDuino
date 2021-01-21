@@ -112,8 +112,8 @@ void setup()
     //Start calling the callback function
     hardware.StartAudio(AudioCallback);
 
-    // Loop forever
-    for(;;) {}
+    
+    
 }
 
 void loop() {

@@ -81,7 +81,7 @@ void setup()
     // Init Audio
     hw.SetAudioBlockSize(blocksize);
     DAISY.begin(AudioCallback);
-    // Loop forever...
+    ...
     for(;;)
     {
         // Prepare buffers for sampler as needed
