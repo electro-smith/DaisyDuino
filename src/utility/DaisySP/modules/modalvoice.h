@@ -3,9 +3,9 @@
 #define DSY_MODAL_H
 
 #include <stdint.h>
-#include "modules/svf.h"
-#include "modules/resonator.h"
-#include "modules/dust.h"
+#include "svf.h"
+#include "resonator.h"
+#include "dust.h"
 #ifdef __cplusplus
 
 /** @file modalvoice.h */

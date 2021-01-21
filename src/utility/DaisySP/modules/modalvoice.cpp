@@ -1,4 +1,4 @@
-#include "modules/modalvoice.h"
+#include "modalvoice.h"
 #include <algorithm>
 
 using namespace daisysp;

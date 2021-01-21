@@ -1,6 +1,6 @@
 #include <cmath>
-#include "modules/dsp.h"
-#include "modules/string.h"
+#include "dsp.h"
+#include "string.h"
 #include <stdlib.h>
 
 using namespace daisysp;

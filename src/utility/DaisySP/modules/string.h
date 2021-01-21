@@ -5,11 +5,11 @@
 #include <stdint.h>
 
 
-#include "modules/crossfade.h"
-#include "modules/dcblock.h"
-#include "modules/delayline.h"
-#include "modules/svf.h"
-#include "modules/tone.h"
+#include "crossfade.h"
+#include "dcblock.h"
+#include "delayline.h"
+#include "svf.h"
+#include "tone.h"
 
 #ifdef __cplusplus
 
