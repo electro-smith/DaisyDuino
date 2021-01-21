@@ -10,7 +10,7 @@
 #include "daisy_pod.h"
 //#include "daisy_patch.h"
 
-using namespace daisy;
+
 
 //DaisyPatch   hw;
 DaisyPod     hw;

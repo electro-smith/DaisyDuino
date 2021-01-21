@@ -10,8 +10,8 @@
 #define LEFT (i)
 #define RIGHT (i + 1)
 
-using namespace daisysp;
-using namespace daisy;
+
+
 
 static DaisyHardware seed;
 static Drip      drip;

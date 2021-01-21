@@ -2,8 +2,8 @@
 
 #include <algorithm>
 
-using namespace daisysp;
-using namespace daisy;
+
+
 
 static DaisyHardware seed;
 

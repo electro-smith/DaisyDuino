@@ -1,8 +1,8 @@
 
 #include "DaisyDuino.h"
 
-using namespace daisy;
-using namespace daisysp;
+
+
 
 DaisyHardware               hw;
 VariableShapeOscillator variosc;

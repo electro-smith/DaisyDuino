@@ -2,8 +2,8 @@
 #include "DaisyDuino.h"
 #include <stdlib.h>
 
-using namespace daisy;
-using namespace daisysp;
+
+
 
 DaisyHardware  hw;
 ModalVoice modal;

@@ -1,8 +1,8 @@
 #include "DaisyDuino.h"
 
 
-using namespace daisysp;
-using namespace daisy;
+
+
 
 static DaisyHardware seed;
 Fm2              osc;

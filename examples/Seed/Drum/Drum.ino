@@ -3,8 +3,8 @@
 
 // Use the daisy namespace to prevent having to type
 // daisy:: before all libdaisy functions
-using namespace daisy;
-using namespace daisysp;
+
+
 
 // Declare a DaisyHardware object called hardware
 DaisyHardware hardware;
