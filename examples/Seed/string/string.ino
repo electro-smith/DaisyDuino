@@ -6,7 +6,7 @@ static DaisyHardware seed;
 
 // Helper Modules
 static Metro tick;
-static String str;
+static daisysp::String str;
 static Oscillator lfo;
 
 // MIDI note numbers for a major triad
