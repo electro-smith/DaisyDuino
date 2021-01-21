@@ -28,7 +28,7 @@ static void AudioCallback(float **in, float **out, size_t size) {
     osc.SetAmp(env_out);
     osc_out = osc.Process();
 
-    out[0]][i] = osc_out;
+    out[0][i] = osc_out;
     out[1][i] = osc_out;
   }
 }
