@@ -43,5 +43,5 @@ void setup()
     frac = 1.f / RAND_MAX;
 
     DAISY.begin(AudioCallback);
-    while(1) {}
+    
 }

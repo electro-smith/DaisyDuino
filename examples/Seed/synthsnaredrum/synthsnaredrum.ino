@@ -34,5 +34,5 @@ void setup()
     sd.Init(sample_rate);
 
     DAISY.begin(AudioCallback);
-    while(1) {}
+    
 }

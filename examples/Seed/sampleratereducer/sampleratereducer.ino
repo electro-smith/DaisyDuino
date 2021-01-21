@@ -33,5 +33,5 @@ void setup()
     sr.Init();
 
     DAISY.begin(AudioCallback);
-    while(1) {}
+    
 }

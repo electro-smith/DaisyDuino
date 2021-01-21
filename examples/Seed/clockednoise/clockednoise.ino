@@ -30,5 +30,5 @@ void setup()
     lfo.SetFreq(.125f);
 
     DAISY.begin(AudioCallback);
-    while(1) {}
+    
 }

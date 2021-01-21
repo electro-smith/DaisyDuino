@@ -41,5 +41,5 @@ void setup()
     lfo2.SetFreq(.5f);
 
     DAISY.begin(AudioCallback);
-    while(1) {}
+    
 }

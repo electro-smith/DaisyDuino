@@ -59,5 +59,5 @@ void setup()
     // start callback
     DAISY.begin(AudioCallback);
 
-    while(1) {}
+    
 }

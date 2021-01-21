@@ -31,5 +31,5 @@ void setup()
     osc.SetFreq(440.f);
 
     DAISY.begin(AudioCallback);
-    while(1) {}
+    
 }

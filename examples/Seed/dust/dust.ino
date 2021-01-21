@@ -28,5 +28,5 @@ void setup()
     lfo.SetAmp(1.f);
 
     DAISY.begin(AudioCallback);
-    while(1) {}
+    
 }

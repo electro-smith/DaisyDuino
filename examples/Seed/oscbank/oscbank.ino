@@ -59,5 +59,5 @@ void setup()
     env.SetCurve(0.f); // linear
 
     DAISY.begin(AudioCallback);
-    while(1) {}
+    
 }

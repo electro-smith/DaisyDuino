@@ -35,5 +35,5 @@ void setup()
     tick.Init(8.f, sample_rate);
 
     DAISY.begin(AudioCallback);
-    while(1) {}
+    
 }

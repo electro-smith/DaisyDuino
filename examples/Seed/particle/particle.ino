@@ -31,5 +31,5 @@ void setup()
     particle.SetSpread(2.f);
 
     DAISY.begin(AudioCallback);
-    while(1) {}
+    
 }
