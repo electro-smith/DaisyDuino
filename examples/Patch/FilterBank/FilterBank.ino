@@ -9,6 +9,9 @@ int freqs[16];
 
 int bank;
 
+void UpdateOled();
+void UpdateControls();
+
 struct ConditionalUpdate {
   float oldVal = 0;
 
@@ -45,6 +48,7 @@ struct Filter {
 Filter filters[16];
 
 static void AudioCallback(float **in, float **out, size_t size) {
+  UpdateControls();
   for (size_t i = 0; i < size; i++) {
     float sig = 0.f;
     for (int j = 0; j < 16; j++) {
@@ -81,9 +85,6 @@ void InitFilters(float samplerate) {
   }
 }
 
-void UpdateOled();
-void UpdateControls();
-
 void setup(){
   float samplerate;
   patch = DAISY.init(
@@ -104,7 +105,6 @@ void setup(){
 
 void loop(){
   UpdateOled();
-  UpdateControls();
 }
 
 void UpdateOled() {
