@@ -47,7 +47,7 @@ void setup()
 
   isSideChained = false;
 
-  oled.setFont(u8g2_font_inb16_mf);
+  oled.setFont(u8g2_font_t0_12_mf);
   oled.setFontDirection(0);
   oled.setFontMode(1);
   oled.begin();
@@ -62,11 +62,11 @@ void loop()
 
     std::string str  = "Compressor";
     char *      cstr = &str[0];
-    oled.drawStr(0, 0, cstr);
+    oled.drawStr(0, 8, cstr);
 
     str = "Sidechain: ";
     str += isSideChained ? "On" : "Off";
-    oled.drawStr(0, 25, cstr);
+    oled.drawStr(0, 28, cstr);
 
     oled.sendBuffer();
 }
