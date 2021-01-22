@@ -1,3 +1,9 @@
+// Encoder: select effect
+// Led: blue = reverb, green = delay, purple = bitcrush / LPF
+// Reverb: Knob 1 = Dry/wet, Knob 2 = Reverb time
+// Delay: Knob 1 = Delay time, Knob 2 = Feedback
+// Crush/LPF: Knob 1 = LPF cutoff, Knob 2 = Downsample
+
 #include "DaisyDuino.h"
 
 // Set max delay time to 0.75 of samplerate.
@@ -11,10 +17,10 @@ static DaisyHardware pod;
 static ReverbSc rev;
 static DelayLine<float, MAX_DELAY> DSY_SDRAM_BSS dell;
 static DelayLine<float, MAX_DELAY> DSY_SDRAM_BSS delr;
-static Tone tone;
-static Parameter deltime, cutoffParam, crushrate;
+static Tone filter;
 int mode = REV;
 
+float sample_rate;
 float currentDelay, feedback, delayTarget, cutoff;
 
 int crushmod, crushcount;
@@ -36,8 +42,8 @@ void AudioCallback(float **in, float **out, size_t size) {
 
   // audio
   for (size_t i = 0; i < size; i ++) {
-    inl = in[i];
-    inr = in[i + 1];
+    inl = in[0][i];
+    inr = in[1][i];
 
     switch (mode) {
     case REV:
@@ -62,21 +68,13 @@ void AudioCallback(float **in, float **out, size_t size) {
 }
 
 void setup() {
-  // initialize pod hardware and oscillator daisysp module
-  float sample_rate;
-
   // Inits and sample rate
   pod = DAISY.init(DAISY_POD, AUDIO_SR_48K);
   sample_rate = DAISY.get_samplerate();
   rev.Init(sample_rate);
   dell.Init();
   delr.Init();
-  tone.Init(sample_rate);
-
-  // set parameters
-  deltime.Init(pod.knob1, sample_rate * .05, MAX_DELAY, deltime.LOGARITHMIC);
-  cutoffParam.Init(pod.knob1, 500, 20000, cutoffParam.LOGARITHMIC);
-  crushrate.Init(pod.knob2, 1, 50, crushrate.LOGARITHMIC);
+  filter.Init(sample_rate);
 
   // reverb parameters
   rev.SetLpFreq(18000.0f);
@@ -94,8 +92,10 @@ void setup() {
 void loop() {}
 
 void UpdateKnobs(float &k1, float &k2) {
-  k1 = pod.knob1.Process();
-  k2 = pod.knob2.Process();
+  k1 = analogRead(PIN_POD_POT_1) / 1023.f;
+  k2 = analogRead(PIN_POD_POT_2) / 1023.f;
+
+  float m = (float)MAX_DELAY - .05 * sample_rate;
 
   switch (mode) {
   case REV:
@@ -103,13 +103,13 @@ void UpdateKnobs(float &k1, float &k2) {
     rev.SetFeedback(k2);
     break;
   case DEL:
-    delayTarget = deltime.Process();
+	  delayTarget = k1 * m + .05 * sample_rate;
     feedback = k2;
     break;
   case CRU:
-    cutoff = cutoffParam.Process();
-    tone.SetFreq(cutoff);
-    crushmod = (int)crushrate.Process();
+    cutoff = k1 * 19500.f + 500.f;
+    filter.SetFreq(cutoff);
+    crushmod = (int) (k2 * 20.f);
   }
 }
 
@@ -119,20 +119,15 @@ void UpdateEncoder() {
 }
 
 void UpdateLeds(float k1, float k2) {
-  pod.led1.Set(k1 * (mode == 2), k1 * (mode == 1),
-               k1 * (mode == 0 || mode == 2));
-  pod.led2.Set(k2 * (mode == 2), k2 * (mode == 1),
-               k2 * (mode == 0 || mode == 2));
-
-  pod.UpdateLeds();
+  pod.leds[0].Set(mode == 2, mode == 1, mode == 0 || mode == 2);
+  pod.leds[1].Set(mode == 2, mode == 1, mode == 0 || mode == 2);
 }
 
 void Controls() {
   float k1, k2;
   delayTarget = feedback = drywet = 0;
 
-  pod.ProcessAnalogControls();
-  pod.ProcessDigitalControls();
+  pod.DebounceControls();
 
   UpdateKnobs(k1, k2);
 
@@ -168,6 +163,6 @@ void GetCrushSample(float &outl, float &outr, float inl, float inr) {
     crushsr = inr;
     crushsl = inl;
   }
-  outl = tone.Process(crushsl);
-  outr = tone.Process(crushsr);
+  outl = filter.Process(crushsl);
+  outr = filter.Process(crushsr);
 }
