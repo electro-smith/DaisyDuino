@@ -1,13 +1,13 @@
-#include "daisysp.h"
-#include "daisy_patch.h"
+
+#include "DaisyDuino.h"
 #include <string>
 
 #define MAX_DELAY static_cast<size_t>(48000 * 1.f)
 
-using namespace daisy;
-using namespace daisysp;
 
-DaisyPatch patch;
+
+
+DaisyHardware patch;
 
 DelayLine<float, MAX_DELAY> DSY_SDRAM_BSS delMems[3];
 
@@ -86,7 +86,7 @@ int main(void)
 {
     float samplerate;
     patch.Init(); // Initialize hardware (daisy seed, and patch)
-    samplerate = patch.AudioSampleRate();
+    samplerate = DAISY.get_samplerate();
 
     InitDelays(samplerate);
 

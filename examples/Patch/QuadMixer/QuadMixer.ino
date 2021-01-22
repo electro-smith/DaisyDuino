@@ -1,10 +1,10 @@
-#include "daisysp.h"
-#include "daisy_patch.h"
 
-using namespace daisy;
-using namespace daisysp;
+#include "DaisyDuino.h"
 
-DaisyPatch patch;
+
+
+
+DaisyHardware patch;
 
 static void AudioCallback(float **in, float **out, size_t size)
 {

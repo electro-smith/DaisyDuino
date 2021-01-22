@@ -1,11 +1,11 @@
-#include "daisysp.h"
-#include "daisy_patch.h"
+
+#include "DaisyDuino.h"
 #include <string>
 
-using namespace daisy;
-using namespace daisysp;
 
-DaisyPatch patch;
+
+
+DaisyHardware patch;
 
 struct gate
 {

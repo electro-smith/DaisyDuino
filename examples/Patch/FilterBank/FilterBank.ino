@@ -1,11 +1,11 @@
-#include "daisysp.h"
-#include "daisy_patch.h"
+
+#include "DaisyDuino.h"
 #include <string>
 
-using namespace daisy;
-using namespace daisysp;
 
-DaisyPatch patch;
+
+
+DaisyHardware patch;
 int        freqs[16];
 
 int bank;
@@ -101,7 +101,7 @@ int main(void)
 {
     float samplerate;
     patch.Init(); // Initialize hardware (daisy seed, and patch)
-    samplerate = patch.AudioSampleRate();
+    samplerate = DAISY.get_samplerate();
 
     InitFreqs();
     InitFilters(samplerate);

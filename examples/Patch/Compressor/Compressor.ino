@@ -1,11 +1,11 @@
-#include "daisysp.h"
-#include "daisy_patch.h"
+
+#include "DaisyDuino.h"
 #include <string>
 
-using namespace daisy;
-using namespace daisysp;
 
-DaisyPatch patch;
+
+
+DaisyHardware patch;
 Compressor comp;
 
 bool isSideChained;
@@ -43,7 +43,7 @@ int main(void)
 {
     float samplerate;
     patch.Init(); // Initialize hardware
-    samplerate = patch.AudioSampleRate();
+    samplerate = DAISY.get_samplerate();
 
     comp.Init(samplerate);
 

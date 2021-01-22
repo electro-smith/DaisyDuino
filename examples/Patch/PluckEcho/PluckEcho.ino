@@ -1,16 +1,16 @@
-#include "daisy_patch.h"
-#include "daisysp.h"
+#include "DaisyDuino.h"
+
 #include <string>
 
-using namespace daisy;
-using namespace daisysp;
+
+
 
 #define NUM_VOICES 32
 #define MAX_DELAY ((size_t)(10.0f * 48000.0f))
 
 
 // Hardware
-DaisyPatch hw;
+DaisyHardware hw;
 
 // Synthesis
 PolyPluck<NUM_VOICES> synth;
@@ -34,27 +34,27 @@ void AudioCallback(float **in, float **out, size_t size)
     out_left  = out[0];
     out_right = out[1];
 
-    samplerate = hw.AudioSampleRate();
+    samplerate = DAISY.get_samplerate();
     hw.ProcessDigitalControls();
     hw.ProcessAnalogControls();
 
     // Handle Triggering the Plucks
     trig = 0.0f;
-    if(hw.encoder.RisingEdge() || hw.gate_input[DaisyPatch::GATE_IN_1].Trig())
+    if(hw.encoder.RisingEdge() || hw.gate_input[DaisyHardware::GATE_IN_1].Trig())
         trig = 1.0f;
 
     // Set MIDI Note for new Pluck notes.
-    nn = 24.0f + hw.GetKnobValue(DaisyPatch::CTRL_1) * 60.0f;
+    nn = 24.0f + hw.GetKnobValue(DaisyHardware::CTRL_1) * 60.0f;
     nn = static_cast<int32_t>(nn); // Quantize to semitones
 
     // Read knobs for decay;
-    decay = 0.5f + (hw.GetKnobValue(DaisyPatch::CTRL_2) * 0.5f);
+    decay = 0.5f + (hw.GetKnobValue(DaisyHardware::CTRL_2) * 0.5f);
     synth.SetDecay(decay);
 
     // Get Delay Parameters from knobs.
-    kval    = hw.GetKnobValue(DaisyPatch::CTRL_3);
+    kval    = hw.GetKnobValue(DaisyHardware::CTRL_3);
     deltime = (0.001f + (kval * kval) * 5.0f) * samplerate;
-    delfb   = hw.GetKnobValue(DaisyPatch::CTRL_4);
+    delfb   = hw.GetKnobValue(DaisyHardware::CTRL_4);
 
     // Synthesis.
     for(size_t i = 0; i < size; i++)
@@ -86,7 +86,7 @@ int main(void)
     // Init everything.
     float samplerate;
     hw.Init();
-    samplerate = hw.AudioSampleRate();
+    samplerate = DAISY.get_samplerate();
 
     //briefly display the module name
     std::string str  = "Pluck Echo";
