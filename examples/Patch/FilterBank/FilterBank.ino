@@ -1,3 +1,5 @@
+//Encoder Turn: Bank to Control
+//Ctrl 1-4: Filter Amplitude
 
 #include "DaisyDuino.h"
 #include <string>
