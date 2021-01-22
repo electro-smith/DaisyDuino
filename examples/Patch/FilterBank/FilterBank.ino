@@ -1,6 +1,8 @@
 
 #include "DaisyDuino.h"
 #include <string>
+#include <U8g2lib.h>
+U8G2_SSD1309_128X64_NONAME2_F_4W_SW_SPI oled(U8G2_R0, 8, 10, 7, 9, 30);
 
 DaisyHardware patch;
 int freqs[16];
@@ -82,7 +84,7 @@ void InitFilters(float samplerate) {
 void UpdateOled();
 void UpdateControls();
 
-int main(void) {
+void setup(){
   float samplerate;
   patch = DAISY.init(
       DAISY_PATCH, AUDIO_SR_48K); // Initialize hardware (daisy seed, and patch)
@@ -92,20 +94,25 @@ int main(void) {
   InitFilters(samplerate);
   bank = 0;
 
+  oled.setFont(u8g2_font_t0_12_mf);
+  oled.setFontDirection(0);
+  oled.setFontMode(1);
+  oled.begin();
+
   DAISY.begin(AudioCallback);
-  while (1) {
-    UpdateOled();
-    UpdateControls();
-  }
+}
+
+void loop(){
+  UpdateOled();
+  UpdateControls();
 }
 
 void UpdateOled() {
-  patch.display.Fill(false);
+  oled.clearBuffer();
 
   std::string str = "Filter Bank";
   char *cstr = &str[0];
-  patch.display.SetCursor(0, 0);
-  patch.display.WriteString(cstr, Font_7x10, true);
+  oled.drawStr(0,8,cstr);
 
   str = "";
   for (int i = 0; i < 2; i++) {
@@ -113,8 +120,8 @@ void UpdateOled() {
     str += "  ";
   }
 
-  patch.display.SetCursor(0, 25);
-  patch.display.WriteString(cstr, Font_7x10, true);
+  oled.drawStr(0,33,cstr);
+
 
   str = "";
   for (int i = 2; i < 4; i++) {
@@ -122,15 +129,13 @@ void UpdateOled() {
     str += "  ";
   }
 
-  patch.display.SetCursor(0, 35);
-  patch.display.WriteString(cstr, Font_7x10, true);
+  oled.drawStr(0,43,cstr);
 
-  patch.display.Update();
+  oled.sendBuffer();
 }
 
 void UpdateControls() {
-  patch.ProcessAnalogControls();
-  patch.ProcessDigitalControls();
+  patch.DebounceControls();
 
   // encoder
   bank += patch.encoder.Increment();
@@ -138,9 +143,10 @@ void UpdateControls() {
 
   bank = patch.encoder.RisingEdge() ? 0 : bank;
 
+  int ctrlNums[4] = {PIN_PATCH_CTRL_1, PIN_PATCH_CTRL_2, PIN_PATCH_CTRL_3, PIN_PATCH_CTRL_4};
   // controls
   for (int i = 0; i < 4; i++) {
-    float val = patch.controls[i].Process();
+    float val = (1023.f - analogRead(ctrlNums[i])) / 1023.f;
     if (condUpdates[i].Process(val)) {
       filters[i + bank * 4].amp = val;
     }
