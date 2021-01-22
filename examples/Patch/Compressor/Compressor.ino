@@ -2,9 +2,6 @@
 #include "DaisyDuino.h"
 #include <string>
 
-
-
-
 DaisyHardware patch;
 Compressor comp;
 
@@ -14,79 +11,72 @@ void UpdateControls();
 
 Parameter threshParam, ratioParam, attackParam, releaseParam;
 
-static void AudioCallback(float **in, float **out, size_t size)
-{
-    float sig;
-    float dry_in, dry_sidechain;
-    UpdateControls();
+static void AudioCallback(float **in, float **out, size_t size) {
+  float sig;
+  float dry_in, dry_sidechain;
+  UpdateControls();
 
-    // Scales input by 2 and then the output by 0.5
-    // This is because there are 6dB of headroom on the daisy
-    // and currently no way to tell where '0dB' is supposed to be
-    for(size_t i = 0; i < size; i++)
-    {
-        dry_in        = in[0][i] * 2.0f;
-        dry_sidechain = in[1][i] * 2.0f;
+  // Scales input by 2 and then the output by 0.5
+  // This is because there are 6dB of headroom on the daisy
+  // and currently no way to tell where '0dB' is supposed to be
+  for (size_t i = 0; i < size; i++) {
+    dry_in = in[0][i] * 2.0f;
+    dry_sidechain = in[1][i] * 2.0f;
 
-        sig = isSideChained ? comp.Process(dry_in, dry_sidechain)
-                            : comp.Process(dry_in);
+    sig = isSideChained ? comp.Process(dry_in, dry_sidechain)
+                        : comp.Process(dry_in);
 
-        // Writes output to all four outputs.
-        for(size_t chn = 0; chn < 4; chn++)
-        {
-            out[chn][i] = sig * 0.5f;
-        }
+    // Writes output to all four outputs.
+    for (size_t chn = 0; chn < 4; chn++) {
+      out[chn][i] = sig * 0.5f;
     }
+  }
 }
 
-int main(void)
-{
-    float samplerate;
-    patch.Init(); // Initialize hardware
-    samplerate = DAISY.get_samplerate();
+int main(void) {
+  float samplerate;
+  patch = DAISY.Init(DAISY_PATCH, AUDIO_SR_48K); // Initialize hardware
+  samplerate = DAISY.get_samplerate();
 
-    comp.Init(samplerate);
+  comp.Init(samplerate);
 
-    isSideChained = false;
+  isSideChained = false;
 
-    //parameter parameters
-    threshParam.Init(patch.controls[0], -80.0f, 0.f, Parameter::LINEAR);
-    ratioParam.Init(patch.controls[1], 1.2f, 40.f, Parameter::LINEAR);
-    attackParam.Init(patch.controls[2], 0.01f, 1.f, Parameter::EXPONENTIAL);
-    releaseParam.Init(patch.controls[3], 0.01f, 1.f, Parameter::EXPONENTIAL);
+  // parameter parameters
+  threshParam.Init(patch.controls[0], -80.0f, 0.f, Parameter::LINEAR);
+  ratioParam.Init(patch.controls[1], 1.2f, 40.f, Parameter::LINEAR);
+  attackParam.Init(patch.controls[2], 0.01f, 1.f, Parameter::EXPONENTIAL);
+  releaseParam.Init(patch.controls[3], 0.01f, 1.f, Parameter::EXPONENTIAL);
 
-    patch.StartAdc();
-    patch.StartAudio(AudioCallback);
-    while(1)
-    {
-        //update the oled
-        patch.display.Fill(false);
+  DAISY.begin(AudioCallback);
+  while (1) {
+    // update the oled
+    patch.display.Fill(false);
 
-        patch.display.SetCursor(0, 0);
-        std::string str  = "Compressor";
-        char *      cstr = &str[0];
-        patch.display.WriteString(cstr, Font_7x10, true);
+    patch.display.SetCursor(0, 0);
+    std::string str = "Compressor";
+    char *cstr = &str[0];
+    patch.display.WriteString(cstr, Font_7x10, true);
 
-        patch.display.SetCursor(0, 25);
-        str = "Sidechain: ";
-        str += isSideChained ? "On" : "Off";
-        patch.display.WriteString(cstr, Font_7x10, true);
+    patch.display.SetCursor(0, 25);
+    str = "Sidechain: ";
+    str += isSideChained ? "On" : "Off";
+    patch.display.WriteString(cstr, Font_7x10, true);
 
-        patch.display.Update();
-    }
+    patch.display.Update();
+  }
 }
 
-void UpdateControls()
-{
-    patch.ProcessAnalogControls();
-    patch.ProcessDigitalControls();
+void UpdateControls() {
+  patch.ProcessAnalogControls();
+  patch.ProcessDigitalControls();
 
-    //encoder click
-    isSideChained = patch.encoder.RisingEdge() ? !isSideChained : isSideChained;
+  // encoder click
+  isSideChained = patch.encoder.RisingEdge() ? !isSideChained : isSideChained;
 
-    //controls
-    comp.SetThreshold(threshParam.Process());
-    comp.SetRatio(ratioParam.Process());
-    comp.SetAttack(attackParam.Process());
-    comp.SetRelease(releaseParam.Process());
+  // controls
+  comp.SetThreshold(threshParam.Process());
+  comp.SetRatio(ratioParam.Process());
+  comp.SetAttack(attackParam.Process());
+  comp.SetRelease(releaseParam.Process());
 }
