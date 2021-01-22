@@ -132,6 +132,8 @@ void UpdateOled() {
   oled.drawStr(0,43,cstr);
 
   oled.sendBuffer();
+
+  delay(5);
 }
 
 void UpdateControls() {
