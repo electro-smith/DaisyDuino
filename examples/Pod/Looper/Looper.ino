@@ -1,3 +1,8 @@
+// Button 1 Play / Pause.
+// Button 2 Record.
+// Leds: Red = record enable. Green = playback.
+// Knob 1: Live / Loop. Left in, right loop.
+
 #include "DaisyDuino.h"
 
 #define MAX_SIZE (48000 * 60 * 5) // 5 minutes of floats at 48 khz
@@ -18,7 +23,7 @@ bool res = false;
 void ResetBuffer();
 void Controls();
 
-void NextSamples(float &output, float *in, size_t i);
+void NextSamples(float &output, float **in, size_t i);
 
 static void AudioCallback(float **in, float **out, size_t size) {
   float output = 0;
@@ -89,7 +94,7 @@ void UpdateButtons() {
 void Controls() {
   pod.DebounceControls();
 
-  drywet = pod.knob1.Process();
+  drywet = analogRead(PIN_POD_POT_1) / 1023.f;
 
   UpdateButtons();
 
@@ -98,14 +103,14 @@ void Controls() {
   pod.leds[1].Set(rec == true, 0, 0);
 }
 
-void WriteBuffer(float *in, size_t i) {
-  buf[pos] = buf[pos] * 0.5 + in[i] * 0.5;
+void WriteBuffer(float **in, size_t i) {
+  buf[pos] = buf[pos] * 0.5 + in[0][i] * 0.5;
   if (first) {
     len++;
   }
 }
 
-void NextSamples(float &output, float *in, size_t i) {
+void NextSamples(float &output, float **in, size_t i) {
   if (rec) {
     WriteBuffer(in, i);
   }
@@ -125,6 +130,6 @@ void NextSamples(float &output, float *in, size_t i) {
   }
 
   if (!rec) {
-    output = output * drywet + in[i] * (1 - drywet);
+    output = output * drywet + in[0][i] * (1 - drywet);
   }
 }
