@@ -1,5 +1,11 @@
+// Knob 1 = frequency
+// Knob 2 = inversion
+//Encoder turn = chord
+
 //major, minor, aug, dim triads
 //M7, m7, dom7, M/m7, Dim 7, half dim 7
+// red, green, yellow, blue
+// pink, aqua, white, - red, red red, green red
 
 #include "DaisyDuino.h"
 
@@ -100,8 +106,8 @@ void UpdateEncoder() {
 }
 
 void UpdateKnobs() {
-  int freq = (analogRead(PIN_POD_POT_1) / 1023) * 127;
-  int inversion = (analogRead(PIN_POD_POT_2) / 1023) * 5;  
+  int freq = 127 * analogRead(PIN_POD_POT_1) / 1023;
+  int inversion = 5 * analogRead(PIN_POD_POT_2) / 1023;  
 
   notes[0] = freq + (12 * (inversion >= 1));
   notes[1] = freq + chord[chordNum][0] + (12 * (inversion >= 2));
@@ -110,8 +116,9 @@ void UpdateKnobs() {
 }
 
 void UpdateLeds() {
-  hw.leds[0].Set(chordNum & 1, chordNum & 2, chordNum & 4);
-  hw.leds[1].Set(chordNum > 3, 0, 0);
+  int tmp = chordNum + 1;
+  hw.leds[0].Set(tmp & 1, tmp & 2, tmp & 4);
+  hw.leds[1].Set(tmp & 8, 0, 0);
 }
 
 void UpdateControls() {
