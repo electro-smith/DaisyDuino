@@ -33,7 +33,7 @@ void AudioCallback(float **in, float **out, size_t size) {
   ProcessControls();
 
   // audio
-  for (size_t i = 0; i < size; i += 2) {
+  for (size_t i = 0; i < size; i ++) {
     snr_env_out = snareEnv.Process();
     kck_env_out = kickVolEnv.Process();
 

@@ -14,7 +14,7 @@ bool gate;
 
 static void AudioCallback(float **in, float **out, size_t size) {
   float osc_out, jitter_out;
-  for (size_t i = 0; i < size; i += 2) {
+  for (size_t i = 0; i < size; i++) {
     // Use jitter to control the amplitude of the oscillator.
     jitter_out = jitter.Process();
     osc.SetAmp(jitter_out);

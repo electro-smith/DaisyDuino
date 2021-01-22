@@ -35,7 +35,7 @@ static void AudioCallback(float **in, float **out, size_t size) {
 
   // Audio Loop
   sig = 0;
-  for (size_t i = 0; i < size; i += 2) {
+  for (size_t i = 0; i < size; i++) {
     NextSamples(sig);
 
     out[0][i] = sig;

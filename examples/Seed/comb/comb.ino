@@ -8,7 +8,7 @@ float buf[9600];
 
 static void AudioCallback(float **in, float **out, size_t size) {
   float output;
-  for (size_t i = 0; i < size; i += 2) {
+  for (size_t i = 0; i < size; i++) {
     output = noise.Process();
 
     output = 0.5 * flt.Process(output);

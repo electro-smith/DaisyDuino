@@ -6,7 +6,7 @@ Oscillator lfo1, lfo2, lfo3;
 
 static void AudioCallback(float **in, float **out, size_t size) {
   float output;
-  for (size_t i = 0; i < size; i += 2) {
+  for (size_t i = 0; i < size; i++) {
     float lfo1out = lfo1.Process();
     float lfo2out = lfo2.Process();
     float lfo3out = lfo3.Process();

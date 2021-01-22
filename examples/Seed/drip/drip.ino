@@ -13,7 +13,7 @@ bool gate;
 static void AudioCallback(float **in, float **out, size_t size) {
   float output;
   bool trig;
-  for (size_t i = 0; i < size; i += 2) {
+  for (size_t i = 0; i < size; i++) {
     // When the metro ticks, trigger the envelope to start.
     if (tick.Process()) {
       trig = true;

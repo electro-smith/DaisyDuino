@@ -9,7 +9,7 @@ float freqs[3][2] = {{390, 2300}, {610, 1900}, {820, 1530}};
 int idx = 0;
 
 static void AudioCallback(float **in, float **out, size_t size) {
-  for (size_t i = 0; i < size; i += 2) {
+  for (size_t i = 0; i < size; i++) {
     if (tick.Process()) {
       idx = (idx + 1) % 3;
     }

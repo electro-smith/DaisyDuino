@@ -35,7 +35,7 @@ void AudioCallback(float **in, float **out, size_t size) {
   Controls();
 
   // audio
-  for (size_t i = 0; i < size; i += 2) {
+  for (size_t i = 0; i < size; i ++) {
     inl = in[i];
     inr = in[i + 1];
 

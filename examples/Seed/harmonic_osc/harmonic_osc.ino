@@ -9,7 +9,7 @@ float scale[] = {55.f, 65.41f, 73.42f, 82.41f, 98.f, 110.f};
 int note = 0;
 
 static void AudioCallback(float **in, float **out, size_t size) {
-  for (size_t i = 0; i < size; i += 2) {
+  for (size_t i = 0; i < size; i++) {
     // retrig env on EOC and go to next note
     if (!env.GetCurrentSegment()) {
       env.Trigger();

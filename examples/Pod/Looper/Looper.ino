@@ -25,7 +25,7 @@ static void AudioCallback(float **in, float **out, size_t size) {
 
   Controls();
 
-  for (size_t i = 0; i < size; i += 2) {
+  for (size_t i = 0; i < size; i++) {
     NextSamples(output, in, i);
 
     // left and right outs
@@ -60,7 +60,7 @@ void ResetBuffer() {
 
 void UpdateButtons() {
   // button1 pressed
-  if (pod.button2.RisingEdge()) {
+  if (pod.buttons[1].RisingEdge()) {
     if (first && rec) {
       first = false;
       mod = len;
@@ -73,13 +73,13 @@ void UpdateButtons() {
   }
 
   // button1 held
-  if (pod.button2.TimeHeldMs() >= 1000 && res) {
+  if (pod.buttons[1].TimeHeldMs() >= 1000 && res) {
     ResetBuffer();
     res = false;
   }
 
   // button2 pressed and not empty buffer
-  if (pod.button1.RisingEdge() && !(!rec && first)) {
+  if (pod.buttons[0].RisingEdge() && !(!rec && first)) {
     play = !play;
     rec = false;
   }
@@ -87,18 +87,15 @@ void UpdateButtons() {
 
 // Deals with analog controls
 void Controls() {
-  pod.ProcessAnalogControls();
-  pod.ProcessDigitalControls();
+  pod.DebounceControls();
 
   drywet = pod.knob1.Process();
 
   UpdateButtons();
 
   // leds
-  pod.led1.Set(0, play == true, 0);
-  pod.led2.Set(rec == true, 0, 0);
-
-  pod.UpdateLeds();
+  pod.leds[0].Set(0, play == true, 0);
+  pod.leds[1].Set(rec == true, 0, 0);
 }
 
 void WriteBuffer(float *in, size_t i) {

@@ -25,7 +25,7 @@ static void AudioCallback(float **in, float **out, size_t size) {
   }
 
   // Audio Loop
-  for (size_t i = 0; i < size; i += 2) {
+  for (size_t i = 0; i < size; i ++) {
     float sig = 0;
     for (int i = 0; i < 4; i++) {
       sig += osc[i].Process();
