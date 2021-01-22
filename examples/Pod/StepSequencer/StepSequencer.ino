@@ -1,10 +1,23 @@
+// Encoder press: Edit / Play mode.
+
+//Edit mode:
+//Encoder turn = step
+//Knob 1 = Decay Time
+//Knob 2 = Pitch
+//Button 1 = Cycling. Led = Step #
+//Button 2 = active.  Green = active
+
+//Play mode:
+//Encoder turn = waveform select
+//Knob 1 = tempo
+//Knob 2 = filter cutoff
+
 #include "DaisyDuino.h"
 
-DaisyHardware Pod;
+DaisyHardware pod;
 
 Oscillator osc;
 AdEnv env;
-Parameter decayTimeParam, pitchParam, tickFreqParam, filterFreqParam;
 Metro tick;
 MoogLadder flt;
 
@@ -17,7 +30,6 @@ float pitch[8];
 bool active[8];
 float env_out;
 
-Color colors[8];
 float pent[] = {110.f, 128.33f, 146.66f, 174.166f, 192.5f};
 
 float oldk1, oldk2;
@@ -45,7 +57,7 @@ static void AudioCallback(float **in, float **out, size_t size) {
 
 void setup() {
   float sample_rate;
-  pod = DAISY.Init(DAISY_POD, AUDIO_SR_48K);
+  pod = DAISY.init(DAISY_POD, AUDIO_SR_48K);
   sample_rate = DAISY.get_samplerate();
   tickFrequency = 3.f;
   filterFrequency = 20000.f;
@@ -55,12 +67,6 @@ void setup() {
   env.Init(sample_rate);
   tick.Init(3, sample_rate);
   flt.Init(sample_rate);
-
-  // Set up parameters
-  decayTimeParam.Init(pod.knob1, .03, 1, decayTimeParam.LINEAR);
-  pitchParam.Init(pod.knob2, 0, 10, pitchParam.LINEAR);
-  tickFreqParam.Init(pod.knob1, 4, 13, tickFreqParam.LINEAR);
-  filterFreqParam.Init(pod.knob2, 100, 10000, filterFreqParam.LOGARITHMIC);
 
   // Osc parameters
   osc.SetWaveform(osc.WAVE_TRI);
@@ -86,9 +92,7 @@ void setup() {
     dec[i] = .5;
     active[i] = false;
     pitch[i] = 110;
-    colors[i].Init((Color::PresetColor)i);
   }
-  colors[7].Init(1, 1, 0);
 
   DAISY.begin(AudioCallback);
 }
@@ -125,31 +129,31 @@ void UpdateEncoderIncrement() {
 
 void UpdateButtons() {
   if (edit) {
-    if (pod.button2.RisingEdge()) {
+    if (pod.buttons[1].RisingEdge()) {
       active[step] = !active[step];
     }
-    if (pod.button1.RisingEdge()) {
+    if (pod.buttons[0].RisingEdge()) {
       editCycle = !editCycle;
     }
   }
 }
 
 void UpdateKnobs() {
-  k1 = pod.knob1.Process();
-  k2 = pod.knob2.Process();
+  k1 = analogRead(PIN_POD_POT_1) / 1023.f;
+  k2 = analogRead(PIN_POD_POT_2) / 1023.f;
 
   if (edit) {
-    ConditionalParameter(oldk1, k1, dec[step], decayTimeParam.Process());
+    ConditionalParameter(oldk1, k1, dec[step], k1 * .97f + .03f);
 
-    int temp = (int)pitchParam.Process();
+    int temp = (int)(k2 * 10);
     ConditionalParameter(oldk2, k2, pitch[step],
                          pent[temp % 5] * (temp / (int)5 + 1));
     osc.SetFreq(pitch[step]);
   }
 
   else {
-    ConditionalParameter(oldk1, k1, tickFrequency, tickFreqParam.Process());
-    ConditionalParameter(oldk2, k2, filterFrequency, filterFreqParam.Process());
+    ConditionalParameter(oldk1, k1, tickFrequency, k1 * 9.f + 4.f);
+    ConditionalParameter(oldk2, k2, filterFrequency, k2 * 9900.f + 100.f);
 
     tick.SetFreq(tickFrequency);
     flt.SetFreq(filterFrequency);
@@ -160,33 +164,29 @@ void UpdateKnobs() {
 }
 
 void UpdateLedEdit() {
-  Color cur_color = colors[step];
-  pod.led1.SetColor(cur_color);
+  int tmp = step + 1;
+  pod.leds[0].Set(tmp & 1, tmp & 2, tmp & 4);
 
   if (active[step]) {
-    pod.led2.SetColor(cur_color);
+    pod.leds[1].Set(0, 1, 0);
   }
 
   else {
-    pod.led2.Set(0, 0, 0);
+    pod.leds[1].Set(0, 0, 0);
   }
-
-  pod.UpdateLeds();
 }
 
 void UpdateLeds() {
   if (edit) {
     UpdateLedEdit();
   } else {
-    pod.led2.Set(0, env_out, 0);
-    pod.led1.Set(0, env_out, 0);
+    pod.leds[1].Set(0, env_out, 0);
+    pod.leds[0].Set(0, env_out, 0);
   }
-  pod.UpdateLeds();
 }
 
 void Controls() {
-  pod.ProcessDigitalControls();
-  pod.ProcessAnalogControls();
+  pod.DebounceControls();
 
   UpdateEncoderPressed();
 
