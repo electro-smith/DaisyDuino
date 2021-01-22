@@ -1,6 +1,12 @@
+// Ctrl 1-4: Gate in 1-4
+// Encoder turn: Navigate menu
+// Encoder Press: Invert input, select gate type
+// CV Out 1-2: Gate outputs
 
 #include "DaisyDuino.h"
 #include <string>
+#include <U8g2lib.h>
+U8G2_SSD1309_128X64_NONAME2_F_4W_SW_SPI oled(U8G2_R0, 8, 10, 7, 9, 30);
 
 DaisyHardware patch;
 
@@ -35,11 +41,9 @@ int menuPos;      // 6 positions
 bool inSubMenu;   // only on gate types
 int cursorPos[6]; // x positions for the OLED cursor
 
-bool CvToBool(float in) { return in > .8f; }
 int mod(int x, int m) { return (x % m + m) % m; }
 
 void ProcessControls();
-void ProcessOled();
 void ProcessOutputs();
 
 void InitGateNames() {
@@ -60,9 +64,15 @@ void InitCursorPos() {
   cursorPos[5] = 117;
 }
 
-int main(void) {
-  patch = DAISY.init(
-      DAISY_PATCH, AUDIO_SR_48K); // Initialize hardware (daisy seed, and patch)
+//just using this so the controls interrupt the oled
+static void AudioCallback(float **in, float **out, size_t size) {
+  ProcessControls();
+  ProcessOutputs();
+}
+
+
+void setup(){
+  patch = DAISY.init(DAISY_PATCH, AUDIO_SR_48K);
 
   InitGateNames();
   InitCursorPos();
@@ -74,11 +84,42 @@ int main(void) {
   isInverted[0] = isInverted[1] = false;
   isInverted[2] = isInverted[3] = false;
 
-  while (1) {
-    ProcessControls();
-    ProcessOled();
-    ProcessOutputs();
+  oled.setFont(u8g2_font_t0_12_mf);
+  oled.setFontDirection(0);
+  oled.setFontMode(1);
+  oled.begin();
+
+  DAISY.begin(AudioCallback);
+}
+
+void loop() 
+{
+  oled.clearBuffer();
+
+  std::string str;
+  char *cstr = &str[0];
+
+  str = "Logic";
+  oled.drawStr(0, 8, cstr);
+
+  // dashes or spaces, depending on negation
+  std::string negStr[4];
+  for (int i = 0; i < 4; i++) {
+    negStr[i] = isInverted[i] ? "-" : " ";
   }
+
+  // gates and inputs, with negations
+  str = negStr[0] + "1" + gateNames[gates[0].gateType] + negStr[1] + "2";
+  oled.drawStr(0, 43, cstr);
+
+  str = negStr[2] + "3" + gateNames[gates[1].gateType] + negStr[3] + "4";
+  oled.drawStr(70, 43, cstr);
+
+  // Cursor
+  str = inSubMenu ? "@" : "o";
+  oled.drawStr(cursorPos[menuPos], 33, cstr);
+
+  oled.sendBuffer();
 }
 
 void ProcessIncrement(int increment) {
@@ -134,12 +175,13 @@ void ProcessEncoder() {
 }
 
 void ProcessControls() {
-  patch.ProcessAnalogControls();
-  patch.ProcessDigitalControls();
+  patch.DebounceControls();
+
+  int ctrls[4] = {PIN_PATCH_CTRL_1, PIN_PATCH_CTRL_2, PIN_PATCH_CTRL_3, PIN_PATCH_CTRL_4};
 
   // inputs
-  for (int i = 0; i < 4; i++) {
-    inputs[i] = CvToBool(patch.controls[i].Process());
+  for (int i = 0; i < 4; i++) {    
+    inputs[i] = analogRead(ctrls[i]) < 204; //ctrls read from 1023 - 0
 
     // invert the input if isInverted says so
     inputs[i] = isInverted[i] ? !inputs[i] : inputs[i];
@@ -149,39 +191,6 @@ void ProcessControls() {
 }
 
 void ProcessOutputs() {
-  dsy_dac_write(DSY_DAC_CHN1, gates[0].Process(inputs[0], inputs[1]) * 4095);
-  dsy_dac_write(DSY_DAC_CHN2, gates[1].Process(inputs[2], inputs[3]) * 4095);
-}
-
-void ProcessOled() {
-  patch.display.Fill(false);
-
-  std::string str;
-  char *cstr = &str[0];
-
-  patch.display.SetCursor(0, 0);
-  str = "Logic";
-  patch.display.WriteString(cstr, Font_7x10, true);
-
-  // dashes or spaces, depending on negation
-  std::string negStr[4];
-  for (int i = 0; i < 4; i++) {
-    negStr[i] = isInverted[i] ? "-" : " ";
-  }
-
-  // gates and inputs, with negations
-  patch.display.SetCursor(0, 35);
-  str = negStr[0] + "1" + gateNames[gates[0].gateType] + negStr[1] + "2";
-  patch.display.WriteString(cstr, Font_6x8, true);
-
-  patch.display.SetCursor(70, 35);
-  str = negStr[2] + "3" + gateNames[gates[1].gateType] + negStr[3] + "4";
-  patch.display.WriteString(cstr, Font_6x8, true);
-
-  // Cursor
-  patch.display.SetCursor(cursorPos[menuPos], 25);
-  str = inSubMenu ? "@" : "o";
-  patch.display.WriteString(cstr, Font_6x8, true);
-
-  patch.display.Update();
+  analogWrite(PIN_PATCH_CV_1, gates[0].Process(inputs[0], inputs[1]) * 255.f);
+  analogWrite(PIN_PATCH_CV_2, gates[1].Process(inputs[2], inputs[3]) * 255.f);
 }
