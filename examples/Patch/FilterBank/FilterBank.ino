@@ -1,23 +1,13 @@
-// Title: FilterBank
-// Description: Fixed Resonant Filter Bank
-// Hardware: Daisy Patch
-// Author: Ben Sergentanis
-// Diagram: https://raw.githubusercontent.com/electro-smith/DaisyExamples/master/patch/FilterBank/resources/FilterBank.png
-// Controls
-// Ctrls 1-4: Change the amplitude of the currently selected filter
-// Encoder: Switch between 4 sets of filters to map to the controls
-// The other filter will remember their last settings after you scroll away and keep working
+#include "daisysp.h"
+#include "daisy_patch.h"
+#include <string>
 
-#include <U8g2lib.h>
-#include "DaisyDuino.h"
+using namespace daisy;
+using namespace daisysp;
 
-DaisyHardware patch;
+DaisyPatch patch;
+int        freqs[16];
 
-//oled
-U8X8_SSD1309_128X64_NONAME0_4W_SW_SPI oled(/* clock=*/ 8, /* data=*/ 10, /* cs=*/ 7, /* dc=*/ 9, /* reset=*/ 30);  
-int num_channels;
-
-int freqs[16];
 int bank;
 
 struct ConditionalUpdate
@@ -26,22 +16,23 @@ struct ConditionalUpdate
 
     bool Process(float newVal)
     {
-        if (abs(newVal - oldVal) > .04)
-  {
-      oldVal = newVal;
-      return true;
-  }
-  
-  return false;
+        if(abs(newVal - oldVal) > .04)
+        {
+            oldVal = newVal;
+            return true;
+        }
+
+        return false;
     }
 };
 
 ConditionalUpdate condUpdates[4];
 
-struct Filter{
-    Svf filt;
+struct Filter
+{
+    Svf   filt;
     float amp;
-    
+
     void Init(float samplerate, float freq)
     {
         filt.Init(samplerate);
@@ -50,7 +41,7 @@ struct Filter{
         filt.SetFreq(freq);
         amp = .5f;
     }
-    
+
     float Process(float in)
     {
         filt.Process(in);
@@ -59,35 +50,34 @@ struct Filter{
 };
 
 Filter filters[16];
-uint8_t controls[4];
 
 static void AudioCallback(float **in, float **out, size_t size)
 {
-    for (size_t i = 0; i < size; i++)
+    for(size_t i = 0; i < size; i++)
     {
         float sig = 0.f;
-        for (int j = 0; j < 16; j++)
+        for(int j = 0; j < 16; j++)
         {
             sig += filters[j].Process(in[0][i]);
         }
         sig *= .06;
-  
+
         out[0][i] = out[1][i] = out[2][i] = out[3][i] = sig;
     }
 }
 
 void InitFreqs()
 {
-    freqs[0] = 50;
-    freqs[1] = 75;
-    freqs[2] = 110;
-    freqs[3] = 150;
-    freqs[4] = 220;
-    freqs[5] = 350;
-    freqs[6] = 500;
-    freqs[7] = 750;
-    freqs[8] = 1100;
-    freqs[9] = 1600;
+    freqs[0]  = 50;
+    freqs[1]  = 75;
+    freqs[2]  = 110;
+    freqs[3]  = 150;
+    freqs[4]  = 220;
+    freqs[5]  = 350;
+    freqs[6]  = 500;
+    freqs[7]  = 750;
+    freqs[8]  = 1100;
+    freqs[9]  = 1600;
     freqs[10] = 2200;
     freqs[11] = 3600;
     freqs[12] = 5200;
@@ -98,88 +88,85 @@ void InitFreqs()
 
 void InitFilters(float samplerate)
 {
-    for (int i = 0; i < 16; i++)
+    for(int i = 0; i < 16; i++)
     {
         filters[i].Init(samplerate, freqs[i]);
     }
 }
 
-void setup()
+void UpdateOled();
+void UpdateControls();
+
+int main(void)
 {
     float samplerate;
-    patch = DAISY.init(DAISY_PATCH, AUDIO_SR_48K); 
-    num_channels = patch.num_channels;
-    samplerate = DAISY.get_samplerate();
+    patch.Init(); // Initialize hardware (daisy seed, and patch)
+    samplerate = patch.AudioSampleRate();
 
     InitFreqs();
     InitFilters(samplerate);
     bank = 0;
 
-    controls[0] = PIN_PATCH_CTRL_1;
-    controls[1] = PIN_PATCH_CTRL_2;
-    controls[2] = PIN_PATCH_CTRL_3;
-    controls[3] = PIN_PATCH_CTRL_4;
-   
-    oled.setFont(u8x8_font_chroma48medium8_r);
-    oled.begin();
-    UpdateOled();
-    
-    DAISY.begin(AudioCallback);
-}
-
-void loop()
-{
-    UpdateControls();
+    patch.StartAdc();
+    patch.StartAudio(AudioCallback);
+    while(1)
+    {
+        UpdateOled();
+        UpdateControls();
+    }
 }
 
 void UpdateOled()
 {
-    oled.clear();
+    patch.display.Fill(false);
 
-    oled.drawString(0, 0, "FilterBank");
-
-    String str = "";
-    for (int i = 0; i < 2; i++)
-    {
-        str += String(freqs[i + 4 * bank]);
-        str += "  ";
-    }
-
-    char* cstr = &str[0];
-    oled.drawString(0,2,cstr);
+    std::string str  = "Filter Bank";
+    char *      cstr = &str[0];
+    patch.display.SetCursor(0, 0);
+    patch.display.WriteString(cstr, Font_7x10, true);
 
     str = "";
-    for (int i = 2; i < 4; i++)
+    for(int i = 0; i < 2; i++)
     {
-        str += String(freqs[i + 4 * bank]);
+        str += std::to_string(freqs[i + 4 * bank]);
         str += "  ";
     }
-    cstr = &str[0];
-    oled.drawString(0,4,cstr);
+
+    patch.display.SetCursor(0, 25);
+    patch.display.WriteString(cstr, Font_7x10, true);
+
+    str = "";
+    for(int i = 2; i < 4; i++)
+    {
+        str += std::to_string(freqs[i + 4 * bank]);
+        str += "  ";
+    }
+
+    patch.display.SetCursor(0, 35);
+    patch.display.WriteString(cstr, Font_7x10, true);
+
+
+    patch.display.Update();
 }
 
 void UpdateControls()
 {
-    patch.DebounceControls();
-    
+    patch.ProcessAnalogControls();
+    patch.ProcessDigitalControls();
+
     //encoder
-    int inc = patch.encoder.Increment();
-    bank += inc;
+    bank += patch.encoder.Increment();
     bank = (bank % 4 + 4) % 4;
 
-    bool edge = patch.encoder.RisingEdge();
-    bank = edge ? 0 : bank;
+    bank = patch.encoder.RisingEdge() ? 0 : bank;
 
     //controls
-    for (int i = 0 ; i < 4; i++)
+    for(int i = 0; i < 4; i++)
     {
-        float val = (1023.f - analogRead(controls[i])) / 1023.f;
-        if (condUpdates[i].Process(val))
+        float val = patch.controls[i].Process();
+        if(condUpdates[i].Process(val))
         {
             filters[i + bank * 4].amp = val;
         }
     }
-
-    if (edge || inc != 0)
-        UpdateOled();
 }
