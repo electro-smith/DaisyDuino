@@ -78,7 +78,7 @@ void AudioCallback(float **in, float **out, size_t size) {
 int main(void) {
   // Init everything.
   float samplerate;
-  hw = DAISY.Init(DAISY_PATCH, AUDIO_SR_48K);
+  hw = DAISY.init(DAISY_PATCH, AUDIO_SR_48K);
   samplerate = DAISY.get_samplerate();
 
   // briefly display the module name

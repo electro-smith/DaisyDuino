@@ -72,7 +72,7 @@ void UpdateOled();
 
 int main(void) {
   float samplerate;
-  patch = DAISY.Init(
+  patch = DAISY.init(
       DAISY_PATCH, AUDIO_SR_48K); // Initialize hardware (daisy seed, and patch)
   samplerate = DAISY.get_samplerate();
 

@@ -23,7 +23,7 @@ void UpdateOutputs();
 void UpdateOled();
 
 int main(void) {
-  patch = DAISY.Init(DAISY_PATCH, AUDIO_SR_48K);
+  patch = DAISY.init(DAISY_PATCH, AUDIO_SR_48K);
 
   while (1) {
     UpdateControls();

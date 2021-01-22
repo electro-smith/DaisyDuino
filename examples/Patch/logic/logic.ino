@@ -61,7 +61,7 @@ void InitCursorPos() {
 }
 
 int main(void) {
-  patch = DAISY.Init(
+  patch = DAISY.init(
       DAISY_PATCH, AUDIO_SR_48K); // Initialize hardware (daisy seed, and patch)
 
   InitGateNames();
