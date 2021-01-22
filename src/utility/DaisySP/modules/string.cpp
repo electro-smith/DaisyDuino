@@ -5,7 +5,7 @@
 
 using namespace daisysp;
 
-void String::Init(float sample_rate)
+void StringOsc::Init(float sample_rate)
 {
     sample_rate_ = sample_rate;
 
@@ -26,7 +26,7 @@ void String::Init(float sample_rate)
     crossfade_.Init();
 }
 
-void String::Reset()
+void StringOsc::Reset()
 {
     string_.Reset();
     stretch_.Reset();
@@ -40,7 +40,7 @@ void String::Reset()
     src_phase_                      = 0.0f;
 }
 
-float String::Process(const float in)
+float StringOsc::Process(const float in)
 {
     if(non_linearity_amount_ <= 0.0f)
     {
@@ -55,29 +55,29 @@ float String::Process(const float in)
     }
 }
 
-void String::SetFreq(float freq)
+void StringOsc::SetFreq(float freq)
 {
     freq /= sample_rate_;
     frequency_ = fclamp(freq, 0.f, .25f);
 }
 
-void String::SetNonLinearity(float non_linearity_amount)
+void StringOsc::SetNonLinearity(float non_linearity_amount)
 {
     non_linearity_amount_ = fclamp(non_linearity_amount, 0.f, 1.f);
 }
 
-void String::SetBrightness(float brightness)
+void StringOsc::SetBrightness(float brightness)
 {
     brightness_ = fclamp(brightness, 0.f, 1.f);
 }
 
-void String::SetDamping(float damping)
+void StringOsc::SetDamping(float damping)
 {
     damping_ = fclamp(damping, 0.f, 1.f);
 }
 
 template <StringNonLinearity non_linearity>
-float String::ProcessInternal(const float in)
+float StringOsc::ProcessInternal(const float in)
 {
     float brightness = brightness_;
 

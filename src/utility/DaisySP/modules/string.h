@@ -34,11 +34,11 @@ enum StringNonLinearity
 	   to an independent module. \n
 	   Original code written by Emilie Gillet in 2016. \n
 */
-class String
+class StringOsc
 {
   public:
-    String() {}
-    ~String() {}
+    StringOsc() {}
+    ~StringOsc() {}
 
     /** Initialize the module.
 		\param sample_rate Audio engine sample rate
