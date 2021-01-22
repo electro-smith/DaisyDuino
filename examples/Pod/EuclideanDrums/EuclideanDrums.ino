@@ -1,3 +1,9 @@
+// encoder turn = snare or kick. Led 2 green = kick, blue = snare
+// Knob 1 Pattern density
+// Knob 2 Pattern Length. 1-32 steps
+// Buttons 1-2. Hold to increase / decrease tempo.
+// Led 1 = tempo. Cycles through colors as tempo changes.
+
 #include "DaisyDuino.h"
 
 #define UINT32_MSB 0x80000000U
@@ -10,7 +16,6 @@ WhiteNoise noise;
 
 AdEnv kickVolEnv, kickPitchEnv, snareEnv;
 Metro tick;
-Parameter lengthParam;
 
 bool kickSeq[MAX_LENGTH];
 bool snareSeq[MAX_LENGTH];
@@ -81,14 +86,12 @@ void setup() {
   hardware = DAISY.init(DAISY_POD, AUDIO_SR_48K);
 
   float samplerate = DAISY.get_samplerate();
-  float callbackrate = hardware.AudioCallbackRate();
+  float callbackrate = DAISY.get_callbackrate();
 
   // setup the drum sounds
   SetupDrums(samplerate);
 
   tick.Init(5, callbackrate);
-
-  lengthParam.Init(hardware.knob2, 1, 32, lengthParam.LINEAR);
 
   SetSeq(snareSeq, 0);
   SetSeq(kickSeq, 0);
@@ -189,7 +192,7 @@ uint8_t mode = 0;
 void UpdateEncoder() {
   mode += hardware.encoder.Increment();
   mode = (mode % 2 + 2) % 2;
-  hardware.led2.Set(0, !mode, mode);
+  hardware.leds[1].Set(0, !mode, mode);
 }
 
 void ConditionalParameter(float o, float n, float &param, float update) {
@@ -201,15 +204,15 @@ void ConditionalParameter(float o, float n, float &param, float update) {
 float snareAmount, kickAmount = 0.f;
 float k1old, k2old = 0.f;
 void UpdateKnobs() {
-  float k1 = hardware.knob1.Process();
-  float k2 = hardware.knob2.Process();
+  float k1 = (float)analogRead(PIN_POD_POT_1) / 1023.f;
+  float k2 = (float)analogRead(PIN_POD_POT_2) / 1023;
 
   if (mode) {
     ConditionalParameter(k1old, k1, snareAmount, k1);
-    ConditionalParameter(k2old, k2, snareLength, lengthParam.Process());
+    ConditionalParameter(k2old, k2, snareLength, k2 * 32.f);
   } else {
     ConditionalParameter(k1old, k1, kickAmount, k1);
-    ConditionalParameter(k2old, k2, kickLength, lengthParam.Process());
+    ConditionalParameter(k2old, k2, kickLength, k2 * 32.f);
   }
 
   k1old = k1;
@@ -218,11 +221,11 @@ void UpdateKnobs() {
 
 float tempo = 3;
 void UpdateButtons() {
-  if (hardware.button2.Pressed()) {
+  if (hardware.buttons[1].Pressed()) {
     tempo += .003;
   }
 
-  else if (hardware.button1.Pressed()) {
+  else if (hardware.buttons[0].Pressed()) {
     tempo -= .003;
   }
 
@@ -230,7 +233,8 @@ void UpdateButtons() {
   tempo = std::fmaxf(.5f, tempo);
 
   tick.SetFreq(tempo);
-  hardware.led1.Set(tempo / 10.f, 0, 0);
+  int tmp = (int)(tempo * .6f) + 1;
+  hardware.leds[0].Set(tmp & 1, tmp & 2, tmp & 4);
 }
 
 void UpdateVars() {
@@ -239,8 +243,7 @@ void UpdateVars() {
 }
 
 void ProcessControls() {
-  hardware.ProcessDigitalControls();
-  hardware.ProcessAnalogControls();
+  hardware.DebounceControls();
 
   UpdateEncoder();
 
@@ -249,6 +252,4 @@ void ProcessControls() {
   UpdateButtons();
 
   UpdateVars();
-
-  hardware.UpdateLeds();
 }
