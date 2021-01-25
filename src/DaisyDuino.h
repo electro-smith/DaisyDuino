@@ -9,7 +9,8 @@
 #include "DaisyDSP.h"
 #include "daisy_pod.h"
 #include "daisy_patch.h"
-#include "utility/dev_sdram.h"
+#include "utility/audio.h"
+#include "utility/sdram.h"
 
 enum DaisyDuinoDevice {
     DAISY_SEED,
@@ -259,11 +260,14 @@ class AudioClass
         AudioClass();
 
         // Initializes the audio for the given platform, and returns a DaisyHardware object
-        DaisyHardware init(DaisyDuinoDevice device, DaisyDuinoSampleRate sr);
+		//default samplerate is 48kHz
+        DaisyHardware init(DaisyDuinoDevice device, DaisyDuinoSampleRate sr = AUDIO_SR_48K);
         void begin(DaisyDuinoCallback cb);
         void end();
         float get_samplerate();
  	inline float get_callbackrate() { return get_samplerate() / _blocksize; }
+	
+	AudioHandle audio_handle;
 	
     private:
         size_t _blocksize;
