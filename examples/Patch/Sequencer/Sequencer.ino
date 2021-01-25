@@ -1,6 +1,13 @@
+// Gate In 1-2: Trigger either (or both) to advance sequencer.
+// Gate Out: Outputs triggers on x'd steps (second menu row)
+// CV Out: Outputs current step CV. (first menu row).
+// Encoder: Use to navigate menu, set levels and triggers.
 
 #include "DaisyDuino.h"
 #include <string>
+#include <U8g2lib.h>
+
+U8G2_SSD1309_128X64_NONAME2_F_4W_SW_SPI oled(U8G2_R0, 8, 10, 7, 9, 30);
 
 DaisyHardware patch;
 
@@ -12,38 +19,12 @@ bool trigOut;
 int menuPos;
 bool inSubMenu;
 
-void UpdateControls();
-void UpdateOled();
-void UpdateOutputs();
-
-int main(void) {
-  patch = DAISY.init(
-      DAISY_PATCH, AUDIO_SR_48K); // Initialize hardware (daisy seed, and patch)
-
-  // init global vars
-  stepNumber = 0;
-  trigOut = false;
-  menuPos = 0;
-  inSubMenu = false;
-
-  for (int i = 0; i < 5; i++) {
-    values[i] = 0.f;
-    trigs[i] = false;
-  }
-
-  while (1) {
-    UpdateControls();
-    UpdateOled();
-    UpdateOutputs();
-  }
-}
-
-void UpdateControls() {
-  patch.ProcessAnalogControls();
-  patch.ProcessDigitalControls();
+//just used to get controls and outputs in callback apart from OLED code
+void Callback(float **in, float **out, size_t size){
+  //controls
+  patch.DebounceControls();
 
   // encoder
-  // can we simplify the menu logic?
   if (!inSubMenu) {
     menuPos += patch.encoder.Increment();
     menuPos = (menuPos % 10 + 10) % 10;
@@ -59,49 +40,67 @@ void UpdateControls() {
   else {
     values[menuPos] += patch.encoder.Increment();
     values[menuPos] = values[menuPos] < 0.f ? 0.f : values[menuPos];
-    values[menuPos] = values[menuPos] > 60.f ? 60.f : values[menuPos];
+    values[menuPos] = values[menuPos] > 59.f ? 59.f : values[menuPos];
     inSubMenu = patch.encoder.RisingEdge() ? false : true;
   }
 
   // gate in
-  if (patch.gate_input[0].Trig() || patch.gate_input[1].Trig()) {
+  if (patch.gateIns[0].Trig() || patch.gateIns[1].Trig()) {
     stepNumber++;
     stepNumber %= 5;
     trigOut = trigs[stepNumber];
   }
+
+  //outputs
+  analogWrite(PIN_PATCH_CV_1, round((values[stepNumber] / 12.f) * 51.2)); //51.2 = 256 / 5
+  analogWrite(PIN_PATCH_CV_2, round((values[stepNumber] / 12.f) * 51.2));
+
+  digitalWrite(PIN_PATCH_GATE_OUT, trigOut);
+  trigOut = false;
 }
 
-void UpdateOled() {
-  patch.display.Fill(false);
+void setup(){
+  patch = DAISY.init(DAISY_PATCH, AUDIO_SR_48K);
 
-  std::string str = "!";
-  char *cstr = &str[0];
-  patch.display.SetCursor(25 * stepNumber, 45);
-  patch.display.WriteString(cstr, Font_7x10, true);
+  pinMode(PIN_PATCH_GATE_OUT, OUTPUT);
+
+  // init global vars
+  stepNumber = 0;
+  trigOut = false;
+  menuPos = 0;
+  inSubMenu = false;
+
+  for (int i = 0; i < 5; i++) {
+    values[i] = 0.f;
+    trigs[i] = false;
+  }
+
+  oled.setFont(u8g2_font_t0_12_mf);
+  oled.setFontDirection(0);
+  oled.setFontMode(1);
+  oled.begin();
+  
+  DAISY.begin(Callback);
+}
+void loop(){
+  oled.clearBuffer();
+
+  char cstr[15];
+  sprintf(cstr, "!");
+  oled.drawStr(25 * stepNumber, 53, cstr);
 
   // values and trigs
   for (int i = 0; i < 5; i++) {
     sprintf(cstr, "%d", values[i]);
-    patch.display.SetCursor(i * 25, 10);
-    patch.display.WriteString(cstr, Font_7x10, true);
+    oled.drawStr(i * 25, 18, cstr);
 
-    str = trigs[i % 5] ? "X" : "O";
-    patch.display.SetCursor(i * 25, 30);
-    patch.display.WriteString(cstr, Font_7x10, true);
+    sprintf(cstr, (trigs[i % 5] ? "X" : "O") );
+    oled.drawStr(i * 25, 38, cstr);
   }
 
   // cursor
-  str = inSubMenu ? "@" : "o";
-  patch.display.SetCursor((menuPos % 5) * 25, (menuPos > 4) * 20);
-  patch.display.WriteString(cstr, Font_7x10, true);
+  sprintf(cstr, (inSubMenu ? "@" : "o") );
+  oled.drawStr( (menuPos % 5) * 25, (menuPos > 4) * 20 + 8, cstr);
 
-  patch.display.Update();
-}
-
-void UpdateOutputs() {
-  dsy_dac_write(DSY_DAC_CHN1, round((values[stepNumber] / 12.f) * 819.2f));
-  dsy_dac_write(DSY_DAC_CHN2, round((values[stepNumber] / 12.f) * 819.2f));
-
-  dsy_gpio_write(&patch.gate_output, trigOut);
-  trigOut = false;
+  oled.sendBuffer();
 }
