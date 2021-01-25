@@ -1,9 +1,16 @@
+//Control 1: Threshold
+//Control 2: Ratio
+//Control 3: Attack
+//Control 4: Release
+//Audio In 1: Compressor In
+//Audio In 2: Sidechain In
+//Audio Outs: Compressor Out
 
 #include "DaisyDuino.h"
 #include <string>
 #include <U8g2lib.h>
-U8G2_SSD1309_128X64_NONAME2_F_4W_SW_SPI oled(U8G2_R0, 8, 10, 7, 9, 30);
 
+U8G2_SSD1309_128X64_NONAME2_F_4W_SW_SPI oled(U8G2_R0, 8, 10, 7, 9, 30);
 
 DaisyHardware patch;
 Compressor comp;
@@ -26,8 +33,7 @@ static void AudioCallback(float **in, float **out, size_t size)
     dry_in        = in[0][i] * 2.0f;
     dry_sidechain = in[1][i] * 2.0f;
 
-    sig = isSideChained ? comp.Process(dry_in, dry_sidechain)
-          : comp.Process(dry_in);
+    sig = isSideChained ? comp.Process(dry_in, dry_sidechain) : comp.Process(dry_in);
 
     // Writes output to all four outputs.
     for (size_t chn = 0; chn < 4; chn++)
@@ -79,8 +85,8 @@ void UpdateControls()
   isSideChained = patch.encoder.RisingEdge() ? !isSideChained : isSideChained;
 
   //controls
-  comp.SetThreshold(-80.f + 80.f * analogRead(PIN_PATCH_CTRL_1) / 1023.f); //-80 to 0
-  comp.SetRatio(1.2f + 38.8f * analogRead(PIN_PATCH_CTRL_2) / 1023.f); //1.2 to 40
-  comp.SetAttack(.01f + .99 * analogRead(PIN_PATCH_CTRL_3) / 1023.f); //.01 to .99  
-  comp.SetRelease(.01f + .99 * analogRead(PIN_PATCH_CTRL_4) / 1023.f); //.01 to .99
+  comp.SetThreshold(-80.f + 80.f * (1023 - analogRead(PIN_PATCH_CTRL_1)) / 1023.f); //-80 to 0
+  comp.SetRatio(1.2f + 38.8f * (1023 - analogRead(PIN_PATCH_CTRL_2)) / 1023.f); //1.2 to 40
+  comp.SetAttack(.01f + .99 * (1023 - analogRead(PIN_PATCH_CTRL_3)) / 1023.f); //.01 to .99  
+  comp.SetRelease(.01f + .99 * (1023 - analogRead(PIN_PATCH_CTRL_4)) / 1023.f); //.01 to .99
 }
