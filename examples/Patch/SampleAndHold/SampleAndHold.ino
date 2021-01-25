@@ -1,6 +1,15 @@
+// sample and hold / track and hold
+// 2 circuits are available
+// Gate In 1-2 = Circuit 1-2 Gate In
+// Ctrl 1-2 = Circuit 1-2 Input
+// CV Out 1-2 = Circuit 1-2 out
+// Encoder turn / press to set circuit modes
 
 #include "DaisyDuino.h"
 #include <string>
+#include <U8g2lib.h>
+
+U8G2_SSD1309_128X64_NONAME2_F_4W_SW_SPI oled(U8G2_R0, 8, 10, 7, 9, 30);
 
 DaisyHardware patch;
 
@@ -18,29 +27,17 @@ sampHoldStruct sampHolds[2];
 
 int menuPos;
 
-void UpdateControls();
-void UpdateOutputs();
-void UpdateOled();
+//using this to get controls and outputs in a callback away from oled loop
+void Callback(float **in, float **out, size_t size){
+  //controls
+  patch.DebounceControls();
 
-int main(void) {
-  patch = DAISY.init(DAISY_PATCH, AUDIO_SR_48K);
-
-  while (1) {
-    UpdateControls();
-    UpdateOutputs();
-    UpdateOled();
-  }
-}
-
-void UpdateControls() {
-  patch.ProcessAnalogControls();
-  patch.ProcessDigitalControls();
+  float ctrl1 = (1023 - analogRead(PIN_PATCH_CTRL_1)) / 1023.0;
+  float ctrl2 = (1023 - analogRead(PIN_PATCH_CTRL_2)) / 1023.0;
 
   // read ctrls and gates, then update sampleholds
-  sampHolds[0].Process(patch.gate_input[0].State(),
-                       patch.controls[0].Process());
-  sampHolds[1].Process(patch.gate_input[1].State(),
-                       patch.controls[1].Process());
+  sampHolds[0].Process(patch.gateIns[0].State(), ctrl1);
+  sampHolds[1].Process(patch.gateIns[1].State(), ctrl2);
 
   // encoder
   menuPos += patch.encoder.Increment();
@@ -51,34 +48,42 @@ void UpdateControls() {
     sampHolds[menuPos].mode =
         (SampleHold::Mode)((sampHolds[menuPos].mode + 1) % 2);
   }
+
+  //write to outputs
+  analogWrite(PIN_PATCH_CV_1, sampHolds[0].output * 255.f);
+  analogWrite(PIN_PATCH_CV_2, sampHolds[1].output * 255.f);
 }
 
-void UpdateOutputs() {
-  dsy_dac_write(DSY_DAC_CHN1, sampHolds[0].output * 4095);
-  dsy_dac_write(DSY_DAC_CHN2, sampHolds[1].output * 4095);
+
+void setup(){
+  patch = DAISY.init(DAISY_PATCH, AUDIO_SR_48K);
+
+  oled.setFont(u8g2_font_t0_12_mf);
+  oled.setFontDirection(0);
+  oled.setFontMode(1);
+  oled.begin();
+
+  
+  DAISY.begin(Callback);
 }
 
-void UpdateOled() {
-  patch.display.Fill(false);
+void loop(){
+  oled.clearBuffer();
 
   std::string str = "Sample/Track and Hold";
   char *cstr = &str[0];
-  patch.display.SetCursor(0, 0);
-  patch.display.WriteString(cstr, Font_6x8, true);
+  oled.drawStr(0, 8, cstr);
 
   // Cursor
-  patch.display.SetCursor(menuPos * 60, 25);
   str = "o";
-  patch.display.WriteString(cstr, Font_7x10, true);
+  oled.drawStr(menuPos * 60, 33, cstr);
 
   // two circuits
-  patch.display.SetCursor(0, 35);
   str = sampHolds[0].mode == 0 ? "S&H" : "T&H";
-  patch.display.WriteString(cstr, Font_7x10, true);
-
-  patch.display.SetCursor(60, 35);
+  oled.drawStr(0, 43, cstr);
+  
   str = sampHolds[1].mode == 0 ? "S&H" : "T&H";
-  patch.display.WriteString(cstr, Font_7x10, true);
+  oled.drawStr(60, 43, cstr);
 
-  patch.display.Update();
+  oled.sendBuffer();
 }
