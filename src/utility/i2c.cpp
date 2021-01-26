@@ -561,35 +561,6 @@ void halI2CDmaStreamCallback(void)
         HAL_DMA_IRQHandler(&i2c_handles[I2CHandle::Impl::dma_active_peripheral_]
                                 .i2c_dma_tx_handle_);
 }
-extern "C" void DMA1_Stream6_IRQHandler(void)
-{
-    halI2CDmaStreamCallback();
-}
-
-extern "C" void I2C1_EV_IRQHandler()
-{
-    HAL_I2C_EV_IRQHandler(&i2c_handles[0].i2c_hal_handle_);
-}
-
-extern "C" void I2C2_EV_IRQHandler()
-{
-    HAL_I2C_EV_IRQHandler(&i2c_handles[1].i2c_hal_handle_);
-}
-
-extern "C" void I2C3_EV_IRQHandler()
-{
-    HAL_I2C_EV_IRQHandler(&i2c_handles[2].i2c_hal_handle_);
-}
-
-extern "C" void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef* i2c_handle)
-{
-    I2CHandle::Impl::DmaTransferFinished(i2c_handle, I2CHandle::Result::OK);
-}
-
-extern "C" void HAL_I2C_ErrorCallback(I2C_HandleTypeDef* i2c_handle)
-{
-    I2CHandle::Impl::DmaTransferFinished(i2c_handle, I2CHandle::Result::ERR);
-}
 
 // ======================================================================
 // I2CHandle > I2CHandlePimpl
