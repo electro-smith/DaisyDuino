@@ -1,6 +1,6 @@
 #include "daisy_core.h"
 
-#include "stm32h7xx_hal.h"
+#include <stm32h7xx_hal.h>
 
 // Maps Daisy interface to STM32 HAL --
 // I'd like to get all of this stuff tucked away somewhere inbetween the HAL, and User level

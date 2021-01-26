@@ -176,6 +176,7 @@ void TimerHandle::Impl::DelayUs(uint32_t del)
     DelayTick(del * (GetFreq() / 1000000));
 }
 
+/*
 // HAL Functions
 extern "C"
 {
@@ -218,7 +219,7 @@ extern "C"
             __HAL_RCC_TIM5_CLK_DISABLE();
         }
     }
-}
+}*/
 
 // ISRs and event handlers
 

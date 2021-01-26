@@ -4,6 +4,8 @@
 
 #include "daisy_core.h"
 
+#include "stm32h7xx_hal_sai.h"
+
 namespace daisy
 {
 /** 

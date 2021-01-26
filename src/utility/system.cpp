@@ -63,10 +63,11 @@ typedef void (*EntryPoint)(void);
 //static void MPU_Config();
 static void Error_Handler(void);
 
+/*
 // System Level C functions and IRQ Handlers
 extern "C"
 {
-    void SysTick_Handler(void)
+   void SysTick_Handler(void)
     {
         HAL_IncTick();
         HAL_SYSTICK_IRQHandler();
@@ -79,7 +80,7 @@ extern "C"
         asm("bkpt 255");
 #endif
     }
-}
+}*/
 
 namespace daisy
 {
