@@ -12,6 +12,8 @@
 #include "utility/audio.h"
 #include "utility/sdram.h"
 
+using namespace daisy;
+
 enum DaisyDuinoDevice {
     DAISY_SEED,
     DAISY_POD,

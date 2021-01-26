@@ -1,9 +1,12 @@
 #include "sai.h"
 #include "daisy_core.h"
-extern "C"{
+extern "C"
+{
 #include "hal_map.h"
 }
 
+namespace daisy
+{
 class SaiHandle::Impl
 {
   public:
@@ -542,3 +545,6 @@ size_t SaiHandle::GetOffset() const
 {
     return pimpl_->dma_offset;
 }
+
+
+} // namespace daisy

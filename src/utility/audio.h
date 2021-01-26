@@ -3,7 +3,8 @@
 
 #include "sai.h"
 
-
+namespace daisy
+{
 class AudioHandle
 {
   public:
@@ -96,4 +97,7 @@ class AudioHandle
   private:
     Impl* pimpl_;
 };
+
+} // namespace daisy
+
 #endif

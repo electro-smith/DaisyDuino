@@ -1,5 +1,7 @@
 #include "audio.h"
 
+namespace daisy
+{
 // ================================================================
 // Static Globals
 // ================================================================
@@ -517,3 +519,5 @@ AudioHandle::Result AudioHandle::SetPostGain(float val)
 {
     return pimpl_->SetPostGain(val);
 }
+
+} // namespace daisy

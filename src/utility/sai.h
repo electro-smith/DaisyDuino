@@ -4,6 +4,8 @@
 
 #include "daisy_core.h"
 
+namespace daisy
+{
 /** 
  * Support for I2S Audio Protocol with different bit-depth, samplerate options
  * Allows for master or slave, as well as freedom of selecting direction, 
@@ -158,4 +160,7 @@ class SaiHandle
   private:
     Impl* pimpl_; /**< Private Implementation */
 };
+
+} // namespace daisy
+
 #endif

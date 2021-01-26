@@ -8,6 +8,8 @@
 #define PIN_AK4556_RESET 14
 #define PORT_AK4556_RESET DSY_GPIOB
 
+using namespace daisy;
+
 dsy_gpio ak4556_reset_pin;
 
 AudioClass DAISY;
