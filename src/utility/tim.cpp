@@ -176,53 +176,7 @@ void TimerHandle::Impl::DelayUs(uint32_t del)
     DelayTick(del * (GetFreq() / 1000000));
 }
 
-/*
-// HAL Functions
-extern "C"
-{
-    void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* tim_baseHandle)
-    {
-        if(tim_baseHandle->Instance == TIM2)
-        {
-            __HAL_RCC_TIM2_CLK_ENABLE();
-        }
-        else if(tim_baseHandle->Instance == TIM3)
-        {
-            __HAL_RCC_TIM3_CLK_ENABLE();
-        }
-        else if(tim_baseHandle->Instance == TIM4)
-        {
-            __HAL_RCC_TIM4_CLK_ENABLE();
-        }
-        else if(tim_baseHandle->Instance == TIM5)
-        {
-            __HAL_RCC_TIM5_CLK_ENABLE();
-        }
-    }
-
-    void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* tim_baseHandle)
-    {
-        if(tim_baseHandle->Instance == TIM2)
-        {
-            __HAL_RCC_TIM2_CLK_DISABLE();
-        }
-        else if(tim_baseHandle->Instance == TIM3)
-        {
-            __HAL_RCC_TIM3_CLK_DISABLE();
-        }
-        else if(tim_baseHandle->Instance == TIM4)
-        {
-            __HAL_RCC_TIM4_CLK_DISABLE();
-        }
-        else if(tim_baseHandle->Instance == TIM5)
-        {
-            __HAL_RCC_TIM5_CLK_DISABLE();
-        }
-    }
-}*/
-
 // ISRs and event handlers
-
 // Interface
 
 TimerHandle::Result TimerHandle::Init(const Config& config)
