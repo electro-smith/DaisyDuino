@@ -21,6 +21,9 @@ enum DaisyDuinoDevice {
 };
 
 enum DaisyDuinoSampleRate {
+	AUDIO_SR_8K,
+    AUDIO_SR_16K,
+    AUDIO_SR_32K,
     AUDIO_SR_48K,
     AUDIO_SR_96K,
     AUDIO_SR_LAST,
@@ -261,13 +264,42 @@ class AudioClass
         // Initializes the audio for the given platform, and returns a DaisyHardware object
 		//default samplerate is 48kHz
         DaisyHardware init(DaisyDuinoDevice device, DaisyDuinoSampleRate sr = AUDIO_SR_48K);
-        void begin(DaisyDuinoCallback cb);
-        void end();
-        float get_samplerate();
- 	inline float get_callbackrate() { return get_samplerate() / _blocksize; }
-	
-	AudioHandle audio_handle;
-	
+        
+		/** for bwd compatibility */
+		void begin(DaisyDuinoCallback cb);
+
+		/** for bwd compatibility */			
+		void end();
+
+		/** for bwd compatibility */			
+		float get_samplerate();
+			
+		/** for bwd compatibility */			
+		inline float get_callbackrate() { return get_samplerate() / _blocksize; }
+		
+		void StartAudio(AudioHandle::InterleavingAudioCallback cb);
+
+		void StartAudio(AudioHandle::AudioCallback cb);
+
+		void ChangeAudioCallback(AudioHandle::InterleavingAudioCallback cb);
+
+		void ChangeAudioCallback(AudioHandle::AudioCallback cb);
+
+		void StopAudio();
+
+		void SetAudioSampleRate(SaiHandle::Config::SampleRate samplerate);
+
+		float AudioSampleRate();
+
+		void SetAudioBlockSize(size_t blocksize);
+
+		size_t AudioBlockSize();
+
+		float AudioCallbackRate() const;
+		
+		
+		AudioHandle audio_handle;
+		
     private:
         size_t _blocksize;
         DaisyDuinoSampleRate _samplerate;

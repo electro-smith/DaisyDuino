@@ -32,7 +32,29 @@ void AudioClass::ConfigureSdram()
 DaisyHardware AudioClass::init(DaisyDuinoDevice device, DaisyDuinoSampleRate sr)
 {
 	//convert DaisyDuino sr to SaiHandle sr to ensure bwd compatibility
-	SaiHandle::Config::SampleRate sample_rate = SaiHandle::Config::SampleRate::SAI_48KHZ;
+	SaiHandle::Config::SampleRate sample_rate;
+	
+	switch(_samplerate)
+    {
+        case AUDIO_SR_8K:
+            sample_rate = SAI_8KHZ;
+			break;
+        case AUDIO_SR_16K:
+            sample_rate = SAI_16KHZ;
+			break;
+        case AUDIO_SR_32K:
+            sample_rate = SAI_32KHZ;
+			break;
+        case AUDIO_SR_48K:
+            sample_rate = SAI_48KHZ;
+			break;
+        case AUDIO_SR_96K:
+            sample_rate = SAI_96KHZ;
+			break;
+        default:
+			sample_rate_ = SAI_48KHZ;
+    }
+
 	
     // Set Audio Device, num channels, etc.
     // Only difference is Daisy Patch has second AK4556 and 4 channels
@@ -127,11 +149,51 @@ void AudioClass::end()
 	audio_handle.Stop();
 }
 
+void AudioClass::StartAudio(AudioHandle::InterleavingAudioCallback cb){
+}
+
+void AudioClass::StartAudio(AudioHandle::AudioCallback cb){
+}
+
+void AudioClass::ChangeAudioCallback(AudioHandle::InterleavingAudioCallback cb){
+}
+
+void AudioClass::ChangeAudioCallback(AudioHandle::AudioCallback cb){
+}
+
+void AudioClass::StopAudio(){
+	end();
+}
+
+void AudioClass::SetAudioSampleRate(SaiHandle::Config::SampleRate samplerate){
+	audio_handle.SetSampleRate(samplerate);
+}
+
+float AudioClass::AudioSampleRate(){
+	return get_samplerate();
+}
+
+void AudioClass::SetAudioBlockSize(size_t blocksize){
+}
+
+size_t AudioClass::AudioBlockSize(){
+}
+
+float AudioClass::AudioCallbackRate() const{
+}
+	
+
 float AudioClass::get_samplerate()
 {
     switch(_samplerate)
     {
+        case AUDIO_SR_8K:
+            return 8000.0f;
+        case AUDIO_SR_16K:
+            return 16000.0f;
         case AUDIO_SR_48K:
+            return 32000.0f;
+        case AUDIO_SR_32K:
             return 48000.0f;
         case AUDIO_SR_96K:
             return 96000.0f;
