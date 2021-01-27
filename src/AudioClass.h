@@ -2,10 +2,6 @@
 #define DSY_ARDUINO_AUDIO_H
 
 #include <stdio.h>
-#include "Arduino.h"
-#include "DaisyDSP.h"
-#include "daisy_pod.h"
-#include "daisy_patch.h"
 #include "utility/audio.h"
 #include "utility/sai.h"
 #include "utility/sdram.h"
