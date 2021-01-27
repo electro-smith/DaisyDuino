@@ -30,9 +30,6 @@ enum DaisyDuinoSampleRate {
     AUDIO_SR_LAST,
 };
 
-typedef void (*DaisyDuinoCallback)(float**, float**, size_t);
-
-
 //TODO
 // updateanalogcontrols? (likely covered by analogRead)
 // Parameter would be nice
@@ -267,7 +264,10 @@ class AudioClass
         DaisyHardware init(DaisyDuinoDevice device, DaisyDuinoSampleRate sr = AUDIO_SR_48K);
         
 		/** for bwd compatibility */
-		void begin(DaisyDuinoCallback cb);
+		void begin(AudioHandle::AudioCallback cb);
+
+		/** for bwd compatibility. Does not work with Daisy Patch!! */
+		void begin(AudioHandle::InterleavingAudioCallback cb);
 
 		/** for bwd compatibility */			
 		void end();
@@ -281,16 +281,19 @@ class AudioClass
 		/** for bwd compatibility */			
 		inline float get_blocksize();
 		
+		/** Interleaving callback not supported on patch. */
 		void StartAudio(AudioHandle::InterleavingAudioCallback cb);
 
 		void StartAudio(AudioHandle::AudioCallback cb);
 
+		/** Won't work on Patch! */
 		void ChangeAudioCallback(AudioHandle::InterleavingAudioCallback cb);
 
 		void ChangeAudioCallback(AudioHandle::AudioCallback cb);
 
 		void StopAudio();
 
+		/** Works with the new samplerates */
 		void SetAudioSampleRate(SaiHandle::Config::SampleRate samplerate);
 
 		float AudioSampleRate();

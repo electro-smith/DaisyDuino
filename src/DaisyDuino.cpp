@@ -129,8 +129,17 @@ DaisyHardware AudioClass::init(DaisyDuinoDevice device, DaisyDuinoSampleRate sr)
     return hw;
 }
 
-void AudioClass::begin(DaisyDuinoCallback cb)
+
+void AudioClass::begin(AudioHandle::AudioCallback cb)
 {
+	audio_handle.Start(cb);
+}
+
+void AudioClass::begin(AudioHandle::InterleavingAudioCallback cb)
+{
+	if(_device == DAISY_PATCH){
+		end();
+	}
 	audio_handle.Start(cb);
 }
 
@@ -156,18 +165,26 @@ float AudioClass::get_blocksize()
 
 void AudioClass::StartAudio(AudioHandle::InterleavingAudioCallback cb)
 {
+	begin(cb);
 }
 
 void AudioClass::StartAudio(AudioHandle::AudioCallback cb)
 {
+	begin(cb);
 }
 
 void AudioClass::ChangeAudioCallback(AudioHandle::InterleavingAudioCallback cb)
-{
+{	
+	if(_device == DAISY_PATCH){
+		end();
+	}
+
+	audio_handle.ChangeCallback(cb);
 }
 
 void AudioClass::ChangeAudioCallback(AudioHandle::AudioCallback cb)
 {
+    audio_handle.ChangeCallback(cb);
 }
 
 void AudioClass::StopAudio()
@@ -188,6 +205,8 @@ float AudioClass::AudioSampleRate()
 
 void AudioClass::SetAudioBlockSize(size_t blocksize)
 {
+	audio_handle.SetBlockSize(blocksize);
+    callback_rate_ = AudioSampleRate() / AudioBlockSize();
 }
 
 size_t AudioClass::AudioBlockSize()
