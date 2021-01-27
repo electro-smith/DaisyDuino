@@ -1,6 +1,5 @@
 #include "DaisyDuino.h"
 
-#include "utility/sai.h"
 #include "utility/dma.h"
 #include "utility/gpio.h"
 #include "utility/sys_mpu.h"
@@ -13,11 +12,6 @@ using namespace daisy;
 dsy_gpio ak4556_reset_pin;
 
 AudioClass DAISY;
-
-AudioClass::AudioClass() : _blocksize{48}, _samplerate{AUDIO_SR_48K}
-{
-    // Initializes the audio for the given platform, and returns the number of channels.
-}
 
 void AudioClass::ConfigureSdram()
 {
@@ -34,35 +28,32 @@ DaisyHardware AudioClass::init(DaisyDuinoDevice device, DaisyDuinoSampleRate sr)
 	//convert DaisyDuino sr to SaiHandle sr to ensure bwd compatibility
 	SaiHandle::Config::SampleRate sample_rate;
 	
-	switch(_samplerate)
+	switch(sr)
     {
         case AUDIO_SR_8K:
-            sample_rate = SAI_8KHZ;
+            sample_rate = SaiHandle::Config::SampleRate::SAI_8KHZ;
 			break;
         case AUDIO_SR_16K:
-            sample_rate = SAI_16KHZ;
+            sample_rate = SaiHandle::Config::SampleRate::SAI_16KHZ;
 			break;
         case AUDIO_SR_32K:
-            sample_rate = SAI_32KHZ;
+            sample_rate = SaiHandle::Config::SampleRate::SAI_32KHZ;
 			break;
         case AUDIO_SR_48K:
-            sample_rate = SAI_48KHZ;
+            sample_rate = SaiHandle::Config::SampleRate::SAI_48KHZ;
 			break;
         case AUDIO_SR_96K:
-            sample_rate = SAI_96KHZ;
+            sample_rate = SaiHandle::Config::SampleRate::SAI_96KHZ;
 			break;
         default:
-			sample_rate_ = SAI_48KHZ;
+			sample_rate = SaiHandle::Config::SampleRate::SAI_48KHZ;
     }
-
-	
+		
     // Set Audio Device, num channels, etc.
     // Only difference is Daisy Patch has second AK4556 and 4 channels
     HAL_Init();
     SCB_DisableDCache(); // Still needs to wait for linker..
-    _samplerate = sr;
     _device = device;
-    _blocksize = 48; // default
     dsy_dma_init(); // may interfere with core STM32 Arduino stuff...
     dsy_mpu_init();
     
@@ -104,6 +95,10 @@ DaisyHardware AudioClass::init(DaisyDuinoDevice device, DaisyDuinoSampleRate sr)
 		sai_handle[1].Init(sai_config[1]);
     }
 
+	AudioHandle::Config cfg;
+	cfg.blocksize  = 48;
+	cfg.samplerate = sample_rate;
+
     if (_device == DAISY_PATCH)
     {
         // Reset External Codec
@@ -115,26 +110,21 @@ DaisyHardware AudioClass::init(DaisyDuinoDevice device, DaisyDuinoSampleRate sr)
         delay(1);
         dsy_gpio_write(&ak4556_reset_pin, 1);
 	
-		AudioHandle::Config cfg;
-		cfg.blocksize  = 48;
-		cfg.samplerate = SaiHandle::Config::SampleRate::SAI_48KHZ;
 		cfg.postgain   = 0.5f;
 		audio_handle.Init(cfg, sai_handle[0], sai_handle[1]);
     }
 	
 	else{
-		AudioHandle::Config cfg;
-		cfg.blocksize  = 48;
-		cfg.samplerate = SaiHandle::Config::SampleRate::SAI_48KHZ;
 		cfg.postgain   = 1.f;
 		audio_handle.Init(cfg, sai_handle[0]);
-	}
-	
+	}	
 
     ConfigureSdram();
     
     DaisyHardware hw;
-    hw.Init(get_callbackrate(), device);
+	callback_rate_ = AudioSampleRate() / AudioBlockSize();
+
+    hw.Init(callback_rate_, device);
 
     return hw;
 }
@@ -149,55 +139,63 @@ void AudioClass::end()
 	audio_handle.Stop();
 }
 
-void AudioClass::StartAudio(AudioHandle::InterleavingAudioCallback cb){
+float AudioClass::get_samplerate()
+{
+	return audio_handle.GetSampleRate();
 }
 
-void AudioClass::StartAudio(AudioHandle::AudioCallback cb){
+float AudioClass::get_callbackrate()
+{
+	return callback_rate_;
 }
 
-void AudioClass::ChangeAudioCallback(AudioHandle::InterleavingAudioCallback cb){
+float AudioClass::get_blocksize()
+{
+	return audio_handle.GetConfig().blocksize;
 }
 
-void AudioClass::ChangeAudioCallback(AudioHandle::AudioCallback cb){
+void AudioClass::StartAudio(AudioHandle::InterleavingAudioCallback cb)
+{
 }
 
-void AudioClass::StopAudio(){
+void AudioClass::StartAudio(AudioHandle::AudioCallback cb)
+{
+}
+
+void AudioClass::ChangeAudioCallback(AudioHandle::InterleavingAudioCallback cb)
+{
+}
+
+void AudioClass::ChangeAudioCallback(AudioHandle::AudioCallback cb)
+{
+}
+
+void AudioClass::StopAudio()
+{
 	end();
 }
 
-void AudioClass::SetAudioSampleRate(SaiHandle::Config::SampleRate samplerate){
+void AudioClass::SetAudioSampleRate(SaiHandle::Config::SampleRate samplerate)
+{
 	audio_handle.SetSampleRate(samplerate);
+	callback_rate_ = AudioSampleRate() / AudioBlockSize();
 }
 
-float AudioClass::AudioSampleRate(){
+float AudioClass::AudioSampleRate()
+{
 	return get_samplerate();
 }
 
-void AudioClass::SetAudioBlockSize(size_t blocksize){
-}
-
-size_t AudioClass::AudioBlockSize(){
-}
-
-float AudioClass::AudioCallbackRate() const{
-}
-	
-
-float AudioClass::get_samplerate()
+void AudioClass::SetAudioBlockSize(size_t blocksize)
 {
-    switch(_samplerate)
-    {
-        case AUDIO_SR_8K:
-            return 8000.0f;
-        case AUDIO_SR_16K:
-            return 16000.0f;
-        case AUDIO_SR_48K:
-            return 32000.0f;
-        case AUDIO_SR_32K:
-            return 48000.0f;
-        case AUDIO_SR_96K:
-            return 96000.0f;
-        default:
-            return 48000.0f;
-    }
+}
+
+size_t AudioClass::AudioBlockSize()
+{
+	return get_blocksize();
+}
+
+float AudioClass::AudioCallbackRate()
+{
+	return get_callbackrate();
 }

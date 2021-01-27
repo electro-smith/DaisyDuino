@@ -7,6 +7,7 @@
 #include "daisy_pod.h"
 #include "daisy_patch.h"
 #include "utility/audio.h"
+#include "utility/sai.h"
 #include "utility/sdram.h"
 
 using namespace daisy;
@@ -259,7 +260,7 @@ private:
 class AudioClass
 {
     public:
-        AudioClass();
+        AudioClass() {}
 
         // Initializes the audio for the given platform, and returns a DaisyHardware object
 		//default samplerate is 48kHz
@@ -275,7 +276,10 @@ class AudioClass
 		float get_samplerate();
 			
 		/** for bwd compatibility */			
-		inline float get_callbackrate() { return get_samplerate() / _blocksize; }
+		float get_callbackrate();
+		
+		/** for bwd compatibility */			
+		inline float get_blocksize();
 		
 		void StartAudio(AudioHandle::InterleavingAudioCallback cb);
 
@@ -295,16 +299,13 @@ class AudioClass
 
 		size_t AudioBlockSize();
 
-		float AudioCallbackRate() const;
-		
-		
-		AudioHandle audio_handle;
-		
+		float AudioCallbackRate();
+				
     private:
-        size_t _blocksize;
-        DaisyDuinoSampleRate _samplerate;
-        DaisyDuinoDevice _device;
-
+		float callback_rate_;
+        
+		AudioHandle audio_handle;
+		DaisyDuinoDevice _device;
         dsy_sdram_handle sdram_handle;
 	void ConfigureSdram();
 };
