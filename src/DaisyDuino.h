@@ -1,12 +1,12 @@
 #ifndef DSY_DSYDUINO_H
 #define DSY_DSYDUINO_H
 
-#include <stdio.h>
 #include "Arduino.h"
-#include "DaisyDSP.h"
-#include "daisy_pod.h"
-#include "daisy_patch.h"
 #include "AudioClass.h"
+#include "DaisyDSP.h"
+#include "daisy_patch.h"
+#include "daisy_pod.h"
+#include <stdio.h>
 
 #include "utility/encoder.h"
 #include "utility/gatein.h"
@@ -15,36 +15,35 @@
 
 using namespace daisy;
 
-enum DaisyDuinoDevice : short{
-    DAISY_SEED,
-    DAISY_POD,
-    DAISY_PETAL,
-    DAISY_FIELD,
-    DAISY_PATCH,
-    DAISY_LAST,
+enum DaisyDuinoDevice : short {
+  DAISY_SEED,
+  DAISY_POD,
+  DAISY_PETAL,
+  DAISY_FIELD,
+  DAISY_PATCH,
+  DAISY_LAST,
 };
 
-class AudioClass; ///forward declaration
+class AudioClass; /// forward declaration
 
-class DaisyHardware
-{
+class DaisyHardware {
 public:
-	DaisyHardware() {}
+  DaisyHardware() {}
 
-    Switch buttons[2];
-    Encoder encoder;
-    Led leds[2];
-    GateIn gateIns[2];
-    
-    int num_channels;
-    int numSwitches, numLeds, numGates;
+  Switch buttons[2];
+  Encoder encoder;
+  Led leds[2];
+  GateIn gateIns[2];
 
-    void Init(float control_update_rate, DaisyDuinoDevice device);
+  int num_channels;
+  int numSwitches, numLeds, numGates;
 
-    void DebounceControls();
+  void Init(float control_update_rate, DaisyDuinoDevice device);
+
+  void DebounceControls();
 
 private:
-    DaisyDuinoDevice device_;
+  DaisyDuinoDevice device_;
 };
 
 #endif
