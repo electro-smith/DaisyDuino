@@ -2,6 +2,7 @@
 #define DSY_GATEIN_H
 
 #include "switch.h"
+#include "Arduino.h"
 
 namespace daisy {
 class GateIn {
@@ -23,3 +24,4 @@ private:
   Switch sw;
 };
 } // namespace daisy
+#endif

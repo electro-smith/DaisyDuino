@@ -13,7 +13,6 @@
 #include "utility/led.h"
 #include "utility/switch.h"
 
-
 using namespace daisy;
 
 enum DaisyDuinoDevice : short{

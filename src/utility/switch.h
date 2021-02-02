@@ -1,6 +1,8 @@
 #ifndef DSY_SWITCH_H
 #define DSY_SWITCH_H
 
+#include "Arduino.h"
+
 namespace daisy {
 class Switch {
 public:
@@ -26,3 +28,4 @@ private:
   uint8_t state_, pin_;
 };
 } // namespace daisy
+#endif

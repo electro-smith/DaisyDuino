@@ -1,6 +1,8 @@
 #ifndef DSY_LED_H
 #define DSY_LED_H
 
+#include "Arduino.h"
+
 namespace daisy {
 class Led {
 public:
@@ -16,3 +18,4 @@ private:
   uint8_t pin_r_, pin_g_, pin_b_;
 };
 } // namespace daisy
+#endif

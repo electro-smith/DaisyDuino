@@ -1,5 +1,9 @@
 #ifndef DSY_ENCODER_H
 #define DSY_ENCODER_H
+
+#include "Arduino.h"
+#include "switch.h"
+
 namespace daisy {
 
 class Encoder {
@@ -28,3 +32,4 @@ private:
   int32_t inc_;
 };
 } // namespace daisy
+#endif
