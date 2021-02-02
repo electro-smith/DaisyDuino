@@ -43,6 +43,8 @@ public:
   void DebounceControls();
 
 private:
+  void InitPod(float control_update_rate);
+  void InitPatch(float control_update_rate);
   DaisyDuinoDevice device_;
 };
 

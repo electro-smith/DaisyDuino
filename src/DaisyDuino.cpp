@@ -8,8 +8,23 @@ void DaisyHardware::Init(float control_update_rate, DaisyDuinoDevice device) {
   switch (device) {
   case DAISY_SEED:
     break;
-
   case DAISY_POD:
+	InitPod(control_update_rate);
+    break;
+  case DAISY_PETAL:
+    break;
+  case DAISY_FIELD:
+    break;
+  case DAISY_PATCH:
+	InitPatch(control_update_rate);
+	break;
+	
+  default:
+    break;
+  }
+}
+
+void DaisyHardware::InitPod(float control_update_rate){
     buttons[0].Init(control_update_rate, true, PIN_POD_SWITCH_1, INPUT_PULLUP);
     buttons[1].Init(control_update_rate, true, PIN_POD_SWITCH_2, INPUT_PULLUP);
 
@@ -20,15 +35,9 @@ void DaisyHardware::Init(float control_update_rate, DaisyDuinoDevice device) {
     leds[1].Init(PIN_POD_LED_2_RED, PIN_POD_LED_2_GREEN, PIN_POD_LED_2_BLUE);
 
     numSwitches = numLeds = 2;
-    break;
+}
 
-  case DAISY_PETAL:
-    break;
-
-  case DAISY_FIELD:
-    break;
-
-  case DAISY_PATCH:
+void DaisyHardware::InitPatch(float control_update_rate){
     encoder.Init(control_update_rate, PIN_PATCH_ENC_A, PIN_PATCH_ENC_B,
                  PIN_PATCH_ENC_CLICK, INPUT_PULLUP, INPUT_PULLUP, INPUT_PULLUP);
     gateIns[0].Init(20, INPUT, true);
@@ -36,10 +45,6 @@ void DaisyHardware::Init(float control_update_rate, DaisyDuinoDevice device) {
     numSwitches = numLeds = 0;
     numGates = 2;
     num_channels = 4;
-    break;
-  default:
-    break;
-  }
 }
 
 void DaisyHardware::DebounceControls() {
