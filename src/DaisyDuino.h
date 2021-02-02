@@ -1,12 +1,14 @@
 #ifndef DSY_DSYDUINO_H
 #define DSY_DSYDUINO_H
 
+#include <stdio.h>
 #include "Arduino.h"
+
 #include "AudioClass.h"
 #include "DaisyDSP.h"
 #include "daisy_patch.h"
 #include "daisy_pod.h"
-#include <stdio.h>
+#include "daisy_petal.h"
 
 #include "utility/encoder.h"
 #include "utility/gatein.h"
@@ -30,7 +32,8 @@ class DaisyHardware {
 public:
   DaisyHardware() {}
 
-  Switch buttons[2];
+  Switch buttons[7];
+  Switch* switches = buttons; //looks better for petal
   Encoder encoder;
   Led leds[2];
   GateIn gateIns[2];
@@ -45,6 +48,8 @@ public:
 private:
   void InitPod(float control_update_rate);
   void InitPatch(float control_update_rate);
+  void InitPetal(float control_update_rate);
+
   DaisyDuinoDevice device_;
 };
 

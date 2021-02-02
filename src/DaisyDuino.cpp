@@ -22,6 +22,11 @@ void DaisyHardware::Init(float control_update_rate, DaisyDuinoDevice device) {
   default:
     break;
   }
+  
+  //point the "switches" at the buttons
+  for (int i = 0; i < 7; i++){
+	
+  }
 }
 
 void DaisyHardware::InitPod(float control_update_rate){
@@ -45,6 +50,24 @@ void DaisyHardware::InitPatch(float control_update_rate){
     numSwitches = numLeds = 0;
     numGates = 2;
     num_channels = 4;
+}
+
+void DaisyHardware::InitPetal(float control_update_rate){
+    numSwitches = 7;
+    numLeds = 12;
+    numGates = 0;
+    num_channels = 2;
+
+	encoder.Init(control_update_rate, PIN_PETAL_ENC_A, PIN_PETAL_ENC_B,
+                 PIN_PETAL_ENC_CLICK, INPUT_PULLUP, INPUT_PULLUP, INPUT_PULLUP);
+
+	switches[0].Init(control_update_rate, false, PIN_PETAL_SWITCH_1, INPUT_PULLUP);
+	switches[1].Init(control_update_rate, false, PIN_PETAL_SWITCH_2, INPUT_PULLUP);
+	switches[2].Init(control_update_rate, false, PIN_PETAL_SWITCH_3, INPUT_PULLUP);
+	switches[3].Init(control_update_rate, false, PIN_PETAL_SWITCH_4, INPUT_PULLUP);
+	switches[4].Init(control_update_rate, false, PIN_PETAL_SWITCH_5, INPUT_PULLUP);
+	switches[5].Init(control_update_rate, false, PIN_PETAL_SWITCH_6, INPUT_PULLUP);
+	switches[6].Init(control_update_rate, false, PIN_PETAL_SWITCH_7, INPUT_PULLUP);
 }
 
 void DaisyHardware::DebounceControls() {
