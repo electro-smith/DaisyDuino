@@ -12,6 +12,7 @@ void DaisyHardware::Init(float control_update_rate, DaisyDuinoDevice device) {
 	InitPod(control_update_rate);
     break;
   case DAISY_PETAL:
+	InitPetal(control_update_rate);
     break;
   case DAISY_FIELD:
     break;

@@ -17,3 +17,7 @@
 #define PIN_PETAL_POT_4 20
 #define PIN_PETAL_POT_5 18
 #define PIN_PETAL_POT_6 21
+
+//2x pca9685 led driver
+#define PIN_PETAL_I2C1_SDA 12
+#define PIN_PETAL_I2C1_SCL 11
