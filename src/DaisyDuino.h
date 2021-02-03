@@ -12,6 +12,7 @@
 
 #include "utility/encoder.h"
 #include "utility/gatein.h"
+#include "utility/i2c.h"
 #include "utility/led.h"
 #include "utility/led_driver.h"
 #include "utility/switch.h"
@@ -49,6 +50,12 @@ public:
 
   //Set footswitch LED. For use with daisy petal only
   void SetFootswitchLed(uint8_t idx, float bright);
+
+  //use with petal and field
+  void ClearLeds();
+
+  //use with petal and field
+  void UpdateLeds();
 
   void DebounceControls();
 
