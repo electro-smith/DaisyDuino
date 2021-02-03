@@ -13,6 +13,7 @@
 #include "utility/encoder.h"
 #include "utility/gatein.h"
 #include "utility/led.h"
+#include "utility/led_driver.h"
 #include "utility/switch.h"
 
 using namespace daisy;
@@ -43,12 +44,20 @@ public:
 
   void Init(float control_update_rate, DaisyDuinoDevice device);
 
+  //set ring led color. For use with daisy petal
+  void SetRingLed(uint8_t idx, float r, float g, float b);
+
+  //Set footswitch LED. For use with daisy petal only
+  void SetFootswitchLed(uint8_t idx, float bright);
+
   void DebounceControls();
 
 private:
   void InitPod(float control_update_rate);
   void InitPatch(float control_update_rate);
   void InitPetal(float control_update_rate);
+
+  LedDriverPca9685<2, true> led_driver_;
 
   DaisyDuinoDevice device_;
 };

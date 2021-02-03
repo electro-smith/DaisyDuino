@@ -30,6 +30,10 @@ template <int numDrivers, bool persistentBufferContents = true>
 class LedDriverPca9685
 {
   public:
+    LedDriverPca9685() {}
+    ~LedDriverPca9685() {}
+  
+  
     /** Buffer Type for a single PCA9685 driver chip. */
     struct __attribute__((packed)) PCA9685TransmitBuffer
     {
@@ -70,9 +74,7 @@ class LedDriverPca9685
         draw_buffer_     = dma_buffer_a;
         transmit_buffer_ = dma_buffer_b;
         oe_pin_          = oe_pin;
-        PinMode(oe_pin_, OUTPUT);
-		
-		
+				
 		for(int d = 0; d < numDrivers; d++)
             addresses_[d] = addresses[d];
         current_driver_idx_ = -1;
@@ -222,8 +224,9 @@ class LedDriverPca9685
 		//not used on petal or field
         if(oe_pin_ > -1)
         {
-			digitalWrite(oe_pin_, LOW);
-        }
+			pinMode(oe_pin_, OUTPUT);
+			digitalWrite(oe_pin_, LOW);        		
+		}
 
         // init the individual drivers
         for(int d = 0; d < numDrivers; d++)
@@ -233,16 +236,16 @@ class LedDriverPca9685
             buffer[0] = PCA9685_MODE1;
             buffer[1] = 0x00;
             i2c_.TransmitBlocking(address, buffer, 2, 1);
-            System::Delay(20);
+            delay(20);
             buffer[0] = PCA9685_MODE1;
             buffer[1] = 0x00;
             i2c_.TransmitBlocking(address, buffer, 2, 1);
-            System::Delay(20);
+            delay(20);
             buffer[0] = PCA9685_MODE1;
             // auto increment on
             buffer[1] = 0b00100000;
             i2c_.TransmitBlocking(address, buffer, 2, 1);
-            System::Delay(20);
+            delay(20);
             buffer[0] = PCA9685_MODE2;
             // OE-high = high Impedance
             // Push-Pull outputs
@@ -274,11 +277,10 @@ class LedDriverPca9685
     PCA9685TransmitBuffer* transmit_buffer_;
     uint8_t                addresses_[numDrivers];
     int32_t           oe_pin_;
-	pinMode(oe_pin_, OUTPUT);
 	
-    // index of the dirver that is currently updated.
+    // index of the driver that is currently updated.
     int8_t         current_driver_idx_;
-    const uint16_t gamma_table_[256] = {
+    uint16_t gamma_table_[256] = {
         0,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         2,    2,    2,    2,    2,    2,    2,    3,    3,    4,    4,    5,
         5,    6,    7,    8,    8,    9,    10,   11,   12,   13,   15,   16,
