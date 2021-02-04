@@ -33,7 +33,6 @@ class LedDriverPca9685
     LedDriverPca9685() {}
     ~LedDriverPca9685() {}
   
-  
     /** Buffer Type for a single PCA9685 driver chip. */
     struct __attribute__((packed)) PCA9685TransmitBuffer
     {
@@ -224,8 +223,8 @@ class LedDriverPca9685
 		//not used on petal or field
         if(oe_pin_ > -1)
         {
-			pinMode(oe_pin_, OUTPUT);
-			digitalWrite(oe_pin_, LOW);        		
+			//pinMode(oe_pin_, OUTPUT);
+			//digitalWrite(oe_pin_, LOW);        		
 		}
 
         // init the individual drivers
