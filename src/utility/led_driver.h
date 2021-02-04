@@ -67,7 +67,7 @@ class LedDriverPca9685
               const uint8_t (&addresses)[numDrivers],
               DmaBuffer    dma_buffer_a,
               DmaBuffer    dma_buffer_b,
-              int32_t oe_pin = -1) //this isn't used on the petal or field
+              uint32_t oe_pin = -1) //this isn't used on the petal or field
     {
         i2c_             = i2c;
         draw_buffer_     = dma_buffer_a;
@@ -223,8 +223,8 @@ class LedDriverPca9685
 		//not used on petal or field
         if(oe_pin_ > -1)
         {
-			//pinMode(oe_pin_, OUTPUT);
-			//digitalWrite(oe_pin_, LOW);        		
+			pinMode(oe_pin_, OUTPUT);
+			digitalWrite(oe_pin_, LOW);        		
 		}
 
         // init the individual drivers
@@ -275,7 +275,7 @@ class LedDriverPca9685
     PCA9685TransmitBuffer* draw_buffer_;
     PCA9685TransmitBuffer* transmit_buffer_;
     uint8_t                addresses_[numDrivers];
-    int32_t           oe_pin_;
+    uint32_t           oe_pin_;
 	
     // index of the driver that is currently updated.
     int8_t         current_driver_idx_;
