@@ -114,11 +114,6 @@ void setup()
     InitFreqs();
     InitFilters(samplerate);
     bank = 0;
-
-    controls[0] = PIN_PATCH_CTRL_1;
-    controls[1] = PIN_PATCH_CTRL_2;
-    controls[2] = PIN_PATCH_CTRL_3;
-    controls[3] = PIN_PATCH_CTRL_4;
    
     oled.setFont(u8x8_font_chroma48medium8_r);
     oled.begin();
@@ -160,7 +155,7 @@ void UpdateOled()
 
 void UpdateControls()
 {
-    patch.DebounceControls();
+    patch.ProcessAllControls();
     
     //encoder
     int inc = patch.encoder.Increment();
@@ -173,7 +168,7 @@ void UpdateControls()
     //controls
     for (int i = 0 ; i < 4; i++)
     {
-        float val = (1023.f - analogRead(controls[i])) / 1023.f;
+        float val = patch.controls[i].Process();
         if (condUpdates[i].Process(val))
         {
             filters[i + bank * 4].amp = val;

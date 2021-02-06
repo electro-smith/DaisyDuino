@@ -18,21 +18,15 @@ float softClip(float in)
 
 bool        bypassHard, bypassSoft;
 static void AudioCallback(float **in, float **out, size_t size)
-{
-    petal.DebounceControls();
+{        
+    petal.ProcessAllControls();
+      
+    float Pregain = petal.controls[2].Value() * 10 + 1.2;
+    float Gain    = petal.controls[3].Value() * 100 + 1.2;
+    float drywet  = petal.controls[4].Value();
 
-    //float Pregain = petal.knobs[2].Process() * 10 + 1.2;
-    //float Gain    = petal.knobs[3].Process() * 100 + 1.2;
-    //float drywet  = petal.knobs[4].Process();
-
-
-    float Pregain = 0.f;
-    float Gain = 0.f;
-    float drywet = 0.f;
-  
-
-    bypassSoft = petal.switches[0].RisingEdge() ? !bypassSoft : bypassSoft;
-    bypassHard = petal.switches[1].RisingEdge() ? !bypassHard : bypassHard;
+    bypassSoft ^= petal.buttons[0].RisingEdge();
+    bypassHard ^= petal.buttons[1].RisingEdge();
 
     for(size_t i = 0; i < size; i++)
     {
@@ -65,14 +59,15 @@ void setup()
 {
     petal = DAISY.init(DAISY_PETAL, AUDIO_SR_48K);
 
-    //bypassHard = bypassSoft = false;
+    bypassHard = bypassSoft = false;
 
     // start callback
-    //DAISY.begin(AudioCallback);
+    DAISY.begin(AudioCallback);
 }
     
   void loop()
-    {
+    {           
+      /*
         //LED stuff
         petal.SetFootswitchLed(0, !bypassSoft);
         petal.SetFootswitchLed(1, !bypassHard);
@@ -84,5 +79,5 @@ void setup()
 
         petal.UpdateLeds();
 
-        delay(6);
+        delay(6);*/
     }

@@ -137,8 +137,8 @@ void UpdateEncoder()
 
 void UpdateKnobs()
 {
-    k1 = (float)analogRead(PIN_POD_POT_1) / 1023.f; //10 bit reading
-    k2 = (float)analogRead(PIN_POD_POT_2) / 1023.f;
+    k1 = pod.controls[0].Value();
+    k2 = pod.controls[1].Value();
 
     switch (mode)
     {
@@ -187,7 +187,7 @@ void UpdateButtons()
 
 void Controls()
 {
-    pod.DebounceControls();
+    pod.ProcessAllControls();
 
     UpdateEncoder();
 
