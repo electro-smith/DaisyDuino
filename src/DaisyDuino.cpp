@@ -3,7 +3,10 @@
 void DaisyHardware::Init(float control_update_rate, DaisyDuinoDevice device) {
   device_ = device;
   num_channels = 2;
+  numControls = 0;
   numGates = 0;
+  numSwitches = 0;
+  numLeds = 0;
 
   switch (device) {
   case DAISY_SEED:
@@ -35,35 +38,53 @@ void DaisyHardware::InitPod(float control_update_rate){
     leds[0].Init(PIN_POD_LED_1_RED, PIN_POD_LED_1_GREEN, PIN_POD_LED_1_BLUE);
     leds[1].Init(PIN_POD_LED_2_RED, PIN_POD_LED_2_GREEN, PIN_POD_LED_2_BLUE);
 
-    numSwitches = numLeds = 2;
+	controls[0].Init(PIN_POD_POT_1, control_update_rate);
+	controls[1].Init(PIN_POD_POT_2, control_update_rate);
+
+    numSwitches = numLeds = numControls = 2;
 }
 
 void DaisyHardware::InitPatch(float control_update_rate){
     encoder.Init(control_update_rate, PIN_PATCH_ENC_A, PIN_PATCH_ENC_B,
                  PIN_PATCH_ENC_CLICK, INPUT_PULLUP, INPUT_PULLUP, INPUT_PULLUP);
-    gateIns[0].Init(20, INPUT, true);
+    
+	gateIns[0].Init(20, INPUT, true);
     gateIns[1].Init(19, INPUT, true);
-    numSwitches = numLeds = 0;
     numGates = 2;
     num_channels = 4;
+	numControls = 4;
+	
+	controls[0].Init(PIN_PATCH_CTRL_1, control_update_rate, true);
+	controls[1].Init(PIN_PATCH_CTRL_2, control_update_rate, true);
+	controls[2].Init(PIN_PATCH_CTRL_3, control_update_rate, true);
+	controls[3].Init(PIN_PATCH_CTRL_4, control_update_rate, true);
 }
 
 void DaisyHardware::InitPetal(float control_update_rate){
     numSwitches = 7;
     numLeds = 12;
-    numGates = 0;
     num_channels = 2;
+	numControls = 6;
 
 	//init the led driver
-	uint8_t   addr[2] = {0x00, 0x01};
-    I2CHandle i2c;
-    i2c.Init(petal_led_i2c_config);
-    led_driver_.Init(i2c, addr, petal_led_dma_buffer_a, petal_led_dma_buffer_b);
-    ClearLeds();
-    UpdateLeds();
+	//uint8_t   addr[2] = {0x00, 0x01};
+    //I2CHandle i2c;
+    //i2c.Init(petal_led_i2c_config);
+    //led_driver_.Init(i2c, addr, petal_led_dma_buffer_a, petal_led_dma_buffer_b);
+    //ClearLeds();
+    //UpdateLeds();
 
 	encoder.Init(control_update_rate, PIN_PETAL_ENC_A, PIN_PETAL_ENC_B,
                  PIN_PETAL_ENC_CLICK, INPUT_PULLUP, INPUT_PULLUP, INPUT_PULLUP);
+
+	controls[0].Init(PIN_PETAL_POT_1, control_update_rate);
+	controls[1].Init(PIN_PETAL_POT_2, control_update_rate);
+	controls[2].Init(PIN_PETAL_POT_3, control_update_rate);
+	controls[3].Init(PIN_PETAL_POT_4, control_update_rate);
+	controls[4].Init(PIN_PETAL_POT_5, control_update_rate);
+	controls[5].Init(PIN_PETAL_POT_6, control_update_rate);
+
+	expression.Init(PIN_PETAL_EXPRESSION, control_update_rate);
 
 	switches[0].Init(control_update_rate, false, PIN_PETAL_SWITCH_1, INPUT_PULLUP);
 	switches[1].Init(control_update_rate, false, PIN_PETAL_SWITCH_2, INPUT_PULLUP);
@@ -74,15 +95,33 @@ void DaisyHardware::InitPetal(float control_update_rate){
 	switches[6].Init(control_update_rate, false, PIN_PETAL_SWITCH_7, INPUT_PULLUP);
 }
 
-void DaisyHardware::DebounceControls() {
+void DaisyHardware::ProcessAnalogControls(){
+	for(int i = 0; i < numControls; i++){
+		controls[i].Process();
+	}
+	
+	if(device_ == DAISY_PETAL){
+		expression.Process();
+	}
+}
+
+void DaisyHardware::ProcessDigitalControls(){
+  if(device_ == DAISY_PATCH || device_ == DAISY_POD){
+	encoder.Debounce();
+  }
+
   for (int i = 0; i < numSwitches; i++) {
     buttons[i].Debounce();
   }
-
-  encoder.Debounce();
+  
   for (int i = 0; i < numGates; i++) {
     gateIns[i].Debounce();
   }
+}
+
+void DaisyHardware::ProcessAllControls(){
+	ProcessAnalogControls();
+	ProcessDigitalControls();
 }
 
 //petal led setters

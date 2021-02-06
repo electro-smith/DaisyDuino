@@ -10,6 +10,7 @@
 #include "daisy_pod.h"
 #include "daisy_petal.h"
 
+#include "utility/ctrl.h"
 #include "utility/encoder.h"
 #include "utility/gatein.h"
 #include "utility/i2c.h"
@@ -35,13 +36,16 @@ public:
   DaisyHardware() {}
 
   Switch buttons[7];
-  Switch* switches = buttons; //looks better for petal
+  AnalogControl controls[8];
+//  Switch* switches = buttons; //these compile, but don't actually work....
+//  AnalogControl* knobs = controls;
   Encoder encoder;
   Led leds[2];
   GateIn gateIns[2];
+  AnalogControl expression;
 
   int num_channels;
-  int numSwitches, numLeds, numGates;
+  int numSwitches, numLeds, numGates, numControls;
 
   void Init(float control_update_rate, DaisyDuinoDevice device);
 
@@ -57,7 +61,17 @@ public:
   //use with petal and field
   void UpdateLeds();
 
-  void DebounceControls();
+  //process knobs
+  void ProcessAnalogControls();
+  
+  //process buttons and encoders
+  void ProcessDigitalControls();
+  
+  //for backwards compatability
+  void DebounceControls() { ProcessDigitalControls(); }
+  
+  //process boths
+  void ProcessAllControls();
 
 private:
   void InitPod(float control_update_rate);
