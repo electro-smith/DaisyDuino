@@ -16,6 +16,7 @@
 #include "utility/i2c.h"
 #include "utility/led.h"
 #include "utility/led_driver.h"
+#include "utility/parameter.h"
 #include "utility/switch.h"
 
 using namespace daisy;

@@ -17,6 +17,7 @@ DaisyHardware pod;
 static Oscillator osc, lfo;
 static MoogLadder flt;
 static AdEnv ad;
+static Parameter  pitchParam, cutoffParam, lfoParam;
 
 int wave, mode;
 float vibrato, oscFreq, lfoFreq, lfoAmp, attack, release, cutoff;
@@ -101,6 +102,11 @@ void setup() {
     ad.SetMin(0);
     ad.SetCurve(0.5);
 
+    //set parameter parameters
+    cutoffParam.Init(pod.controls[0], 100, 20000, cutoffParam.LOGARITHMIC);
+    pitchParam.Init(pod.controls[1], 50, 3000, pitchParam.LOGARITHMIC);
+    lfoParam.Init(pod.controls[0], 0.25, 1000, lfoParam.LOGARITHMIC);
+
     //start the audio callback
     DAISY.begin(MyCallback);
 }
@@ -143,24 +149,28 @@ void UpdateKnobs()
     switch (mode)
     {
         case 0:
-            ConditionalParameter(oldk1, k1, cutoff, k1 * 20000);
-            ConditionalParameter(oldk2, k2, oscFreq, k2 * 5000);
+            ConditionalParameter(oldk1, k1, cutoff, cutoffParam.Process());
+            ConditionalParameter(oldk2, k2, oscFreq, pitchParam.Process());
             flt.SetFreq(cutoff);
             break;
         case 1:
-            ConditionalParameter(oldk1, k1, attack, k1);
-            ConditionalParameter(oldk2, k2, release, k2);
+            ConditionalParameter(oldk1, k1, attack, k1 + .02);
+            ConditionalParameter(oldk2, k2, release, k2 + .02);
             ad.SetTime(ADENV_SEG_ATTACK, attack);
             ad.SetTime(ADENV_SEG_DECAY, release);
             break;
         case 2:
-            ConditionalParameter(oldk1, k1, lfoFreq, k1 * 1000 + .25);
+            ConditionalParameter(oldk1, k1, lfoFreq, lfoParam.Process());
             ConditionalParameter(oldk2, k2, lfoAmp, k2 * 100);
             lfo.SetFreq(lfoFreq);
             lfo.SetAmp(lfoAmp);
         default:
             break;
     }
+
+    oldk1 = k1;
+    oldk2 = k2;    
+
 }
 
 void UpdateLeds()
@@ -168,8 +178,9 @@ void UpdateLeds()
     pod.leds[0].Set(mode == 2, mode == 1, mode == 0);
     pod.leds[1].Set(false, selfCycle, selfCycle);
 
-    oldk1 = k1;
-    oldk2 = k2;    
+    //just for now until the led pwm stuff is resolved
+    pod.leds[0].Update();
+    pod.leds[1].Update();
 }
 
 void UpdateButtons()
