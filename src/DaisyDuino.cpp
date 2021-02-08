@@ -35,8 +35,8 @@ void DaisyHardware::InitPod(float control_update_rate){
     encoder.Init(control_update_rate, PIN_POD_ENC_A, PIN_POD_ENC_B,
                  PIN_POD_ENC_CLICK, INPUT_PULLUP, INPUT_PULLUP, INPUT_PULLUP);
 
-    leds[0].Init(PIN_POD_LED_1_RED, PIN_POD_LED_1_GREEN, PIN_POD_LED_1_BLUE);
-    leds[1].Init(PIN_POD_LED_2_RED, PIN_POD_LED_2_GREEN, PIN_POD_LED_2_BLUE);
+    leds[0].Init(PIN_POD_LED_1_RED, PIN_POD_LED_1_GREEN, PIN_POD_LED_1_BLUE, true, control_update_rate);
+    leds[1].Init(PIN_POD_LED_2_RED, PIN_POD_LED_2_GREEN, PIN_POD_LED_2_BLUE,  true, control_update_rate);
 
 	controls[0].Init(PIN_POD_POT_1, control_update_rate);
 	controls[1].Init(PIN_POD_POT_2, control_update_rate);
