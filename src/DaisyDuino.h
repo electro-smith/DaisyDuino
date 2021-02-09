@@ -6,9 +6,12 @@
 
 #include "AudioClass.h"
 #include "DaisyDSP.h"
+#include "daisy_field.h"
 #include "daisy_patch.h"
 #include "daisy_pod.h"
 #include "daisy_petal.h"
+
+#include "utility/adc.h"
 
 #include "utility/ctrl.h"
 #include "utility/encoder.h"
@@ -38,6 +41,11 @@ public:
 
   Switch buttons[7];
   AnalogControl controls[8];
+  AnalogControl cv[4]; //for use with field
+  
+  //runs the field pot MUX for the time being
+  AdcHandle adc;
+  
 //  Switch* switches = buttons; //these compile, but don't actually work....
 //  AnalogControl* knobs = controls;
   Encoder encoder;
@@ -78,6 +86,7 @@ private:
   void InitPod(float control_update_rate);
   void InitPatch(float control_update_rate);
   void InitPetal(float control_update_rate);
+  void InitField(float control_update_rate);
 
   LedDriverPca9685<2, true> led_driver_;
 

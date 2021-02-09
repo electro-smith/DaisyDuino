@@ -4,6 +4,37 @@
 
 using namespace daisy;
 
+void Led::Init(uint8_t pin_r, uint8_t pin_g, uint8_t pin_b, bool invert) {
+  invert_ = invert;
+
+  pin_r_ = pin_r;
+  pin_g_ = pin_g;
+  pin_b_ = pin_b;
+
+  pinMode(pin_r, OUTPUT);
+  pinMode(pin_g, OUTPUT);
+  pinMode(pin_b, OUTPUT);
+}
+
+void Led::Init(uint8_t pin, bool invert) {
+  invert_ = invert;
+  pin_ = pin;
+  pinMode(pin, OUTPUT);
+}
+
+void Led::Set(bool r, bool g, bool b){
+	digitalWrite(pin_r_, invert_ ^ r);
+	digitalWrite(pin_g_, invert_ ^ g);
+	digitalWrite(pin_b_, invert_ ^ b);
+}
+
+void Led::Set(bool set){
+	digitalWrite(pin_, invert_ ^ set);	
+}
+
+
+/**    This code will be returned to when PWM is addressed in libdaisy
+
 void Led::Init(uint8_t pin_r, uint8_t pin_g, uint8_t pin_b, bool invert, float samplerate) {
   pin_r_ = pin_r;
   pin_g_ = pin_g;
@@ -16,6 +47,17 @@ void Led::Init(uint8_t pin_r, uint8_t pin_g, uint8_t pin_b, bool invert, float s
   pinMode(pin_r, OUTPUT);
   pinMode(pin_g, OUTPUT);
   pinMode(pin_b, OUTPUT);
+}
+
+void Led::Init(uint8_t pin) {
+  pin_ = pin;
+  pinMode(pin_, OUTPUT);
+}
+
+
+
+void Led::Set(float brightness) {
+  bright_     = cbrt(brightness);
 }
 
 void Led::Set(float r, float g, float b) {
@@ -34,12 +76,4 @@ void Led::Update(){
 	digitalWrite(pin_g_, invert_ ^ (bright_g_ > pwm_));
 	digitalWrite(pin_b_, invert_ ^ (bright_b_ > pwm_));
 }
-
-void Led::Init(uint8_t pin) {
-  pin_ = pin;
-  pinMode(pin_, OUTPUT);
-}
-
-void Led::Set(float brightness) {
-  bright_     = cbrt(brightness);
-}
+**/

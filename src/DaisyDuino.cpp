@@ -18,6 +18,7 @@ void DaisyHardware::Init(float control_update_rate, DaisyDuinoDevice device) {
 	InitPetal(control_update_rate);
     break;
   case DAISY_FIELD:
+    InitField(control_update_rate);
     break;
   case DAISY_PATCH:
 	InitPatch(control_update_rate);
@@ -35,8 +36,8 @@ void DaisyHardware::InitPod(float control_update_rate){
     encoder.Init(control_update_rate, PIN_POD_ENC_A, PIN_POD_ENC_B,
                  PIN_POD_ENC_CLICK, INPUT_PULLUP, INPUT_PULLUP, INPUT_PULLUP);
 
-    leds[0].Init(PIN_POD_LED_1_RED, PIN_POD_LED_1_GREEN, PIN_POD_LED_1_BLUE, true, control_update_rate);
-    leds[1].Init(PIN_POD_LED_2_RED, PIN_POD_LED_2_GREEN, PIN_POD_LED_2_BLUE,  true, control_update_rate);
+    leds[0].Init(PIN_POD_LED_1_RED, PIN_POD_LED_1_GREEN, PIN_POD_LED_1_BLUE, true);
+    leds[1].Init(PIN_POD_LED_2_RED, PIN_POD_LED_2_GREEN, PIN_POD_LED_2_BLUE,  true);
 
 	controls[0].Init(PIN_POD_POT_1, control_update_rate);
 	controls[1].Init(PIN_POD_POT_2, control_update_rate);
@@ -94,6 +95,35 @@ void DaisyHardware::InitPetal(float control_update_rate){
 	buttons[5].Init(control_update_rate, false, PIN_PETAL_SWITCH_6, INPUT_PULLUP);
 	buttons[6].Init(control_update_rate, false, PIN_PETAL_SWITCH_7, INPUT_PULLUP);
 }
+
+void DaisyHardware::InitField(float control_update_rate){
+	numSwitches = 2;
+	numControls = 8;
+	
+	/*//pot MUX
+	AdcChannelConfig adc_cfg;
+	adc_cfg.InitMux({DSY_GPIOC, 0}, 8, 
+		{DSY_GPIOA, 6}, 
+		{DSY_GPIOA, 7}, 
+		{DSY_GPIOB, 1});
+
+	adc.Init(&adc_cfg, 5);
+
+	// Order of pots on the hardware connected to mux.
+    size_t pot_order[8] = {0, 3, 1, 4, 2, 5, 6, 7};
+    for(size_t i = 0; i < 8; i++)
+    {
+        controls[i].InitMux(adc.GetMuxPtr(4, pot_order[i]), control_update_rate);
+    }
+
+    cv[0].InitBipolarCv(PIN_FIELD_ADC_CV_1, control_update_rate);
+    cv[1].InitBipolarCv(PIN_FIELD_ADC_CV_2, control_update_rate);
+    cv[2].InitBipolarCv(PIN_FIELD_ADC_CV_3, control_update_rate);
+    cv[3].InitBipolarCv(PIN_FIELD_ADC_CV_4, control_update_rate);
+	
+	adc.Start();*/
+}
+
 
 void DaisyHardware::ProcessAnalogControls(){
 	for(int i = 0; i < numControls; i++){
