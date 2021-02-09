@@ -9,7 +9,7 @@
 DaisyHardware hw;
 
 //the magic incantation
-U8G2_SSD1309_128X64_NONAME2_F_4W_SW_SPI oled(U8G2_R0, /* clock=*/ 8, /* data=*/ 10, /* cs=*/ 7, /* dc=*/ 9, /* reset=*/ 30);
+U8G2_SSD1309_128X64_NONAME2_F_4W_SW_SPI oled(U8G2_R0, /* clock=*/ 8, /* data=*/ 10, /* cs=*/ 7, /* dc=*/ 9);
 
 int x, y;
 int xvel, yvel;
