@@ -5,7 +5,7 @@
 #ifdef __cplusplus
 
 #include <stdint.h>
-#include "i2c.h"
+#include <Wire.h>
 #include "Arduino.h"
 
 namespace daisy
@@ -63,13 +63,11 @@ class LedDriverPca9685
      * \param oe_pin        If the output enable pin is used, supply its configuration here.
      *                      It will automatically be pulled low by the driver.
     */
-    void Init(I2CHandle i2c,
-              const uint8_t (&addresses)[numDrivers],
+    void Init(const uint8_t (&addresses)[numDrivers],
               DmaBuffer    dma_buffer_a,
               DmaBuffer    dma_buffer_b,
               uint32_t oe_pin = -1) //this isn't used on the petal or field
     {
-        i2c_             = i2c;
         draw_buffer_     = dma_buffer_a;
         transmit_buffer_ = dma_buffer_b;
         oe_pin_          = oe_pin;
@@ -79,6 +77,8 @@ class LedDriverPca9685
         current_driver_idx_ = -1;
 
         InitializeBuffers();
+		Wire.setClock(1000000); //1mHz
+		Wire.begin();
         InitializeDrivers();
     }
 
@@ -177,17 +177,23 @@ class LedDriverPca9685
 
         const auto    d       = current_driver_idx_;
         const uint8_t address = PCA9685_I2C_BASE_ADDRESS | addresses_[d];
-        const auto    status  = i2c_.TransmitDma(address,
-                                             (uint8_t*)&transmit_buffer_[d],
-                                             PCA9685TransmitBuffer::size,
-                                             &TxCpltCallback,
-                                             this);
-        if(status != I2CHandle::Result::OK)
-        {
-            // TODO: fix this :-)
-            // Reinit I2C (probably a flag to kill, but hey this works fairly well for now.)
-            i2c_.Init(i2c_.GetConfig());
-        }
+		
+		Wire.beginTransmission(address);
+        
+		for(int i = 0; i < 6; i++){
+			Wire.write(255);
+		}
+		
+		//Wire.write(transmit_buffer_[d].registerAddr);
+		
+		for(int i = 0; i < 16; i++){
+			Wire.write((uint8_t)transmit_buffer_[d].leds[i].on);
+			Wire.write((uint8_t)(transmit_buffer_[d].leds[i].on >> 8));
+			Wire.write((uint8_t)transmit_buffer_[d].leds[i].off);
+			Wire.write((uint8_t)(transmit_buffer_[d].leds[i].off >> 8));
+		}
+
+		Wire.endTransmission(true);
     }
     uint16_t GetStartCycleForLed(int ledIndex) const
     {
@@ -231,27 +237,28 @@ class LedDriverPca9685
         for(int d = 0; d < numDrivers; d++)
         {
             const uint8_t address = PCA9685_I2C_BASE_ADDRESS | addresses_[d];
-            uint8_t       buffer[2];
-            buffer[0] = PCA9685_MODE1;
-            buffer[1] = 0x00;
-            i2c_.TransmitBlocking(address, buffer, 2, 1);
+			Wire.beginTransmission(address);
+
+			Wire.write(PCA9685_MODE1);
+			Wire.write(0x00);
             delay(20);
-            buffer[0] = PCA9685_MODE1;
-            buffer[1] = 0x00;
-            i2c_.TransmitBlocking(address, buffer, 2, 1);
+
+			Wire.write(PCA9685_MODE1);
+			Wire.write(0x00);
             delay(20);
-            buffer[0] = PCA9685_MODE1;
-            // auto increment on
-            buffer[1] = 0b00100000;
-            i2c_.TransmitBlocking(address, buffer, 2, 1);
-            delay(20);
-            buffer[0] = PCA9685_MODE2;
+
+			Wire.write(PCA9685_MODE1);
+			Wire.write(0b00100000); // auto increment on
+			delay(20);			
+
             // OE-high = high Impedance
             // Push-Pull outputs
             // outputs change on STOP
             // outputs inverted
-            buffer[1] = 0b000110110;
-            i2c_.TransmitBlocking(address, buffer, 2, 5);
+			Wire.write(PCA9685_MODE2);
+			Wire.write(0b000110110);
+
+			Wire.endTransmission();
         }
     }
 
@@ -264,14 +271,13 @@ class LedDriverPca9685
 
     // an internal function to handle i2c callbacks
     // called when an I2C transmission completes and the next driver must be updated
-    static void TxCpltCallback(void* context, I2CHandle::Result result)
+    static void TxCpltCallback(void* context)
     {
         auto drv_ptr = reinterpret_cast<
             LedDriverPca9685<numDrivers, persistentBufferContents>*>(context);
         drv_ptr->ContinueTransmission();
     }
 
-    I2CHandle              i2c_;
     PCA9685TransmitBuffer* draw_buffer_;
     PCA9685TransmitBuffer* transmit_buffer_;
     uint8_t                addresses_[numDrivers];

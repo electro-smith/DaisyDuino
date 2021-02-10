@@ -16,7 +16,6 @@
 #include "utility/ctrl.h"
 #include "utility/encoder.h"
 #include "utility/gatein.h"
-#include "utility/i2c.h"
 #include "utility/led.h"
 #include "utility/led_driver.h"
 #include "utility/parameter.h"

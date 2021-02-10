@@ -68,12 +68,10 @@ void DaisyHardware::InitPetal(float control_update_rate){
 	numControls = 6;
 
 	//init the led driver
-	//uint8_t   addr[2] = {0x00, 0x01};
-    //I2CHandle i2c;
-    //i2c.Init(petal_led_i2c_config);
-    //led_driver_.Init(i2c, addr, petal_led_dma_buffer_a, petal_led_dma_buffer_b);
-    //ClearLeds();
-    //UpdateLeds();
+	uint8_t   addr[2] = {0x00, 0x01};
+    led_driver_.Init(addr, petal_led_dma_buffer_a, petal_led_dma_buffer_b);
+    ClearLeds();
+    UpdateLeds();
 
 	encoder.Init(control_update_rate, PIN_PETAL_ENC_A, PIN_PETAL_ENC_B,
                  PIN_PETAL_ENC_CLICK, INPUT_PULLUP, INPUT_PULLUP, INPUT_PULLUP);
@@ -198,13 +196,16 @@ void DaisyHardware::SetFootswitchLed(uint8_t idx, float bright)
 		return;
 	}
 	
-    uint8_t fs_addr[4]
-        = {LED_FS_1, LED_FS_2, LED_FS_3, LED_FS_4};
+    uint8_t fs_addr[4] = {LED_FS_1, LED_FS_2, LED_FS_3, LED_FS_4};
     led_driver_.SetLed(fs_addr[idx], bright);
 }
 
 void DaisyHardware::ClearLeds()
 {
+	if(device_ != DAISY_PETAL){
+		return;
+	}
+	
     for(size_t i = 0; i < 8; i++)
     {
         SetRingLed(i, 0.0f, 0.0f, 0.0f);
@@ -217,5 +218,9 @@ void DaisyHardware::ClearLeds()
 
 void DaisyHardware::UpdateLeds()
 {
+	if(device_ != DAISY_PETAL){
+		return;
+	}
+	
     led_driver_.SwapBuffersAndTransmit();
 }

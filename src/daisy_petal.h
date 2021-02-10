@@ -1,4 +1,3 @@
-#include "utility/i2c.h"
 #include "utility/led_driver.h"
 
 #define PIN_PETAL_SWITCH_1 8
@@ -28,11 +27,6 @@
 static LedDriverPca9685<2, true>::DmaBuffer DMA_BUFFER_MEM_SECTION
   petal_led_dma_buffer_a,
   petal_led_dma_buffer_b;
-
-static constexpr I2CHandle::Config petal_led_i2c_config
-    = {I2CHandle::Config::Peripheral::I2C_1,
-       {{DSY_GPIOB, 8}, {DSY_GPIOB, 9}},
-       I2CHandle::Config::Speed::I2C_1MHZ};
 
 enum LedOrder
 {
