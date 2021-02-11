@@ -25,7 +25,7 @@ extern "C"
      *  If this is not possible for some reason, call this function to clear the cache (write 
      *  cache contents to SRAM if required) before starting to transmit data via the DMA.
      */
-    void dsy_dma_clear_cache_for_buffer(uint8_t* buffer, size_t size);
+    void dsy_dma_clear_cache_for_buffer(int32_t* buffer, size_t size);
 
     /** DMA transfers require the buffers to be excluded from the cache because the DMA
      *  reads / writes directly to the SRAM whereas the processor itself accesses the cache.
@@ -37,7 +37,7 @@ extern "C"
      *  If this is not possible for some reason, call this function to invalidate the cache (read 
      *  SRAM contents to cache if required) after reading data from peripherals via the DMA.
      */
-    void dsy_dma_invalidate_cache_for_buffer(uint8_t* buffer, size_t size);
+    void dsy_dma_invalidate_cache_for_buffer(int32_t* buffer, size_t size);
 
 #ifdef __cplusplus
 }
