@@ -12,48 +12,44 @@ size_t num_channels;
 static ATone flt;
 static Oscillator osc, lfo;
 
-void MyCallback(float **in, float **out, size_t size)
-{
-    float saw, freq, output;
-    for (size_t i = 0; i < size; i++)
-    {
-        freq = 6000 + (lfo.Process()*6000 );
-        saw = osc.Process();
+void MyCallback(float **in, float **out, size_t size) {
+  float saw, freq, output;
+  for (size_t i = 0; i < size; i++) {
+    freq = 6000 + (lfo.Process() * 6000);
+    saw = osc.Process();
 
-        flt.SetFreq(freq);
-        output = flt.Process(saw);
+    flt.SetFreq(freq);
+    output = flt.Process(saw);
 
-        for (size_t chn = 0; chn < num_channels; chn++)
-        {
-            out[chn][i] = output;
-        }
+    for (size_t chn = 0; chn < num_channels; chn++) {
+      out[chn][i] = output;
     }
+  }
 }
 
 void setup() {
-    float sample_rate;
-    // Initialize for Daisy pod at 48kHz
-    hw = DAISY.init(DAISY_SEED, AUDIO_SR_48K);
-    num_channels = hw.num_channels;
-    sample_rate = DAISY.get_samplerate();
+  float sample_rate;
+  // Initialize for Daisy pod at 48kHz
+  hw = DAISY.init(DAISY_SEED, AUDIO_SR_48K);
+  num_channels = hw.num_channels;
+  sample_rate = DAISY.get_samplerate();
 
-    // initialize Tone object
-    flt.Init(sample_rate);
+  // initialize Tone object
+  flt.Init(sample_rate);
 
-    // set parameters for sine oscillator object
-    lfo.Init(sample_rate);
-    lfo.SetWaveform(Oscillator::WAVE_TRI);
-    lfo.SetAmp(1);
-    lfo.SetFreq(.4);
+  // set parameters for sine oscillator object
+  lfo.Init(sample_rate);
+  lfo.SetWaveform(Oscillator::WAVE_TRI);
+  lfo.SetAmp(1);
+  lfo.SetFreq(.4);
 
-    // set parameters for sine oscillator object
-    osc.Init(sample_rate);
-    osc.SetWaveform(Oscillator::WAVE_POLYBLEP_SAW);
-    osc.SetFreq(100);
-    osc.SetAmp(0.25);
+  // set parameters for sine oscillator object
+  osc.Init(sample_rate);
+  osc.SetWaveform(Oscillator::WAVE_POLYBLEP_SAW);
+  osc.SetFreq(100);
+  osc.SetAmp(0.25);
 
-    DAISY.begin(MyCallback);
+  DAISY.begin(MyCallback);
 }
 
-void loop() {
-}
+void loop() {}

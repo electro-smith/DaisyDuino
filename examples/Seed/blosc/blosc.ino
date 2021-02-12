@@ -14,46 +14,41 @@ static Metro tick;
 
 int waveform = 0;
 
-void MyCallback(float **in, float **out, size_t size)
-{
-    float sig;
-    for (size_t i = 0; i < size; i++)
-    {
-        //switch waveforms
-        if (tick.Process())
-        {
-            waveform++;
-            osc.SetWaveform(waveform%3);
-        }
-
-        sig = osc.Process();
-
-        for (size_t chn = 0; chn < num_channels; chn++)
-        {
-            out[chn][i] = sig;
-        }
+void MyCallback(float **in, float **out, size_t size) {
+  float sig;
+  for (size_t i = 0; i < size; i++) {
+    // switch waveforms
+    if (tick.Process()) {
+      waveform++;
+      osc.SetWaveform(waveform % 3);
     }
+
+    sig = osc.Process();
+
+    for (size_t chn = 0; chn < num_channels; chn++) {
+      out[chn][i] = sig;
+    }
+  }
 }
 
 void setup() {
-    float sample_rate;
-    // Initialize for Daisy pod at 48kHz
-    hw = DAISY.init(DAISY_SEED, AUDIO_SR_48K);
-    num_channels = hw.num_channels;
-    sample_rate = DAISY.get_samplerate();
+  float sample_rate;
+  // Initialize for Daisy pod at 48kHz
+  hw = DAISY.init(DAISY_SEED, AUDIO_SR_48K);
+  num_channels = hw.num_channels;
+  sample_rate = DAISY.get_samplerate();
 
-    osc.Init(sample_rate);
+  osc.Init(sample_rate);
 
-    // Set up metro to pulse every second
-    tick.Init(1.0f, sample_rate);    
+  // Set up metro to pulse every second
+  tick.Init(1.0f, sample_rate);
 
-    // Set parameters for oscillator;
-    osc.SetFreq(440);
-    osc.SetAmp(0.5);
-    osc.SetPw(.5);
+  // Set parameters for oscillator;
+  osc.SetFreq(440);
+  osc.SetAmp(0.5);
+  osc.SetPw(.5);
 
-    DAISY.begin(MyCallback);
+  DAISY.begin(MyCallback);
 }
 
-void loop() {
-}
+void loop() {}
