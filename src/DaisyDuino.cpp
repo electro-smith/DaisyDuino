@@ -1,145 +1,56 @@
 #include "DaisyDuino.h"
 
-#include "utility/hid_audio.h"
-#include "utility/sys_dma.h"
-#include "utility/per_gpio.h"
-#include "utility/sys_mpu.h"
-
-#define PIN_AK4556_RESET 14
-#define PORT_AK4556_RESET DSY_GPIOB
-
-dsy_audio_handle haudio;
-dsy_sai_handle hsai;
-
-dsy_gpio ak4556_reset_pin;
-
-AudioClass DAISY;
-
-AudioClass::AudioClass() : _blocksize{48}, _samplerate{AUDIO_SR_48K}
-{
-    // Initializes the audio for the given platform, and returns the number of channels.
-}
-
-void AudioClass::ConfigureSdram()
-{
-    dsy_gpio_pin *pin_group;
-    sdram_handle.state             = DSY_SDRAM_STATE_ENABLE;
-    pin_group                      = sdram_handle.pin_config;
-    pin_group[DSY_SDRAM_PIN_SDNWE] = dsy_pin(DSY_GPIOH, 5);
-
-    dsy_sdram_init(&sdram_handle);
-}
-
-DaisyHardware AudioClass::init(DaisyDuinoDevice device, DaisyDuinoSampleRate sr)
-{
-    // Set Audio Device, num channels, etc.
-    // Only difference is Daisy Patch has second AK4556 and 4 channels
-    HAL_Init();
-    SCB_DisableDCache(); // Still needs to wait for linker..
-    _samplerate = sr;
-    _device = device;
-    _blocksize = 48; // default
-    haudio.sai = &hsai;
-    haudio.block_size = _blocksize;
-    dsy_dma_init(); // may interfere with core STM32 Arduino stuff...
-    dsy_mpu_init();
-    
-    // Set up audio
-    // SAI1
-    dsy_gpio_pin *pin_group;
-    hsai.init = device == DAISY_PATCH ? DSY_AUDIO_INIT_BOTH : DSY_AUDIO_INIT_SAI1;
-    hsai.device[DSY_SAI_1] = DSY_AUDIO_DEVICE_AK4556;
-    hsai.samplerate[DSY_SAI_1] = DSY_AUDIO_SAMPLERATE_48K;
-    hsai.bitdepth[DSY_SAI_1] = DSY_AUDIO_BITDEPTH_24;
-    hsai.a_direction[DSY_SAI_1] = DSY_AUDIO_TX;
-    hsai.b_direction[DSY_SAI_1] = DSY_AUDIO_RX;
-    hsai.sync_config[DSY_SAI_1] = DSY_AUDIO_SYNC_MASTER;
-    pin_group = hsai.sai1_pin_config;
-    pin_group[DSY_SAI_PIN_MCLK] = dsy_pin(DSY_GPIOE, 2);
-    pin_group[DSY_SAI_PIN_FS] = dsy_pin(DSY_GPIOE, 4);
-    pin_group[DSY_SAI_PIN_SCK] = dsy_pin(DSY_GPIOE, 5);
-    pin_group[DSY_SAI_PIN_SIN] = dsy_pin(DSY_GPIOE, 6);
-    pin_group[DSY_SAI_PIN_SOUT] = dsy_pin(DSY_GPIOE, 3);
-	// SAI2
-    if (_device == DAISY_PATCH)
+   void DaisyHardware::Init(float control_update_rate, DaisyDuinoDevice device)
     {
-        pin_group = hsai.sai2_pin_config;
-        pin_group[DSY_SAI_PIN_MCLK] = dsy_pin(DSY_GPIOA, 1);
-        pin_group[DSY_SAI_PIN_FS]   = dsy_pin(DSY_GPIOG, 9);
-        pin_group[DSY_SAI_PIN_SCK]  = dsy_pin(DSY_GPIOA, 2);
-        pin_group[DSY_SAI_PIN_SIN]  = dsy_pin(DSY_GPIOD, 11);
-        pin_group[DSY_SAI_PIN_SOUT] = dsy_pin(DSY_GPIOA, 0);
-        hsai.device[DSY_SAI_2]      = DSY_AUDIO_DEVICE_AK4556;
-        hsai.samplerate[DSY_SAI_2]  = DSY_AUDIO_SAMPLERATE_48K;
-        hsai.bitdepth[DSY_SAI_2]    = DSY_AUDIO_BITDEPTH_24;
-        hsai.a_direction[DSY_SAI_2] = DSY_AUDIO_TX;
-        hsai.b_direction[DSY_SAI_2] = DSY_AUDIO_RX;
-        hsai.sync_config[DSY_SAI_2] = DSY_AUDIO_SYNC_MASTER;
+	device_ = device;
+	num_channels = 2;
+	numGates = 0;
+	
+	switch (device){
+	    case DAISY_SEED:
+		break;
+		
+	    case DAISY_POD:
+	        buttons[0].Init(control_update_rate, true, PIN_POD_SWITCH_1, INPUT_PULLUP);
+	        buttons[1].Init(control_update_rate, true, PIN_POD_SWITCH_2, INPUT_PULLUP);
+				
+			encoder.Init(control_update_rate, PIN_POD_ENC_A, PIN_POD_ENC_B, PIN_POD_ENC_CLICK, INPUT_PULLUP, INPUT_PULLUP, INPUT_PULLUP);
+
+			leds[0].Init(PIN_POD_LED_1_RED, PIN_POD_LED_1_GREEN, PIN_POD_LED_1_BLUE);    
+	        leds[1].Init(PIN_POD_LED_2_RED, PIN_POD_LED_2_GREEN, PIN_POD_LED_2_BLUE);
+
+			numSwitches = numLeds = 2;
+			break;
+
+	    case DAISY_PETAL:
+		break;
+	    
+		case DAISY_FIELD:
+		break;
+	    
+		case DAISY_PATCH:
+			encoder.Init(control_update_rate, PIN_PATCH_ENC_A, PIN_PATCH_ENC_B, PIN_PATCH_ENC_CLICK, INPUT_PULLUP, INPUT_PULLUP, INPUT_PULLUP);
+			gateIns[0].Init(20, INPUT, true);
+			gateIns[1].Init(19, INPUT, true);
+			numSwitches = numLeds = 0;
+			numGates = 2;
+			num_channels = 4;
+		break;
+	    default:
+		break;
+	}
     }
 
-	// Other
-	haudio.dev0_i2c = NULL;
-	haudio.dev1_i2c = NULL;
-
-
-	// Init and Prepare
-	dsy_audio_init(&haudio);
-    dsy_audio_set_blocksize(DSY_AUDIO_INTERNAL, _blocksize); 
-    if (_device == DAISY_PATCH)
+void DaisyHardware::DebounceControls()
     {
-        // Reset External Codec
-        ak4556_reset_pin.pin  = dsy_pin(PORT_AK4556_RESET, PIN_AK4556_RESET);
-        ak4556_reset_pin.mode = DSY_GPIO_MODE_OUTPUT_PP;
-        ak4556_reset_pin.pull = DSY_GPIO_NOPULL;
-        dsy_gpio_init(&ak4556_reset_pin);
-        dsy_audio_set_blocksize(DSY_AUDIO_EXTERNAL, _blocksize); 
-        dsy_gpio_write(&ak4556_reset_pin, 0);
-        delay(1);
-        dsy_gpio_write(&ak4556_reset_pin, 1);
-    }
-
-    ConfigureSdram();
-    
-    DaisyHardware hw;
-    hw.Init(get_callbackrate(), device);
-
-    return hw;
-}
-
-void AudioClass::begin(DaisyDuinoCallback cb)
-{
-    if (_device == DAISY_PATCH)
-    {
-        // Start both channels, and set first callback
-        dsy_audio_set_mc_callback(cb);
-        dsy_audio_start(DSY_AUDIO_INTERNAL);
-        dsy_audio_start(DSY_AUDIO_EXTERNAL);
-    }
-    else
-    {
-        dsy_audio_set_mc_callback(cb);
-        dsy_audio_start(DSY_AUDIO_INTERNAL);
-    }
-}
-
-void AudioClass::end()
-{
-    dsy_audio_stop(DSY_AUDIO_INTERNAL);
-    if (_device == DAISY_PATCH)
-    {
-        dsy_audio_stop(DSY_AUDIO_EXTERNAL);
-    }
-}
-
-float AudioClass::get_samplerate()
-{
-    switch(_samplerate)
-    {
-        case AUDIO_SR_48K:
-            return 48000.0f;
-        case AUDIO_SR_96K:
-            return 96000.0f;
-        default:
-            return 48000.0f;
-    }
-}
+	for (int i = 0; i < numSwitches; i++)
+	{
+	    buttons[i].Debounce();
+	}
+	
+		encoder.Debounce();
+		for (int i = 0; i < numGates; i++)
+		{
+			gateIns[i].Debounce();
+		}
+	}

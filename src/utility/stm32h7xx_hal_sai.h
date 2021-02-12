@@ -21,12 +21,15 @@
 #ifndef STM32H7xx_HAL_SAI_H
 #define STM32H7xx_HAL_SAI_H
 
+#define HAL_DMA_MODULE_ENABLED
+#include "stm32h7xx_hal.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32h7xx_hal_def.h"
+//#include "stm32h7xx_hal_def.h"
 
 /** @addtogroup STM32H7xx_HAL_Driver
   * @{
