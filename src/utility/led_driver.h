@@ -6,6 +6,7 @@
 
 #include <stdint.h>
 #include <Wire.h>
+#include "utility/pca9685.h"
 #include "Arduino.h"
 
 namespace daisy
@@ -47,10 +48,11 @@ class LedDriverPca9685
         } leds[16];
         /** full size in bytes */
         static constexpr uint16_t size = 16 * 4 + 1;
-    };
-    /** Buffer type for the entire DMA buffer. */
+	};
+    
+	/** Buffer type for the entire DMA buffer. */
     using DmaBuffer = PCA9685TransmitBuffer[numDrivers];
-
+	
     /** Initialises the driver. 
      * \param i2c           The I2C peripheral to use.
      * \param addresses     An array of addresses for each of the driver chips.
@@ -77,9 +79,7 @@ class LedDriverPca9685
         current_driver_idx_ = -1;
 
         InitializeBuffers();
-		Wire.setClock(1000000); //1mHz
-		Wire.begin();
-        InitializeDrivers();
+		InitializeDrivers();
     }
 
     /** Returns the number of leds available from this driver. */
@@ -174,22 +174,13 @@ class LedDriverPca9685
             current_driver_idx_ = -1;
             return;
         }
-
-        const auto    d       = current_driver_idx_;
-        const uint8_t address = PCA9685_I2C_BASE_ADDRESS | addresses_[d];
 		
-		Wire.beginTransmission(address);
-				
-		Wire.write(address);
-						
+		const auto d = current_driver_idx_;
+		
 		for(int i = 0; i < 16; i++){
-			Wire.write((uint8_t)transmit_buffer_[d].leds[i].on);
-			Wire.write((uint8_t)(transmit_buffer_[d].leds[i].on >> 8));
-			Wire.write((uint8_t)transmit_buffer_[d].leds[i].off);
-			Wire.write((uint8_t)(transmit_buffer_[d].leds[i].off >> 8));
+			drivers_[i].setPWM(i, transmit_buffer_[d].leds[i].on, transmit_buffer_[d].leds[i].off);
 		}
-
-		Wire.endTransmission(true);
+		
     }
     uint16_t GetStartCycleForLed(int ledIndex) const
     {
@@ -220,41 +211,16 @@ class LedDriverPca9685
     }
 
     void InitializeDrivers()
-    {
-        // init OE pin and pull low to enable outputs
-		//not used on petal or field
-        if(oe_pin_ > -1)
-        {
-			pinMode(oe_pin_, OUTPUT);
-			digitalWrite(oe_pin_, LOW);        		
-		}
+    {		
+		Wire.begin();
 
         // init the individual drivers
         for(int d = 0; d < numDrivers; d++)
-        {
-            const uint8_t address = PCA9685_I2C_BASE_ADDRESS | addresses_[d];
-			Wire.beginTransmission(address);
-
-			Wire.write(PCA9685_MODE1);
-			Wire.write(0x00);
-            delay(20);
-
-			Wire.write(PCA9685_MODE1);
-			Wire.write(0x00);
-            delay(20);
-
-			Wire.write(PCA9685_MODE1);
-			Wire.write(0b00100000); // auto increment on 00100000
-			delay(20);			
-
-            // OE-high = high Impedance
-            // Push-Pull outputs
-            // outputs change on STOP
-            // outputs inverted
-			Wire.write(PCA9685_MODE2);
-			Wire.write(0b00110110); //000110110?
-
-			Wire.endTransmission(true);
+        {			
+			drivers_[d].writeMode(0, 0b00100000);
+			drivers_[d].writeMode(1, 0b00110110); 
+			
+			drivers_[d].begin(PCA9685_I2C_BASE_ADDRESS | addresses_[d]);
         }
     }
 
@@ -278,6 +244,8 @@ class LedDriverPca9685
     PCA9685TransmitBuffer* transmit_buffer_;
     uint8_t                addresses_[numDrivers];
     uint32_t           oe_pin_;
+	
+	myPCA9685 drivers_[numDrivers];
 	
     // index of the driver that is currently updated.
     int8_t         current_driver_idx_;

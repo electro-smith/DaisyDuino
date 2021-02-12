@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include "Arduino.h"
+#include <Wire.h>
 
 #include "AudioClass.h"
 #include "DaisyDSP.h"
