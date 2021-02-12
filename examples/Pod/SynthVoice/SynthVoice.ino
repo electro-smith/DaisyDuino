@@ -1,7 +1,7 @@
 // Title: SynthVoice
 // Description: Synth voice with adenv, vibrato, pitch and filter
 // Hardware: Daisy Pod
-// Author: Ben Sergentanis 
+// Author: Ben Sergentanis
 // Controls:
 // Encoder Press: Cycle waveforms
 // Encoder: Control mode: 1,2,3
@@ -9,7 +9,8 @@
 // Knob 2: Pitch, Decay time, vibrato depth
 // Button 1: Trigger envelope
 // Button 2: Cycle envelope
-// Diagram: https://raw.githubusercontent.com/electro-smith/DaisyExamples/master/pod/SynthVoice/resources/SynthVoice.png
+// Diagram:
+// https://raw.githubusercontent.com/electro-smith/DaisyExamples/master/pod/SynthVoice/resources/SynthVoice.png
 
 #include "DaisyDuino.h"
 
@@ -24,34 +25,32 @@ float vibrato, oscFreq, lfoFreq, lfoAmp, attack, release, cutoff;
 float oldk1, oldk2, k1, k2;
 bool selfCycle;
 
-void ConditionalParameter(float oldVal, float newVal, float &param, float update);
+void ConditionalParameter(float oldVal, float newVal, float &param,
+                          float update);
 
 void Controls();
 
-void NextSamples(float& sig)
-{
-    float ad_out = ad.Process();
-    vibrato = lfo.Process();
-    
-    osc.SetFreq(oscFreq + vibrato);
-    
-    sig = osc.Process();
-    sig = flt.Process(sig);
-    sig *= ad_out;
+void NextSamples(float &sig) {
+  float ad_out = ad.Process();
+  vibrato = lfo.Process();
+
+  osc.SetFreq(oscFreq + vibrato);
+
+  sig = osc.Process();
+  sig = flt.Process(sig);
+  sig *= ad_out;
 }
 
-void MyCallback(float **in, float **out, size_t size)
-{
-    Controls();
+void MyCallback(float **in, float **out, size_t size) {
+  Controls();
 
-    for (size_t i = 0; i < size; i++)
-    {
-        float sig;
-        NextSamples(sig);
+  for (size_t i = 0; i < size; i++) {
+    float sig;
+    NextSamples(sig);
 
-        out[0][i] = sig;
-        out[1][i] = sig;
-    }
+    out[0][i] = sig;
+    out[1][i] = sig;
+  }
 }
 
 void setup() {
@@ -113,32 +112,28 @@ void setup() {
 
 void loop() {}
 
-//Updates values if knob had changed
-void ConditionalParameter(float oldVal, float newVal, float &param, float update)
-{
-    if (abs(oldVal - newVal) > 0.0005)
-    {
-        param = update;
-    }
+// Updates values if knob had changed
+void ConditionalParameter(float oldVal, float newVal, float &param,
+                          float update) {
+  if (abs(oldVal - newVal) > 0.0005) {
+    param = update;
+  }
 }
 
+// Controls Helpers
+void UpdateEncoder() {
+  wave += pod.encoder.RisingEdge();
+  wave %= osc.WAVE_POLYBLEP_TRI;
 
-//Controls Helpers
-void UpdateEncoder()
-{
-    wave += pod.encoder.RisingEdge();
-    wave %= osc.WAVE_POLYBLEP_TRI;
+  // skip ramp since it sounds like saw
+  if (wave == 3) {
+    wave = 4;
+  }
 
-    //skip ramp since it sounds like saw
-    if (wave == 3)
-    {  
-        wave = 4;
-    }
+  osc.SetWaveform(wave);
 
-    osc.SetWaveform(wave);
-    
-    mode += pod.encoder.Increment();
-    mode = (mode % 3 + 3) % 3;
+  mode += pod.encoder.Increment();
+  mode = (mode % 3 + 3) % 3;
 }
 
 void UpdateKnobs()
@@ -173,38 +168,37 @@ void UpdateKnobs()
 
 }
 
-void UpdateLeds()
-{
-    pod.leds[0].Set(mode == 2, mode == 1, mode == 0);
-    pod.leds[1].Set(false, selfCycle, selfCycle);
+void UpdateLeds() {
+  pod.leds[0].Set(mode == 2, mode == 1, mode == 0);
+  pod.leds[1].Set(false, selfCycle, selfCycle);
 
-    //just for now until the led pwm stuff is resolved
-    pod.leds[0].Update();
-    pod.leds[1].Update();
+  //just for now until the led pwm stuff is resolved
+  pod.leds[0].Update();
+  pod.leds[1].Update();
+
+  oldk1 = k1;
+  oldk2 = k2;
 }
 
-void UpdateButtons()
-{
-    if (pod.buttons[0].RisingEdge() || (selfCycle && !ad.IsRunning()))
-    {
-        ad.Trigger();
-    }
+void UpdateButtons() {
+  if (pod.buttons[0].RisingEdge() || (selfCycle && !ad.IsRunning())) {
+    ad.Trigger();
+  }
 
-    if (pod.buttons[1].RisingEdge())
-    {
-        selfCycle = !selfCycle;
-    }
+  if (pod.buttons[1].RisingEdge()) {
+    selfCycle = !selfCycle;
+  }
 }
 
 void Controls()
 {
-    pod.ProcessAllControls();
+  pod.ProcessAllControls();
 
-    UpdateEncoder();
+  UpdateEncoder();
 
-    UpdateKnobs();
+  UpdateKnobs();
 
-    UpdateLeds();
+  UpdateLeds();
 
-    UpdateButtons();
+  UpdateButtons();
 }

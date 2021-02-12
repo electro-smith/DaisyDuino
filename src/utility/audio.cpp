@@ -1,4 +1,5 @@
 #include "audio.h"
+#include "utility/dma.h"
 
 namespace daisy
 {
@@ -236,7 +237,7 @@ AudioHandle::Impl::SetSampleRate(SaiHandle::Config::SampleRate samplerate)
 // Using function pointers for the x2f and f2x functions would have been ideal, but
 // wasn't possible due to the different parameter/return types for each function.
 void AudioHandle::Impl::InternalCallback(int32_t* in, int32_t* out, size_t size)
-{
+{	
     // Convert from sai format to float, and call user callback
     size_t                      chns;
     SaiHandle::Config::BitDepth bd;
@@ -442,6 +443,14 @@ void AudioHandle::Impl::InternalCallback(int32_t* in, int32_t* out, size_t size)
             default: break;
         }
     }
+
+
+	//temporary bandaid until the cache fix is released via stm32duino
+	for(int i = 0; i < kAudioMaxChannels / 2; i++){
+		dsy_dma_clear_cache_for_buffer(dsy_audio_rx_buffer[i], kAudioMaxBufferSize);
+		dsy_dma_clear_cache_for_buffer(dsy_audio_tx_buffer[i], kAudioMaxBufferSize);
+	}
+
 }
 
 // ================================================================
