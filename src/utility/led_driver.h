@@ -179,13 +179,9 @@ class LedDriverPca9685
         const uint8_t address = PCA9685_I2C_BASE_ADDRESS | addresses_[d];
 		
 		Wire.beginTransmission(address);
-        
-		for(int i = 0; i < 6; i++){
-			Wire.write(255);
-		}
-		
-		//Wire.write(transmit_buffer_[d].registerAddr);
-		
+				
+		Wire.write(address);
+						
 		for(int i = 0; i < 16; i++){
 			Wire.write((uint8_t)transmit_buffer_[d].leds[i].on);
 			Wire.write((uint8_t)(transmit_buffer_[d].leds[i].on >> 8));
@@ -248,7 +244,7 @@ class LedDriverPca9685
             delay(20);
 
 			Wire.write(PCA9685_MODE1);
-			Wire.write(0b00100000); // auto increment on
+			Wire.write(0b00100000); // auto increment on 00100000
 			delay(20);			
 
             // OE-high = high Impedance
@@ -256,9 +252,9 @@ class LedDriverPca9685
             // outputs change on STOP
             // outputs inverted
 			Wire.write(PCA9685_MODE2);
-			Wire.write(0b000110110);
+			Wire.write(0b00110110); //000110110?
 
-			Wire.endTransmission();
+			Wire.endTransmission(true);
         }
     }
 
