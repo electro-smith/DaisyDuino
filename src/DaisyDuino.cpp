@@ -112,12 +112,10 @@ void DaisyHardware::InitField(float control_update_rate){
 	pinMode(PIN_FIELD_MUX_SEL_2, OUTPUT);
 	controls[0].Init(PIN_FIELD_ADC_POT_MUX, control_update_rate);
 
-/*    cv[0].InitBipolarCv(PIN_FIELD_ADC_CV_1, control_update_rate);
+	cv[0].InitBipolarCv(PIN_FIELD_ADC_CV_1, control_update_rate);
     cv[1].InitBipolarCv(PIN_FIELD_ADC_CV_2, control_update_rate);
     cv[2].InitBipolarCv(PIN_FIELD_ADC_CV_3, control_update_rate);
     cv[3].InitBipolarCv(PIN_FIELD_ADC_CV_4, control_update_rate);
-	
-	adc.Start();*/
 }
 
 float DaisyHardware::GetKnobValue(uint8_t idx){

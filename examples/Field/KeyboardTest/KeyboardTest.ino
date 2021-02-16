@@ -162,7 +162,7 @@ void loop()
         kvals[i] = hw.GetKnobValue(i);
         if(i < 4)
         {
-            //cvvals[i] = hw.GetCvValue(i);
+            cvvals[i] = hw.cv[i].Process();
         }
     }
   //dsy_dac_write(DSY_DAC_CHN1, hw.GetKnobValue(0) * 4095);
