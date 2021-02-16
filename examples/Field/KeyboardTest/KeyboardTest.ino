@@ -57,39 +57,10 @@ static daisysp::ReverbSc verb;
 float kvals[8];
 float cvvals[4];
 
+bool use_verb;
+
 void AudioCallback(float *in, float *out, size_t size)
 {
-    bool trig, use_verb;
-    trig = false;
-    hw.ProcessAllControls();
-    if(hw.buttons[0].RisingEdge())
-    {
-        octaves -= 1;
-        trig = true;
-    }
-    if(hw.buttons[1].RisingEdge())
-    {
-        octaves += 1;
-        trig = true;
-    }
-    use_verb = true;
-
-    if(octaves < 0)
-        octaves = 0;
-    if(octaves > 4)
-        octaves = 4;
-
-    if(trig)
-    {
-        for(int i = 0; i < NUM_VOICES; i++)
-        {
-            v[i].set_note((12.0f * octaves) + 24.0f + scale[i]);
-        }
-    }
-    for(size_t i = 0; i < 16; i++)
-    {
-        //v[i].on_ = hw.KeyboardState(i);
-    }
     float sig, send;
     float wetl, wetr;
     for(size_t i = 0; i < size; i += 2)
@@ -155,7 +126,12 @@ void setup()
 
 void loop()
 {  
-   UpdateLeds(kvals);
+
+
+      hw.ProcessAllControls();
+
+     UpdateLeds(kvals);
+
 
     for(int i = 0; i < 8; i++)
     {
@@ -165,6 +141,39 @@ void loop()
             cvvals[i] = hw.cv[i].Process();
         }
     }
+
+    bool trig;
+    trig = false;
+    if(hw.buttons[0].RisingEdge())
+    {
+        octaves -= 1;
+        trig = true;
+    }
+    if(hw.buttons[1].RisingEdge())
+    {
+        octaves += 1;
+        trig = true;
+    }
+    use_verb = true;
+
+    if(octaves < 0)
+        octaves = 0;
+    if(octaves > 4)
+        octaves = 4;
+
+    
+    if(trig)
+    {
+        for(int i = 0; i < NUM_VOICES; i++)
+        {
+            v[i].set_note((12.0f * octaves) + 24.0f + scale[i]);
+        }
+    }
+    for(size_t i = 0; i < 16; i++)
+    {
+        v[i].on_ = hw.KeyboardState(i);
+    }
+    
   //dsy_dac_write(DSY_DAC_CHN1, hw.GetKnobValue(0) * 4095);
   //dsy_dac_write(DSY_DAC_CHN2, hw.GetKnobValue(1) * 4095);
 }

@@ -20,6 +20,7 @@
 #include "utility/led.h"
 #include "utility/led_driver.h"
 #include "utility/parameter.h"
+#include "utility/sr_4021.h"
 #include "utility/switch.h"
 
 using namespace daisy;
@@ -80,6 +81,12 @@ public:
   //for field MUX knobs
   float GetKnobValue(uint8_t idx);
 
+  bool KeyboardState(size_t idx);
+
+  bool KeyboardRisingEdge(size_t idx);
+
+  bool KeyboardFallingEdge(size_t idx);
+	
   //process knobs
   void ProcessAnalogControls();
   
@@ -99,6 +106,10 @@ private:
   void InitField(float control_update_rate);
 
   DaisyDuinoDevice device_;
+  
+  //field keyboard
+  ShiftRegister4021<2> keyboard_sr_; /**< Two 4021s daisy-chained. */
+  uint8_t              keyboard_state_[16];
 };
 
 #endif

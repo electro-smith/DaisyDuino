@@ -112,6 +112,13 @@ void DaisyHardware::InitField(float control_update_rate){
 	pinMode(PIN_FIELD_MUX_SEL_2, OUTPUT);
 	controls[0].Init(PIN_FIELD_ADC_POT_MUX, control_update_rate);
 
+    // Keyboard
+    ShiftRegister4021<2>::Config keyboard_cfg;
+    keyboard_cfg.clk     = PIN_FIELD_CD4021_CLK;
+    keyboard_cfg.latch   = PIN_FIELD_CD4021_CS;
+    keyboard_cfg.data[0] = PIN_FIELD_CD4021_D1;
+    keyboard_sr_.Init(keyboard_cfg);
+
 	cv[0].InitBipolarCv(PIN_FIELD_ADC_CV_1, control_update_rate);
     cv[1].InitBipolarCv(PIN_FIELD_ADC_CV_2, control_update_rate);
     cv[2].InitBipolarCv(PIN_FIELD_ADC_CV_3, control_update_rate);
@@ -127,6 +134,21 @@ float DaisyHardware::GetKnobValue(uint8_t idx){
 	return controls[0].Process();
 }
 
+bool DaisyHardware::KeyboardState(size_t idx)
+{
+    return keyboard_state_[idx] == 0x00;
+}
+
+bool DaisyHardware::KeyboardRisingEdge(size_t idx)
+{
+    return keyboard_state_[idx] == 0x80;
+}
+
+bool DaisyHardware::KeyboardFallingEdge(size_t idx)
+{
+    return keyboard_state_[idx] == 0x7F;
+}
+
 void DaisyHardware::ProcessAnalogControls(){
 	for(int i = 0; i < numControls; i++){
 		controls[i].Process();
@@ -140,6 +162,18 @@ void DaisyHardware::ProcessAnalogControls(){
 void DaisyHardware::ProcessDigitalControls(){
   if(device_ == DAISY_PATCH || device_ == DAISY_POD){
 	encoder.Debounce();
+  }
+
+  else if(device_ == DAISY_FIELD){
+      keyboard_sr_.Update();
+	  for(size_t i = 0; i < 16; i++)
+	  {
+		uint8_t keyidx, keyoffset;
+		keyoffset = i > 7 ? 8 : 0;
+		keyidx    = (7 - (i % 8)) + keyoffset;
+		keyboard_state_[keyidx]
+		  = keyboard_sr_.State(i) | (keyboard_state_[keyidx] << 1);
+	  }
   }
 
   for (int i = 0; i < numSwitches; i++) {
