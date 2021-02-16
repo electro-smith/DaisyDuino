@@ -136,6 +136,6 @@ void loop() {
     }
   }
 
-  // dsy_dac_write(DSY_DAC_CHN1, hw.GetKnobValue(0) * 4095);
-  // dsy_dac_write(DSY_DAC_CHN2, hw.GetKnobValue(1) * 4095);
+  analogWrite(PIN_FIELD_DAC_1, hw.GetKnobValue(0) * 255);
+  analogWrite(PIN_FIELD_DAC_2, hw.GetKnobValue(1) * 255);
 }

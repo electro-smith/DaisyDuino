@@ -61,6 +61,11 @@ void DaisyHardware::InitPatch(float control_update_rate) {
   controls[1].Init(PIN_PATCH_CTRL_2, control_update_rate, true);
   controls[2].Init(PIN_PATCH_CTRL_3, control_update_rate, true);
   controls[3].Init(PIN_PATCH_CTRL_4, control_update_rate, true);
+
+  //cv outs
+  pinMode(PIN_PATCH_CV_1, OUTPUT);
+  pinMode(PIN_PATCH_CV_1, OUTPUT);
+  pinMode(PIN_PATCH_GATE_OUT, OUTPUT);
 }
 
 void DaisyHardware::InitPetal(float control_update_rate) {
@@ -121,10 +126,15 @@ void DaisyHardware::InitField(float control_update_rate) {
   keyboard_cfg.data[0] = PIN_FIELD_CD4021_D1;
   keyboard_sr_.Init(keyboard_cfg);
 
+  //cv ins
   cv[0].InitBipolarCv(PIN_FIELD_ADC_CV_1, control_update_rate);
   cv[1].InitBipolarCv(PIN_FIELD_ADC_CV_2, control_update_rate);
   cv[2].InitBipolarCv(PIN_FIELD_ADC_CV_3, control_update_rate);
   cv[3].InitBipolarCv(PIN_FIELD_ADC_CV_4, control_update_rate);
+
+  //cv outs
+  pinMode(PIN_FIELD_DAC_1, OUTPUT);
+  pinMode(PIN_FIELD_DAC_2, OUTPUT);
 }
 
 float DaisyHardware::GetKnobValue(uint8_t idx) {
