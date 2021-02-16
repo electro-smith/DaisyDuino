@@ -181,11 +181,7 @@ class LedDriverPca9685
 		
 			for(int i = 0; i < 16; i++){
 				driver_.setPWM(i, transmit_buffer_[d].leds[i].on, transmit_buffer_[d].leds[i].off);
-				//driver_.setPWM(i, 4095, 0);
 			}
-		
-			pinMode(LED_BUILTIN, OUTPUT);
-			digitalWrite(LED_BUILTIN, transmit_buffer_[d].leds[0].on == 0);		
 		}
 	}
     uint16_t GetStartCycleForLed(int ledIndex) const
