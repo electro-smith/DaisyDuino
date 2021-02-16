@@ -52,6 +52,7 @@ public:
   Led leds[2];
   GateIn gateIns[2];
   AnalogControl expression;
+  LedDriverPca9685<2, true> led_driver_; //public for now
 
   int num_channels;
   int numSwitches, numLeds, numGates, numControls;
@@ -63,6 +64,12 @@ public:
 
   //Set footswitch LED. For use with daisy petal only
   void SetFootswitchLed(uint8_t idx, float bright);
+
+  //Set keyboard LED. For use with daisy field only  
+  void SetKeyboardLed(uint8_t row, uint8_t idx, float value);
+
+  //Set knob LED. For use with daisy field only
+  void SetKnobLed(uint8_t idx, float bright);
 
   //use with petal and field
   void ClearLeds();
@@ -87,8 +94,6 @@ private:
   void InitPatch(float control_update_rate);
   void InitPetal(float control_update_rate);
   void InitField(float control_update_rate);
-
-  LedDriverPca9685<2, true> led_driver_;
 
   DaisyDuinoDevice device_;
 };

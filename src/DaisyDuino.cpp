@@ -98,6 +98,17 @@ void DaisyHardware::InitField(float control_update_rate){
 	numSwitches = 2;
 	numControls = 8;
 	
+	buttons[0].Init(control_update_rate, false, PIN_FIELD_SWITCH_1, INPUT_PULLUP);
+	buttons[1].Init(control_update_rate, false, PIN_FIELD_SWITCH_2, INPUT_PULLUP);
+
+
+	//init the led driver
+    uint8_t   addr[2] = {0x00, 0x02};
+    led_driver_.Init(addr, field_led_dma_buffer_a, field_led_dma_buffer_b);
+	ClearLeds();
+	UpdateLeds();
+
+	
 	/*//pot MUX
 	AdcChannelConfig adc_cfg;
 	adc_cfg.InitMux({DSY_GPIOC, 0}, 8, 
@@ -159,30 +170,30 @@ void DaisyHardware::SetRingLed(uint8_t idx, float r, float g, float b)
 		return; //bad idx or wrong board
 	}
 	
-    uint8_t r_addr[8] = {LED_RING_1_R,
-                                     LED_RING_2_R,
-                                     LED_RING_3_R,
-                                     LED_RING_4_R,
-                                     LED_RING_5_R,
-                                     LED_RING_6_R,
-                                     LED_RING_7_R,
-                                     LED_RING_8_R};
-    uint8_t g_addr[8] = {LED_RING_1_G,
-                                     LED_RING_2_G,
-                                     LED_RING_3_G,
-                                     LED_RING_4_G,
-                                     LED_RING_5_G,
-                                     LED_RING_6_G,
-                                     LED_RING_7_G,
-                                     LED_RING_8_G};
-    uint8_t b_addr[8] = {LED_RING_1_B,
-                                     LED_RING_2_B,
-                                     LED_RING_3_B,
-                                     LED_RING_4_B,
-                                     LED_RING_5_B,
-                                     LED_RING_6_B,
-                                     LED_RING_7_B,
-                                     LED_RING_8_B};
+    uint8_t r_addr[8] = {PETAL_LED_RING_1_R,
+                                     PETAL_LED_RING_2_R,
+                                     PETAL_LED_RING_3_R,
+                                     PETAL_LED_RING_4_R,
+                                     PETAL_LED_RING_5_R,
+                                     PETAL_LED_RING_6_R,
+                                     PETAL_LED_RING_7_R,
+                                     PETAL_LED_RING_8_R};
+    uint8_t g_addr[8] = {PETAL_LED_RING_1_G,
+                                     PETAL_LED_RING_2_G,
+                                     PETAL_LED_RING_3_G,
+                                     PETAL_LED_RING_4_G,
+                                     PETAL_LED_RING_5_G,
+                                     PETAL_LED_RING_6_G,
+                                     PETAL_LED_RING_7_G,
+                                     PETAL_LED_RING_8_G};
+    uint8_t b_addr[8] = {PETAL_LED_RING_1_B,
+                                     PETAL_LED_RING_2_B,
+                                     PETAL_LED_RING_3_B,
+                                     PETAL_LED_RING_4_B,
+                                     PETAL_LED_RING_5_B,
+                                     PETAL_LED_RING_6_B,
+                                     PETAL_LED_RING_7_B,
+                                     PETAL_LED_RING_8_B};
 
 
     led_driver_.SetLed(r_addr[idx], r);
@@ -196,29 +207,60 @@ void DaisyHardware::SetFootswitchLed(uint8_t idx, float bright)
 		return;
 	}
 	
-    uint8_t fs_addr[4] = {LED_FS_1, LED_FS_2, LED_FS_3, LED_FS_4};
+    uint8_t fs_addr[4] = {PETAL_LED_FS_1, PETAL_LED_FS_2, PETAL_LED_FS_3, PETAL_LED_FS_4};
     led_driver_.SetLed(fs_addr[idx], bright);
+}
+
+//field led setters
+void DaisyHardware::SetKeyboardLed(uint8_t row, uint8_t idx, float value)
+{
+	if(idx < 0 || idx > 7 || device_ != DAISY_FIELD){
+		return; //bad idx, row, or wrong board
+	}
+	
+	//row A
+	if(row == 0){
+		led_driver_.SetLed(idx, value);
+	}
+	//row B
+	else if (row == 1){
+		led_driver_.SetLed(15 - idx, value);
+	}
+}
+
+void DaisyHardware::SetKnobLed(uint8_t idx, float bright)
+{
+	if(idx < 0 || idx > 7 || device_ != DAISY_FIELD){
+		return;
+	}
+	
+    led_driver_.SetLed(16 + idx, bright);
 }
 
 void DaisyHardware::ClearLeds()
 {
-	if(device_ != DAISY_PETAL){
-		return;
+	if(device_ == DAISY_PETAL){	
+		for(size_t i = 0; i < 8; i++)
+		{
+			SetRingLed(i, 0.0f, 0.0f, 0.0f);
+		}
+		for(size_t i = 0; i < 4; i++)
+		{
+			SetFootswitchLed(i, 0.0f);
+		}
 	}
-	
-    for(size_t i = 0; i < 8; i++)
-    {
-        SetRingLed(i, 0.0f, 0.0f, 0.0f);
-    }
-    for(size_t i = 0; i < 4; i++)
-    {
-        SetFootswitchLed(i, 0.0f);
-    }
+	else if(device_ == DAISY_FIELD){
+		for(size_t i = 0; i < 8; i++){
+			SetKeyboardLed(0, i, 0.f);
+			SetKeyboardLed(1, i, 0.f);
+			SetKnobLed(i, 0.f);
+		}
+	}
 }
 
 void DaisyHardware::UpdateLeds()
 {
-	if(device_ != DAISY_PETAL){
+	if(device_ != DAISY_PETAL && device_ != DAISY_FIELD){
 		return;
 	}
 	
