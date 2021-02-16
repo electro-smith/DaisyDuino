@@ -77,6 +77,9 @@ public:
   //use with petal and field
   void UpdateLeds();
 
+  //for field MUX knobs
+  float GetKnobValue(uint8_t idx);
+
   //process knobs
   void ProcessAnalogControls();
   

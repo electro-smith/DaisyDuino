@@ -96,11 +96,9 @@ void DaisyHardware::InitPetal(float control_update_rate){
 
 void DaisyHardware::InitField(float control_update_rate){
 	numSwitches = 2;
-	numControls = 8;
 	
 	buttons[0].Init(control_update_rate, false, PIN_FIELD_SWITCH_1, INPUT_PULLUP);
 	buttons[1].Init(control_update_rate, false, PIN_FIELD_SWITCH_2, INPUT_PULLUP);
-
 
 	//init the led driver
     uint8_t   addr[2] = {0x00, 0x02};
@@ -108,24 +106,13 @@ void DaisyHardware::InitField(float control_update_rate){
 	ClearLeds();
 	UpdateLeds();
 
-	
-	/*//pot MUX
-	AdcChannelConfig adc_cfg;
-	adc_cfg.InitMux({DSY_GPIOC, 0}, 8, 
-		{DSY_GPIOA, 6}, 
-		{DSY_GPIOA, 7}, 
-		{DSY_GPIOB, 1});
+	//control MUX
+	pinMode(PIN_FIELD_MUX_SEL_0, OUTPUT);
+	pinMode(PIN_FIELD_MUX_SEL_1, OUTPUT);
+	pinMode(PIN_FIELD_MUX_SEL_2, OUTPUT);
+	controls[0].Init(PIN_FIELD_ADC_POT_MUX, control_update_rate);
 
-	adc.Init(&adc_cfg, 5);
-
-	// Order of pots on the hardware connected to mux.
-    size_t pot_order[8] = {0, 3, 1, 4, 2, 5, 6, 7};
-    for(size_t i = 0; i < 8; i++)
-    {
-        controls[i].InitMux(adc.GetMuxPtr(4, pot_order[i]), control_update_rate);
-    }
-
-    cv[0].InitBipolarCv(PIN_FIELD_ADC_CV_1, control_update_rate);
+/*    cv[0].InitBipolarCv(PIN_FIELD_ADC_CV_1, control_update_rate);
     cv[1].InitBipolarCv(PIN_FIELD_ADC_CV_2, control_update_rate);
     cv[2].InitBipolarCv(PIN_FIELD_ADC_CV_3, control_update_rate);
     cv[3].InitBipolarCv(PIN_FIELD_ADC_CV_4, control_update_rate);
@@ -133,6 +120,14 @@ void DaisyHardware::InitField(float control_update_rate){
 	adc.Start();*/
 }
 
+float DaisyHardware::GetKnobValue(uint8_t idx){
+    uint8_t pots[8] = {0, 3, 1, 4, 2, 5, 6, 7};	
+	digitalWrite(PIN_FIELD_MUX_SEL_0, pots[idx] & 1);
+	digitalWrite(PIN_FIELD_MUX_SEL_1, (pots[idx] & 2) >> 1);
+	digitalWrite(PIN_FIELD_MUX_SEL_2, (pots[idx] & 4) >> 2);
+
+	return controls[0].Process();
+}
 
 void DaisyHardware::ProcessAnalogControls(){
 	for(int i = 0; i < numControls; i++){

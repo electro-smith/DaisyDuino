@@ -74,15 +74,6 @@ void AudioCallback(float *in, float *out, size_t size)
     }
     use_verb = true;
 
-    for(int i = 0; i < 8; i++)
-    {
-        //kvals[i] = hw.GetKnobValue(i);
-        if(i < 4)
-        {
-            //cvvals[i] = hw.GetCvValue(i);
-        }
-    }
-
     if(octaves < 0)
         octaves = 0;
     if(octaves > 4)
@@ -123,7 +114,7 @@ void UpdateLeds(float *knob_vals)
 {
     for(size_t i = 0; i < 8; i++)
     {
-        hw.SetKnobLed(i, 1.f / (i + 1));
+        hw.SetKnobLed(i, knob_vals[i]);
     }
     //white keys
     for(size_t i = 0; i < 8; i++)
@@ -141,7 +132,7 @@ void UpdateLeds(float *knob_vals)
     hw.UpdateLeds();
 }
 
-int main(void)
+void setup()
 {
     float sr;
 	hw = DAISY.init(DAISY_FIELD, AUDIO_SR_48K);
@@ -160,11 +151,20 @@ int main(void)
 
 	DAISY.begin(AudioCallback);
 
-    for(;;)
+}
+
+void loop()
+{  
+   UpdateLeds(kvals);
+
+    for(int i = 0; i < 8; i++)
     {
-        UpdateLeds(kvals);
-        delay(1);
-        //dsy_dac_write(DSY_DAC_CHN1, hw.GetKnobValue(0) * 4095);
-        //dsy_dac_write(DSY_DAC_CHN2, hw.GetKnobValue(1) * 4095);
+        kvals[i] = hw.GetKnobValue(i);
+        if(i < 4)
+        {
+            //cvvals[i] = hw.GetCvValue(i);
+        }
     }
+  //dsy_dac_write(DSY_DAC_CHN1, hw.GetKnobValue(0) * 4095);
+  //dsy_dac_write(DSY_DAC_CHN2, hw.GetKnobValue(1) * 4095);
 }

@@ -37,13 +37,6 @@ class AnalogControl
               bool      invert       = false,
               float     slew_seconds = 0.002f);
 
-	//same as above, uses MUX
-    void InitMux(uint16_t* adcptr,
-              float     sr,
-              bool      flip         = false,
-              bool      invert       = false,
-              float     slew_seconds = 0.002f);
-
     /** 
     This Initializes the AnalogControl for a -5V to 5V inverted input
     All of the Init details are the same otherwise
@@ -64,11 +57,10 @@ class AnalogControl
     inline float Value() const { return val_; }
 
   private:
-	bool mux_;
   
     uint8_t pin_;
-	uint16_t* raw_;
     float     coeff_, samplerate_, val_;
+	float frac_ = 1.f / 1023.f;
     float     scale_, offset_;
     bool      flip_;
     bool      invert_;
