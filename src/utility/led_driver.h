@@ -168,20 +168,26 @@ class LedDriverPca9685
   private:
     void ContinueTransmission()
     {
-        current_driver_idx_++;
-        if(current_driver_idx_ >= numDrivers)
-        {
-            current_driver_idx_ = -1;
-            return;
-        }
+		while(current_driver_idx_ < numDrivers){
+			current_driver_idx_++;
+			if(current_driver_idx_ >= numDrivers)
+			{
+				current_driver_idx_ = -1;
+				return;
+			}
 		
-		const auto d = current_driver_idx_;
+			const auto d = current_driver_idx_;
+			driver_.SetAddress(PCA9685_I2C_BASE_ADDRESS | addresses_[d]);
 		
-		for(int i = 0; i < 16; i++){
-			drivers_[i].setPWM(i, transmit_buffer_[d].leds[i].on, transmit_buffer_[d].leds[i].off);
+			for(int i = 0; i < 16; i++){
+				driver_.setPWM(i, transmit_buffer_[d].leds[i].on, transmit_buffer_[d].leds[i].off);
+				//driver_.setPWM(i, 4095, 0);
+			}
+		
+			pinMode(LED_BUILTIN, OUTPUT);
+			digitalWrite(LED_BUILTIN, transmit_buffer_[d].leds[0].on == 0);		
 		}
-		
-    }
+	}
     uint16_t GetStartCycleForLed(int ledIndex) const
     {
         return (ledIndex << 2) & 0x0FFF; // shift each led by 4 cycles
@@ -211,16 +217,15 @@ class LedDriverPca9685
     }
 
     void InitializeDrivers()
-    {		
-		Wire.begin();
+    {			
+	    driver_.Init(PCA9685_I2C_BASE_ADDRESS | addresses_[0]);
+		driver_.begin();
 
         // init the individual drivers
-        for(int d = 0; d < numDrivers; d++)
+        for(int d = 1; d < numDrivers; d++)
         {			
-			drivers_[d].writeMode(0, 0b00100000);
-			drivers_[d].writeMode(1, 0b00110110); 
-			
-			drivers_[d].begin(PCA9685_I2C_BASE_ADDRESS | addresses_[d]);
+			driver_.SetAddress(PCA9685_I2C_BASE_ADDRESS | addresses_[d]);
+			driver_.reset();
         }
     }
 
@@ -231,21 +236,12 @@ class LedDriverPca9685
         return (in < low) ? low : (high < in) ? high : in;
     }
 
-    // an internal function to handle i2c callbacks
-    // called when an I2C transmission completes and the next driver must be updated
-    static void TxCpltCallback(void* context)
-    {
-        auto drv_ptr = reinterpret_cast<
-            LedDriverPca9685<numDrivers, persistentBufferContents>*>(context);
-        drv_ptr->ContinueTransmission();
-    }
-
     PCA9685TransmitBuffer* draw_buffer_;
     PCA9685TransmitBuffer* transmit_buffer_;
     uint8_t                addresses_[numDrivers];
     uint32_t           oe_pin_;
 	
-	myPCA9685 drivers_[numDrivers];
+	myPCA9685 driver_;
 	
     // index of the driver that is currently updated.
     int8_t         current_driver_idx_;

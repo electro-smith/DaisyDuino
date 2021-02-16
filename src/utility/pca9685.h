@@ -31,7 +31,12 @@ class myPCA9685
 public:
   explicit myPCA9685() {}
 
-  bool    begin(const uint8_t deviceAddress, TwoWire *wire = &Wire);
+  void Init(uint8_t deviceAddress, TwoWire *wire = &Wire);
+
+  bool    begin();
+  
+  void SetAddress(uint8_t deviceAddress);
+  
   void    reset();
   bool    isConnected();
   

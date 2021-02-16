@@ -40,6 +40,7 @@
 #define PCA9685_OCH         0x08
 #define PCA9685_OUTDRV      0x04
 #define PCA9685_OUTNE       0x03
+#define PCA9685_DAISY       0x36
 
 // REGISTERS - CHANNELS
 #define PCA9685_CHANNEL_0   0x06   //  0x06 + 4*channel is base per channel
@@ -66,18 +67,24 @@
 // Constructor
 //
 
-bool myPCA9685::begin(const uint8_t deviceAddress, TwoWire *wire)
-{
-  _address = deviceAddress;
+void myPCA9685::Init(uint8_t deviceAddress, TwoWire *wire){
   _wire = wire;
   _error = 0;
+  _address = deviceAddress;
+}
 
+bool myPCA9685::begin()
+{
   _wire->begin();
   if (! isConnected()) return false;
   reset();
   return true;
 }
 
+
+void myPCA9685::SetAddress(uint8_t deviceAddress){
+  _address = deviceAddress;	
+}
 
 bool myPCA9685::isConnected()
 {
@@ -90,8 +97,8 @@ bool myPCA9685::isConnected()
 void myPCA9685::reset()
 {
   _error = PCA9685_OK;
-  writeMode(PCA9685_MODE1, PCA9685_AUTOINCR | PCA9685_ALLCALL);
-  writeMode(PCA9685_MODE2, PCA9685_OUTDRV);
+  writeMode(PCA9685_MODE1, PCA9685_AUTOINCR);
+  writeMode(PCA9685_MODE2, PCA9685_DAISY);
 }
 
 
