@@ -1,13 +1,13 @@
-#include "daisysp.h"
-#include "daisy_petal.h"
+#include "DaisyDuino.h"
+
 #include <string>
 
 #define MAX_DELAY static_cast<size_t>(48000 * 1.f)
 
-using namespace daisy;
-using namespace daisysp;
 
-DaisyPetal petal;
+
+
+DaisyHardware petal;
 
 DelayLine<float, MAX_DELAY> DSY_SDRAM_BSS delMems[3];
 
@@ -79,20 +79,20 @@ void InitDelays(float samplerate)
 
 void UpdateOled();
 
-int main(void)
+void setup()
 {
     float samplerate;
-    petal.Init(); // Initialize hardware (daisy seed, and petal)
-    samplerate = petal.AudioSampleRate();
+    petal = DAISY.Init(DAISY_PETAL, AUDIO_SR_48K); // Initialize hardware (daisy seed, and petal)
+    samplerate = DAISY.AudioSampleRate();
 
     InitDelays(samplerate);
 
     drywet     = 50;
     passThruOn = false;
 
-    petal.StartAdc();
-    petal.StartAudio(AudioCallback);
-    while(1)
+    
+    DAISY.begin(AudioCallback);
+    }void loop()
     {
         int32_t whole;
         float   frac;
@@ -104,18 +104,18 @@ int main(void)
         for(int i = 0; i < whole; i++)
         {
             petal.SetRingLed(
-                static_cast<DaisyPetal::RingLed>(i), 0.f, 0.f, 1.f);
+                static_cast<DaisyHardware::RingLed>(i), 0.f, 0.f, 1.f);
         }
 
         // Set Frac
         if(whole < 7 && whole > 0)
             petal.SetRingLed(
-                static_cast<DaisyPetal::RingLed>(whole - 1), 0.f, 0.f, frac);
+                static_cast<DaisyHardware::RingLed>(whole - 1), 0.f, 0.f, frac);
 
         // Update Pass thru
-        petal.SetFootswitchLed(DaisyPetal::FOOTSWITCH_LED_1, passThruOn);
+        petal.SetFootswitchLed(DaisyHardware::FOOTSWITCH_LED_1, passThruOn);
         petal.UpdateLeds();
-        System::Delay(6);
+        delay(6);
     }
 }
 

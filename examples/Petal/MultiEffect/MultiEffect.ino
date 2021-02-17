@@ -1,13 +1,13 @@
-#include "daisysp.h"
-#include "daisy_petal.h"
+#include "DaisyDuino.h"
+
 
 // Set max delay time to 0.75 of samplerate.
 #define MAX_DELAY static_cast<size_t>(48000 * 2.5f)
 
-using namespace daisysp;
-using namespace daisy;
 
-static DaisyPetal petal;
+
+
+static DaisyHardware petal;
 
 static ReverbSc                                  rev;
 static DelayLine<float, MAX_DELAY> DSY_SDRAM_BSS dell;
@@ -92,14 +92,14 @@ void AudioCallback(float *in, float *out, size_t size)
     }
 }
 
-int main(void)
+void setup()
 {
     // initialize petal hardware and oscillator daisysp module
     float sample_rate;
 
     //Inits and sample rate
-    petal.Init();
-    sample_rate = petal.AudioSampleRate();
+    petal = DAISY.Init(DAISY_PETAL, AUDIO_SR_48K);
+    sample_rate = DAISY.AudioSampleRate();
     rev.Init(sample_rate);
     dell.Init();
     delr.Init();
@@ -134,13 +134,13 @@ int main(void)
     dryWetMode = CRUSH;
 
     // start callback
-    petal.StartAdc();
-    petal.StartAudio(AudioCallback);
+    
+    DAISY.begin(AudioCallback);
 
-    while(1)
+    }void loop()
     {
         UpdateLeds();
-        System::Delay(6);
+        delay(6);
     }
 }
 
@@ -178,10 +178,10 @@ void UpdateLeds()
     petal.ClearLeds();
 
     //footswitch leds
-    petal.SetFootswitchLed((DaisyPetal::FootswitchLed)0, effectOn[REV]);
-    petal.SetFootswitchLed((DaisyPetal::FootswitchLed)1, effectOn[DEL]);
-    petal.SetFootswitchLed((DaisyPetal::FootswitchLed)2, effectOn[CRUSH]);
-    petal.SetFootswitchLed((DaisyPetal::FootswitchLed)3, effectOn[WAH]);
+    petal.SetFootswitchLed((DaisyHardware::FootswitchLed)0, effectOn[REV]);
+    petal.SetFootswitchLed((DaisyHardware::FootswitchLed)1, effectOn[DEL]);
+    petal.SetFootswitchLed((DaisyHardware::FootswitchLed)2, effectOn[CRUSH]);
+    petal.SetFootswitchLed((DaisyHardware::FootswitchLed)3, effectOn[WAH]);
 
 
     //ring leds
@@ -194,7 +194,7 @@ void UpdateLeds()
     for(int i = 0; i < whole; i++)
     {
         petal.SetRingLed(
-            static_cast<DaisyPetal::RingLed>(i),
+            static_cast<DaisyHardware::RingLed>(i),
             (dryWetMode == CRUSH || dryWetMode == REV || dryWetMode == ALL)
                 * 1.f,                                      //red
             (dryWetMode == WAH || dryWetMode == ALL) * 1.f, //green
@@ -206,7 +206,7 @@ void UpdateLeds()
     if(whole < 7 && whole > 0)
     {
         petal.SetRingLed(
-            static_cast<DaisyPetal::RingLed>(whole - 1),
+            static_cast<DaisyHardware::RingLed>(whole - 1),
             (dryWetMode == CRUSH || dryWetMode == REV || dryWetMode == ALL)
                 * frac,                                      //red
             (dryWetMode == WAH || dryWetMode == ALL) * frac, //green

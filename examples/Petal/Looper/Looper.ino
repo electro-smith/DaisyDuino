@@ -1,12 +1,12 @@
-#include "daisysp.h"
-#include "daisy_petal.h"
+#include "DaisyDuino.h"
+
 
 #define MAX_SIZE (48000 * 60 * 5) // 5 minutes of floats at 48 khz
 
-using namespace daisysp;
-using namespace daisy;
 
-static DaisyPetal petal;
+
+
+static DaisyHardware petal;
 
 bool first = true;  //first loop (sets length)
 bool rec   = false; //currently recording
@@ -39,24 +39,24 @@ static void AudioCallback(float *in, float *out, size_t size)
     }
 }
 
-int main(void)
+void setup()
 {
     // initialize petal hardware and oscillator daisysp module
 
-    petal.Init();
+    petal = DAISY.Init(DAISY_PETAL, AUDIO_SR_48K);
     ResetBuffer();
 
     // start callback
-    petal.StartAdc();
-    petal.StartAudio(AudioCallback);
+    
+    DAISY.begin(AudioCallback);
 
-    while(1)
+    }void loop()
     {
         //leds
-        petal.SetFootswitchLed((DaisyPetal::FootswitchLed)1, play);
-        petal.SetFootswitchLed((DaisyPetal::FootswitchLed)0, rec);
+        petal.SetFootswitchLed((DaisyHardware::FootswitchLed)1, play);
+        petal.SetFootswitchLed((DaisyHardware::FootswitchLed)0, rec);
         petal.UpdateLeds();
-        System::Delay(16); // 60Hz
+        delay(16); // 60Hz
     }
 }
 

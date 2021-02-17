@@ -1,10 +1,10 @@
-#include "daisy_petal.h"
-#include "daisysp.h"
 
-using namespace daisy;
-using namespace daisysp;
+#include "DaisyDuino.h"
 
-DaisyPetal hw;
+
+
+
+DaisyHardware hw;
 Tremolo    treml, tremr;
 
 bool effectOn;
@@ -35,10 +35,10 @@ void AudioCallback(float **in, float **out, size_t size)
     }
 }
 
-int main(void)
+void setup()
 {
-    hw.Init();
-    float sample_rate = hw.AudioSampleRate();
+    hw = DAISY.Init(DAISY_PETAL, AUDIO_SR_48K);
+    float sample_rate = DAISY.AudioSampleRate();
 
     treml.Init(sample_rate);
     tremr.Init(sample_rate);
@@ -46,18 +46,18 @@ int main(void)
     waveform = 0;
     effectOn = true;
 
-    hw.StartAdc();
-    hw.StartAudio(AudioCallback);
-    while(1)
+    
+    DAISY.begin(AudioCallback);
+    }void loop()
     {
-        hw.DelayMs(6);
+        delay(6);
 
         hw.ClearLeds();
         hw.SetFootswitchLed(hw.FOOTSWITCH_LED_1, (float)effectOn);
         for(int i = 0; i < 8; i++)
         {
             int tmp = waveform + 1;
-            hw.SetRingLed(static_cast<DaisyPetal::RingLed>(i),
+            hw.SetRingLed(static_cast<DaisyHardware::RingLed>(i),
                           (float)(tmp & 1),
                           (float)(tmp & 2),
                           (float)(tmp & 4));

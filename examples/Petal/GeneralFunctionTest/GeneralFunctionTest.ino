@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
-#include "daisy_petal.h"
-#include "daisysp.h"
+
+#include "DaisyDuino.h"
 #include "fatfs.h"
 
 #define KNOB_ID "KNOB_"
@@ -12,15 +12,15 @@
 #define TEST_FILE_CONTENTS \
     "This file is used for testing the Daisy breakout boards. Happy Hacking!"
 
-using namespace daisy;
-using namespace daisysp;
+
+
 
 int  TestSdCard();
 void UpdateUsb(int sd_sta);
 void UpdateLeds();
 
 // Declare a local daisy_petal for hardware access
-DaisyPetal hw;
+DaisyHardware hw;
 // Handler for SD Card Hardware
 SdmmcHandler sd;
 
@@ -54,7 +54,7 @@ void callback(float *in, float *out, size_t size)
     }
 }
 
-int main(void)
+void setup()
 {
     int      sdfail;
     uint32_t led_period, usb_period, now;
@@ -65,7 +65,7 @@ int main(void)
     led_period = 5;
     usb_period = 100;
 
-    hw.Init();
+    hw = DAISY.Init(DAISY_PETAL, AUDIO_SR_48K);
 
     last_led_update = last_usb_update = now = System::GetNow();
 
@@ -74,11 +74,11 @@ int main(void)
 
     sdfail = TestSdCard();
 
-    hw.StartAdc();
-    hw.StartAudio(callback);
+    
+    DAISY.begin(callback);
 
 
-    while(1)
+    }void loop()
     {
         // Do Stuff InfInitely Here
         now = System::GetNow();
@@ -158,7 +158,7 @@ void UpdateUsb(int sd_sta)
             "{%s%d, %d},",
             KNOB_ID,
             i + 1,
-            (int)(hw.GetKnobValue(static_cast<DaisyPetal::Knob>(i)) * 1000.f));
+            (int)(hw.GetKnobValue(static_cast<DaisyHardware::Knob>(i)) * 1000.f));
         strcat(catbuff, buff);
     }
     // Expression
@@ -197,7 +197,7 @@ void UpdateLeds()
         total        = 511;
         base         = total / hw.FOOTSWITCH_LED_LAST;
         float bright = (float)((now + (i * base)) & total) / (float)total;
-        hw.SetFootswitchLed(static_cast<DaisyPetal::FootswitchLed>(i), bright);
+        hw.SetFootswitchLed(static_cast<DaisyHardware::FootswitchLed>(i), bright);
     }
     // And now the ring
     for(size_t i = 0; i < hw.RING_LED_LAST; i++)
@@ -248,7 +248,7 @@ void UpdateLeds()
             default: rb = gb = bb = bright; break;
         }
 
-        hw.SetRingLed(static_cast<DaisyPetal::RingLed>(i), rb, gb, bb);
+        hw.SetRingLed(static_cast<DaisyHardware::RingLed>(i), rb, gb, bb);
     }
     hw.UpdateLeds();
 }

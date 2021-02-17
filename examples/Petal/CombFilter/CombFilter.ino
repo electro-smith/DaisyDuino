@@ -1,10 +1,10 @@
-#include "daisy_petal.h"
-#include "daisysp.h"
 
-using namespace daisy;
-using namespace daisysp;
+#include "DaisyDuino.h"
 
-DaisyPetal petal;
+
+
+
+DaisyHardware petal;
 Comb       comb;
 Oscillator lfo;
 CrossFade  fader;
@@ -36,11 +36,11 @@ void AudioCallback(float **in, float **out, size_t size)
     }
 }
 
-int main(void)
+void setup()
 {
     float samplerate;
-    petal.Init();
-    samplerate = petal.AudioSampleRate();
+    petal = DAISY.Init(DAISY_PETAL, AUDIO_SR_48K);
+    samplerate = DAISY.AudioSampleRate();
 
     lfoFreqParam.Init(petal.knob[0], 0, 2, Parameter::LINEAR);
     lfoAmpParam.Init(petal.knob[1], 0, 50, Parameter::LINEAR);
@@ -62,22 +62,22 @@ int main(void)
 
     fader.Init();
 
-    petal.StartAdc();
-    petal.StartAudio(AudioCallback);
+    
+    DAISY.begin(AudioCallback);
 
     int i = 0;
-    while(1)
+    }void loop()
     {
         petal.ClearLeds();
 
-        petal.SetFootswitchLed((DaisyPetal::FootswitchLed)0, !bypassOn);
+        petal.SetFootswitchLed((DaisyHardware::FootswitchLed)0, !bypassOn);
 
-        petal.SetRingLed((DaisyPetal::RingLed)i, 0, 1, 1);
+        petal.SetRingLed((DaisyHardware::RingLed)i, 0, 1, 1);
         i++;
         i %= 8;
 
         petal.UpdateLeds();
-        System::Delay(60);
+        delay(60);
     }
 }
 

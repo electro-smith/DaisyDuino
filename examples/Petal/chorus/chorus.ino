@@ -1,10 +1,10 @@
-#include "daisy_petal.h"
-#include "daisysp.h"
 
-using namespace daisy;
-using namespace daisysp;
+#include "DaisyDuino.h"
 
-DaisyPetal hw;
+
+
+
+DaisyHardware hw;
 Chorus     ch;
 
 bool  effectOn;
@@ -60,10 +60,10 @@ void AudioCallback(float **in, float **out, size_t size)
     }
 }
 
-int main(void)
+void setup()
 {
-    hw.Init();
-    float sample_rate = hw.AudioSampleRate();
+    hw = DAISY.Init(DAISY_PETAL, AUDIO_SR_48K);
+    float sample_rate = DAISY.AudioSampleRate();
 
     ch.Init(sample_rate);
 
@@ -72,25 +72,25 @@ int main(void)
     deltarget = del = 0.f;
     lfotarget = lfo = 0.f;
 
-    hw.StartAdc();
-    hw.StartAudio(AudioCallback);
-    while(1)
+    
+    DAISY.begin(AudioCallback);
+    }void loop()
     {
-        hw.DelayMs(6);
+        delay(6);
 
         hw.ClearLeds();
-        hw.SetFootswitchLed((DaisyPetal::FootswitchLed)0, (float)effectOn);
+        hw.SetFootswitchLed((DaisyHardware::FootswitchLed)0, (float)effectOn);
 
         int   wet_int  = (int)(wet * 8.f);
         float wet_frac = wet - wet_int;
         for(int i = 0; i < wet_int; i++)
         {
-            hw.SetRingLed((DaisyPetal::RingLed)i, 1.f, 0.f, 0.f);
+            hw.SetRingLed((DaisyHardware::RingLed)i, 1.f, 0.f, 0.f);
         }
 
         if(wet_int < 8)
         {
-            hw.SetRingLed((DaisyPetal::RingLed)wet_int, wet_frac, 0.f, 0.f);
+            hw.SetRingLed((DaisyHardware::RingLed)wet_int, wet_frac, 0.f, 0.f);
         }
 
         hw.UpdateLeds();

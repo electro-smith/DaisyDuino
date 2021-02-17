@@ -1,11 +1,11 @@
-#include "daisysp.h"
-#include "daisy_petal.h"
+#include "DaisyDuino.h"
+
 #include <string>
 
-using namespace daisy;
-using namespace daisysp;
 
-DaisyPetal petal;
+
+
+DaisyHardware petal;
 int        freqs[8];
 
 int bank;
@@ -102,23 +102,23 @@ void InitFilters(float samplerate)
 
 void UpdateLeds();
 
-int main(void)
+void setup()
 {
     float samplerate;
-    petal.Init(); // Initialize hardware (daisy seed, and petal)
-    samplerate = petal.AudioSampleRate();
+    petal = DAISY.Init(DAISY_PETAL, AUDIO_SR_48K); // Initialize hardware (daisy seed, and petal)
+    samplerate = DAISY.AudioSampleRate();
 
     InitFreqs();
     InitFilters(samplerate);
     bank     = 0;
     passthru = false;
 
-    petal.StartAdc();
-    petal.StartAudio(AudioCallback);
-    while(1)
+    
+    DAISY.begin(AudioCallback);
+    }void loop()
     {
         UpdateLeds();
-        System::Delay(6);
+        delay(6);
     }
 }
 
@@ -152,20 +152,20 @@ void UpdateLeds()
 {
     for(int i = 0; i < 4; i++)
     {
-        petal.SetRingLed((DaisyPetal::RingLed)i,
+        petal.SetRingLed((DaisyHardware::RingLed)i,
                          filters[i].amp,
                          (bank == 0) * filters[i].amp,
                          filters[i].amp);
     }
     for(int i = 4; i < 8; i++)
     {
-        petal.SetRingLed((DaisyPetal::RingLed)i,
+        petal.SetRingLed((DaisyHardware::RingLed)i,
                          filters[i].amp,
                          (bank == 1) * filters[i].amp,
                          filters[i].amp);
     }
 
-    petal.SetFootswitchLed(DaisyPetal::FOOTSWITCH_LED_1, !passthru);
+    petal.SetFootswitchLed(DaisyHardware::FOOTSWITCH_LED_1, !passthru);
 
     petal.UpdateLeds();
 }
