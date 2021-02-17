@@ -103,6 +103,7 @@ void DaisyHardware::InitPetal(float control_update_rate) {
 
 void DaisyHardware::InitField(float control_update_rate) {
   numSwitches = 2;
+  num_channels = 2;
 
   buttons[0].Init(control_update_rate, false, PIN_FIELD_SWITCH_1, INPUT_PULLUP);
   buttons[1].Init(control_update_rate, false, PIN_FIELD_SWITCH_2, INPUT_PULLUP);

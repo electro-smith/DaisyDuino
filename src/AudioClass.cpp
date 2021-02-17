@@ -60,7 +60,7 @@ DaisyHardware AudioClass::init(DaisyDuinoDevice device,
   // SAI1
   SaiHandle::Config sai_config[2];
   sai_config[0].periph = SaiHandle::Config::Peripheral::SAI_1;
-  sai_config[0].sr = SaiHandle::Config::SampleRate::SAI_48KHZ;
+  sai_config[0].sr = sample_rate;
   sai_config[0].bit_depth = SaiHandle::Config::BitDepth::SAI_24BIT;
   sai_config[0].a_sync = SaiHandle::Config::Sync::MASTER;
   sai_config[0].b_sync = SaiHandle::Config::Sync::SLAVE;
@@ -78,7 +78,7 @@ DaisyHardware AudioClass::init(DaisyDuinoDevice device,
   // SAI2
   if (_device == DAISY_PATCH) {
     sai_config[1].periph = SaiHandle::Config::Peripheral::SAI_2;
-    sai_config[1].sr = SaiHandle::Config::SampleRate::SAI_48KHZ;
+    sai_config[1].sr = sample_rate;
     sai_config[1].bit_depth = SaiHandle::Config::BitDepth::SAI_24BIT;
     sai_config[1].a_sync = SaiHandle::Config::Sync::SLAVE;
     sai_config[1].b_sync = SaiHandle::Config::Sync::MASTER;
