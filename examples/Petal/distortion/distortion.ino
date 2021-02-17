@@ -2,84 +2,72 @@
 
 static DaisyHardware petal;
 
-float hardClip(float in)
-{
-    in = in > 1.f ? 1.f : in;
-    in = in < -1.f ? -1.f : in;
-    return in;
+float hardClip(float in) {
+  in = in > 1.f ? 1.f : in;
+  in = in < -1.f ? -1.f : in;
+  return in;
 }
 
-float softClip(float in)
-{
-    if(in > 0)
-        return 1 - expf(-in);
-    return -1 + expf(in);
+float softClip(float in) {
+  if (in > 0)
+    return 1 - expf(-in);
+  return -1 + expf(in);
 }
 
-bool        bypassHard, bypassSoft;
-static void AudioCallback(float **in, float **out, size_t size)
-{        
-    petal.ProcessAllControls();
-      
-    float Pregain = petal.controls[2].Value() * 10 + 1.2;
-    float Gain    = petal.controls[3].Value() * 100 + 1.2;
-    float drywet  = petal.controls[4].Value();
+bool bypassHard, bypassSoft;
+static void AudioCallback(float **in, float **out, size_t size) {
+  petal.ProcessAllControls();
 
-    bypassSoft ^= petal.buttons[0].RisingEdge();
-    bypassHard ^= petal.buttons[1].RisingEdge();
+  float Pregain = petal.controls[2].Value() * 10 + 1.2;
+  float Gain = petal.controls[3].Value() * 100 + 1.2;
+  float drywet = petal.controls[4].Value();
 
-    for(size_t i = 0; i < size; i++)
-    {
-        for(int chn = 0; chn < 2; chn++)
-        {
-            in[chn][i] *= Pregain;
-            float wet = in[chn][i];
+  bypassSoft ^= petal.buttons[0].RisingEdge();
+  bypassHard ^= petal.buttons[1].RisingEdge();
 
-            if(!bypassSoft || !bypassHard)
-            {
-                wet *= Gain;
-            }
+  for (size_t i = 0; i < size; i++) {
+    for (int chn = 0; chn < 2; chn++) {
+      in[chn][i] *= Pregain;
+      float wet = in[chn][i];
 
-            if(!bypassSoft)
-            {
-                wet = softClip(wet);
-            }
+      if (!bypassSoft || !bypassHard) {
+        wet *= Gain;
+      }
 
-            if(!bypassHard)
-            {
-                wet = hardClip(wet);
-            }
+      if (!bypassSoft) {
+        wet = softClip(wet);
+      }
 
-            out[chn][i] = wet * drywet + in[chn][i] * (1 - drywet);
-        }
+      if (!bypassHard) {
+        wet = hardClip(wet);
+      }
+
+      out[chn][i] = wet * drywet + in[chn][i] * (1 - drywet);
     }
+  }
 }
 
-void setup()
-{
-    petal = DAISY.init(DAISY_PETAL, AUDIO_SR_48K);
+void setup() {
+  petal = DAISY.init(DAISY_PETAL, AUDIO_SR_48K);
 
-    bypassHard = bypassSoft = false;
+  bypassHard = bypassSoft = false;
 
-    // start callback
-    DAISY.begin(AudioCallback);
+  // start callback
+  DAISY.begin(AudioCallback);
 }
-    
-  void loop()
-    {    
-        //LED stuff
-        petal.SetFootswitchLed(0, 0);
-        petal.SetFootswitchLed(1, 1);
-        petal.SetFootswitchLed(2, 1);
-        petal.SetFootswitchLed(3, 0);
 
+void loop() {
+  // LED stuff
+  petal.SetFootswitchLed(0, 0);
+  petal.SetFootswitchLed(1, 1);
+  petal.SetFootswitchLed(2, 1);
+  petal.SetFootswitchLed(3, 0);
 
-        for(int i = 0; i < 8; i++)
-        {
-            petal.SetRingLed(i, 1.f, 0.f, 0.f);
-        }
+  for (int i = 0; i < 8; i++) {
+    petal.SetRingLed(i, 1.f, 0.f, 0.f);
+  }
 
-        petal.UpdateLeds();
+  petal.UpdateLeds();
 
-        delay(6);
-    }
+  delay(6);
+}

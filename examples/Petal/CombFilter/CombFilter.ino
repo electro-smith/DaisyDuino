@@ -1,15 +1,12 @@
 
 #include "DaisyDuino.h"
 
-
-
-
 DaisyHardware petal;
-Comb       comb;
+Comb comb;
 Oscillator lfo;
-CrossFade  fader;
+CrossFade fader;
 
-bool  bypassOn;
+bool bypassOn;
 float buf[9600];
 
 Parameter lfoFreqParam, lfoAmpParam;
@@ -20,89 +17,80 @@ float targetCombFreq, combFreq;
 
 void UpdateControls();
 
-void AudioCallback(float **in, float **out, size_t size)
-{
-    UpdateControls();
+void AudioCallback(float **in, float **out, size_t size) {
+  UpdateControls();
 
-    for(size_t i = 0; i < size; i++)
-    {
-        fonepole(combFreq, targetCombFreq, .0001f);
-        float f = combFreq + lfo.Process() + 50.f;
-        comb.SetFreq(f);
+  for (size_t i = 0; i < size; i++) {
+    fonepole(combFreq, targetCombFreq, .0001f);
+    float f = combFreq + lfo.Process() + 50.f;
+    comb.SetFreq(f);
 
-        float inf     = in[0][i];
-        float process = comb.Process(in[0][i]);
-        out[0][i] = out[1][i] = fader.Process(inf, process);
-    }
+    float inf = in[0][i];
+    float process = comb.Process(in[0][i]);
+    out[0][i] = out[1][i] = fader.Process(inf, process);
+  }
 }
 
-void setup()
-{
-    float samplerate;
-    petal = DAISY.Init(DAISY_PETAL, AUDIO_SR_48K);
-    samplerate = DAISY.AudioSampleRate();
+void setup() {
+  float samplerate;
+  petal = DAISY.Init(DAISY_PETAL, AUDIO_SR_48K);
+  samplerate = DAISY.AudioSampleRate();
 
-    lfoFreqParam.Init(petal.knob[0], 0, 2, Parameter::LINEAR);
-    lfoAmpParam.Init(petal.knob[1], 0, 50, Parameter::LINEAR);
-    combFreqParam.Init(petal.knob[2], 25, 300, Parameter::LOGARITHMIC);
-    combRevParam.Init(petal.knob[3], 0, 1, Parameter::LINEAR);
-    faderPosParam.Init(petal.knob[4], 0, 1, Parameter::LINEAR);
+  lfoFreqParam.Init(petal.knob[0], 0, 2, Parameter::LINEAR);
+  lfoAmpParam.Init(petal.knob[1], 0, 50, Parameter::LINEAR);
+  combFreqParam.Init(petal.knob[2], 25, 300, Parameter::LOGARITHMIC);
+  combRevParam.Init(petal.knob[3], 0, 1, Parameter::LINEAR);
+  faderPosParam.Init(petal.knob[4], 0, 1, Parameter::LINEAR);
 
-    lfo.Init(samplerate);
-    lfo.SetAmp(1);
-    lfo.SetWaveform(Oscillator::WAVE_SIN);
+  lfo.Init(samplerate);
+  lfo.SetAmp(1);
+  lfo.SetWaveform(Oscillator::WAVE_SIN);
 
-    for(int i = 0; i < 9600; i++)
-    {
-        buf[i] = 0.0f;
-    }
+  for (int i = 0; i < 9600; i++) {
+    buf[i] = 0.0f;
+  }
 
-    // initialize Comb object
-    comb.Init(samplerate, buf, 9600);
+  // initialize Comb object
+  comb.Init(samplerate, buf, 9600);
 
-    fader.Init();
+  fader.Init();
 
-    
-    DAISY.begin(AudioCallback);
+  DAISY.begin(AudioCallback);
 
-    int i = 0;
-    }void loop()
-    {
-        petal.ClearLeds();
+  int i = 0;
+}
+void loop() {
+  petal.ClearLeds();
 
-        petal.SetFootswitchLed((DaisyHardware::FootswitchLed)0, !bypassOn);
+  petal.SetFootswitchLed((DaisyHardware::FootswitchLed)0, !bypassOn);
 
-        petal.SetRingLed((DaisyHardware::RingLed)i, 0, 1, 1);
-        i++;
-        i %= 8;
+  petal.SetRingLed((DaisyHardware::RingLed)i, 0, 1, 1);
+  i++;
+  i %= 8;
 
-        petal.UpdateLeds();
-        delay(60);
-    }
+  petal.UpdateLeds();
+  delay(60);
+}
 }
 
+void UpdateControls() {
+  petal.ProcessDigitalControls();
 
-void UpdateControls()
-{
-    petal.ProcessDigitalControls();
+  // knobs
+  lfo.SetFreq(lfoFreqParam.Process());
+  lfo.SetAmp(lfoAmpParam.Process());
 
-    //knobs
-    lfo.SetFreq(lfoFreqParam.Process());
-    lfo.SetAmp(lfoAmpParam.Process());
+  targetCombFreq = combFreqParam.Process();
 
-    targetCombFreq = combFreqParam.Process();
+  comb.SetRevTime(combRevParam.Process());
 
-    comb.SetRevTime(combRevParam.Process());
+  fader.SetPos(faderPosParam.Process());
+  if (bypassOn) {
+    fader.SetPos(0);
+  }
 
-    fader.SetPos(faderPosParam.Process());
-    if(bypassOn)
-    {
-        fader.SetPos(0);
-    }
-
-    //bypass switch
-    if(petal.switches[0].RisingEdge())
-    {
-        bypassOn = !bypassOn;
-    }
+  // bypass switch
+  if (petal.switches[0].RisingEdge()) {
+    bypassOn = !bypassOn;
+  }
 }
