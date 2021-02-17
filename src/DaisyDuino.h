@@ -44,9 +44,6 @@ public:
   AnalogControl controls[8];
   AnalogControl cv[4]; // for use with field
 
-  // runs the field pot MUX for the time being
-  AdcHandle adc;
-
   //  Switch* switches = buttons; //these compile, but don't actually work....
   //  AnalogControl* knobs = controls;
   Encoder encoder;

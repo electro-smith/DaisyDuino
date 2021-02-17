@@ -71,6 +71,18 @@ TimeHeldMs	KEYWORD2
 Set		KEYWORD2
 DebounceControls	KEYWORD2
 
+get_samplerate	KEYWORD2
+get_callbackrate	KEYWORD2
+get_blocksize	KEYWORD2
+StartAudio	KEYWORD2
+ChangeAudioCallback	KEYWORD2
+StopAudio	KEYWORD2
+SetAudioSampleRate	KEYWORD2
+AudioSampleRate	KEYWORD2
+SetAudioBlockSize	KEYWORD2
+AudioBlockSize	KEYWORD2
+AudioCallbackRate	KEYWORD2
+
 mtof		KEYWORD2
 DSY_CLAMP		KEYWORD2
 fmax			KEYWORD2

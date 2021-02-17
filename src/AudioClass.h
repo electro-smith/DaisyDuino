@@ -9,75 +9,74 @@
 using namespace daisy;
 
 enum DaisyDuinoSampleRate {
-  AUDIO_SR_8K,
-  AUDIO_SR_16K,
-  AUDIO_SR_32K,
-  AUDIO_SR_48K,
-  AUDIO_SR_96K,
-  AUDIO_SR_LAST,
+	AUDIO_SR_8K,
+    AUDIO_SR_16K,
+    AUDIO_SR_32K,
+    AUDIO_SR_48K,
+    AUDIO_SR_96K,
+    AUDIO_SR_LAST,
 };
 
-class DaisyHardware; // forward declarations
+class DaisyHardware; //forward declarations
 enum DaisyDuinoDevice : short;
 
-class AudioClass {
-public:
-  AudioClass() {}
+class AudioClass
+{
+    public:
+        AudioClass() {}
 
-  // Initializes the audio for the given platform, and returns a DaisyHardware
-  // object
-  // default samplerate is 48kHz
-  DaisyHardware init(DaisyDuinoDevice device,
-                     DaisyDuinoSampleRate sr = AUDIO_SR_48K);
+        // Initializes the audio for the given platform, and returns a DaisyHardware object
+		//default samplerate is 48kHz
+        DaisyHardware init(DaisyDuinoDevice device, DaisyDuinoSampleRate sr = AUDIO_SR_48K);
+        
+		/** for bwd compatibility */
+		void begin(AudioHandle::AudioCallback cb);
 
-  /** for bwd compatibility */
-  void begin(AudioHandle::AudioCallback cb);
+		/** for bwd compatibility. Does not work with Daisy Patch!! */
+		void begin(AudioHandle::InterleavingAudioCallback cb);
 
-  /** for bwd compatibility. Does not work with Daisy Patch!! */
-  void begin(AudioHandle::InterleavingAudioCallback cb);
+		/** for bwd compatibility */			
+		void end();
 
-  /** for bwd compatibility */
-  void end();
+		/** for bwd compatibility */			
+		float get_samplerate();
+			
+		/** for bwd compatibility */			
+		float get_callbackrate();
+		
+		/** for bwd compatibility */			
+		inline float get_blocksize();
+		
+		/** Interleaving callback not supported on patch. */
+		void StartAudio(AudioHandle::InterleavingAudioCallback cb);
 
-  /** for bwd compatibility */
-  float get_samplerate();
+		void StartAudio(AudioHandle::AudioCallback cb);
 
-  /** for bwd compatibility */
-  float get_callbackrate();
+		/** Won't work on Patch! */
+		void ChangeAudioCallback(AudioHandle::InterleavingAudioCallback cb);
 
-  /** for bwd compatibility */
-  inline float get_blocksize();
+		void ChangeAudioCallback(AudioHandle::AudioCallback cb);
 
-  /** Interleaving callback not supported on patch. */
-  void StartAudio(AudioHandle::InterleavingAudioCallback cb);
+		void StopAudio();
 
-  void StartAudio(AudioHandle::AudioCallback cb);
+		/** Works with the new samplerates */
+		void SetAudioSampleRate(SaiHandle::Config::SampleRate samplerate);
 
-  /** Won't work on Patch! */
-  void ChangeAudioCallback(AudioHandle::InterleavingAudioCallback cb);
+		float AudioSampleRate();
 
-  void ChangeAudioCallback(AudioHandle::AudioCallback cb);
+		void SetAudioBlockSize(size_t blocksize);
 
-  void StopAudio();
+		size_t AudioBlockSize();
 
-  /** Works with the new samplerates */
-  void SetAudioSampleRate(SaiHandle::Config::SampleRate samplerate);
-
-  float AudioSampleRate();
-
-  void SetAudioBlockSize(size_t blocksize);
-
-  size_t AudioBlockSize();
-
-  float AudioCallbackRate();
-
-private:
-  float callback_rate_;
-
-  AudioHandle audio_handle;
-  DaisyDuinoDevice _device;
-  dsy_sdram_handle sdram_handle;
-  void ConfigureSdram();
+		float AudioCallbackRate();
+				
+    private:
+		float callback_rate_;
+        
+		AudioHandle audio_handle;
+		DaisyDuinoDevice _device;
+        dsy_sdram_handle sdram_handle;
+	void ConfigureSdram();
 };
 
 extern AudioClass DAISY;
