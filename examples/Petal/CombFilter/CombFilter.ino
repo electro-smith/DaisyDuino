@@ -15,11 +15,7 @@ Parameter faderPosParam;
 
 float targetCombFreq, combFreq;
 
-void UpdateControls();
-
 void AudioCallback(float **in, float **out, size_t size) {
-  UpdateControls();
-
   for (size_t i = 0; i < size; i++) {
     fonepole(combFreq, targetCombFreq, .0001f);
     float f = combFreq + lfo.Process() + 50.f;
@@ -31,16 +27,17 @@ void AudioCallback(float **in, float **out, size_t size) {
   }
 }
 
+int ringlednum;
 void setup() {
   float samplerate;
-  petal = DAISY.Init(DAISY_PETAL, AUDIO_SR_48K);
+  petal = DAISY.init(DAISY_PETAL, AUDIO_SR_48K);
   samplerate = DAISY.AudioSampleRate();
 
-  lfoFreqParam.Init(petal.knob[0], 0, 2, Parameter::LINEAR);
-  lfoAmpParam.Init(petal.knob[1], 0, 50, Parameter::LINEAR);
-  combFreqParam.Init(petal.knob[2], 25, 300, Parameter::LOGARITHMIC);
-  combRevParam.Init(petal.knob[3], 0, 1, Parameter::LINEAR);
-  faderPosParam.Init(petal.knob[4], 0, 1, Parameter::LINEAR);
+  lfoFreqParam.Init(petal.controls[0], 0, 2, Parameter::LINEAR);
+  lfoAmpParam.Init(petal.controls[1], 0, 50, Parameter::LINEAR);
+  combFreqParam.Init(petal.controls[2], 25, 300, Parameter::LOGARITHMIC);
+  combRevParam.Init(petal.controls[3], 0, 1, Parameter::LINEAR);
+  faderPosParam.Init(petal.controls[4], 0, 1, Parameter::LINEAR);
 
   lfo.Init(samplerate);
   lfo.SetAmp(1);
@@ -55,22 +52,9 @@ void setup() {
 
   fader.Init();
 
+  ringlednum = 0;
+
   DAISY.begin(AudioCallback);
-
-  int i = 0;
-}
-void loop() {
-  petal.ClearLeds();
-
-  petal.SetFootswitchLed((DaisyHardware::FootswitchLed)0, !bypassOn);
-
-  petal.SetRingLed((DaisyHardware::RingLed)i, 0, 1, 1);
-  i++;
-  i %= 8;
-
-  petal.UpdateLeds();
-  delay(60);
-}
 }
 
 void UpdateControls() {
@@ -90,7 +74,22 @@ void UpdateControls() {
   }
 
   // bypass switch
-  if (petal.switches[0].RisingEdge()) {
+  if (petal.buttons[0].RisingEdge()) {
     bypassOn = !bypassOn;
   }
+}
+
+void UpdateLeds(){
+  petal.ClearLeds();
+
+  ringlednum = (ringlednum + 1) % 80;
+  
+  petal.SetFootswitchLed(0, !bypassOn);
+  petal.SetRingLed(ringlednum / 10, 0, 1, 1);
+  petal.UpdateLeds();
+}
+
+void loop() {
+  UpdateControls();
+  //UpdateLeds();
 }

@@ -60,7 +60,7 @@ void setup() {
   led_period = 5;
   usb_period = 100;
 
-  hw = DAISY.Init(DAISY_PETAL, AUDIO_SR_48K);
+  hw = DAISY.init(DAISY_PETAL, AUDIO_SR_48K);
 
   last_led_update = last_usb_update = now = System::GetNow();
 
@@ -146,7 +146,7 @@ void UpdateUsb(int sd_sta) {
   strcat(catbuff, buff);
   // Switches
   for (size_t i = 0; i < hw.SW_LAST; i++) {
-    sprintf(buff, "{%s%d, %d},", SW_ID, i + 1, hw.switches[i].Pressed());
+    sprintf(buff, "{%s%d, %d},", SW_ID, i + 1, hw.buttons[i].Pressed());
     strcat(catbuff, buff);
   }
   // Enc

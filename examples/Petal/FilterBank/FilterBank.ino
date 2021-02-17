@@ -84,7 +84,7 @@ void UpdateLeds();
 
 void setup() {
   float samplerate;
-  petal = DAISY.Init(
+  petal = DAISY.init(
       DAISY_PETAL, AUDIO_SR_48K); // Initialize hardware (daisy seed, and petal)
   samplerate = DAISY.AudioSampleRate();
 
@@ -112,12 +112,12 @@ void UpdateControls() {
   bank = petal.encoder.RisingEdge() ? 0 : bank;
 
   // Toggle Pass thru
-  if (petal.switches[petal.SW_1].RisingEdge())
+  if (petal.buttons[petal.SW_1].RisingEdge())
     passthru = !passthru;
 
   // controls
   for (int i = 0; i < 4; i++) {
-    float val = petal.knob[i + 2].Process();
+    float val = petal.controls[i + 2].Process();
     if (condUpdates[i].Process(val)) {
       filters[i + bank * 4].amp = val;
     }
@@ -126,11 +126,11 @@ void UpdateControls() {
 
 void UpdateLeds() {
   for (int i = 0; i < 4; i++) {
-    petal.SetRingLed((DaisyHardware::RingLed)i, filters[i].amp,
+    petal.SetRingLed(i, filters[i].amp,
                      (bank == 0) * filters[i].amp, filters[i].amp);
   }
   for (int i = 4; i < 8; i++) {
-    petal.SetRingLed((DaisyHardware::RingLed)i, filters[i].amp,
+    petal.SetRingLed(i, filters[i].amp,
                      (bank == 1) * filters[i].amp, filters[i].amp);
   }
 

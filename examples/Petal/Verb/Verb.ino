@@ -15,8 +15,8 @@ void callback(float *in, float *out, size_t size) {
   verb.SetFeedback(vtime.Process());
   verb.SetLpFreq(vfreq.Process());
   vsend.Process(); // Process Send to use later
-  // bypass = hw.switches[DaisyHardware::SW_5].Pressed();
-  if (hw.switches[DaisyHardware::SW_1].RisingEdge())
+  // bypass = hw.buttons[DaisyHardware::SW_5].Pressed();
+  if (hw.buttons[DaisyHardware::SW_1].RisingEdge())
     bypass = !bypass;
   for (size_t i = 0; i < size; i += 2) {
     dryl = in[i];
@@ -37,12 +37,12 @@ void callback(float *in, float *out, size_t size) {
 void setup() {
   float samplerate;
 
-  hw = DAISY.Init(DAISY_PETAL, AUDIO_SR_48K);
+  hw = DAISY.init(DAISY_PETAL, AUDIO_SR_48K);
   samplerate = DAISY.AudioSampleRate();
 
-  vtime.Init(hw.knob[hw.KNOB_1], 0.6f, 0.999f, Parameter::LOGARITHMIC);
-  vfreq.Init(hw.knob[hw.KNOB_2], 500.0f, 20000.0f, Parameter::LOGARITHMIC);
-  vsend.Init(hw.knob[hw.KNOB_3], 0.0f, 1.0f, Parameter::LINEAR);
+  vtime.Init(hw.controls[hw.KNOB_1], 0.6f, 0.999f, Parameter::LOGARITHMIC);
+  vfreq.Init(hw.controls[hw.KNOB_2], 500.0f, 20000.0f, Parameter::LOGARITHMIC);
+  vsend.Init(hw.controls[hw.KNOB_3], 0.0f, 1.0f, Parameter::LINEAR);
   verb.Init(samplerate);
 
   DAISY.begin(callback);

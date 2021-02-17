@@ -12,13 +12,13 @@ float lfotarget, lfo;
 void AudioCallback(float **in, float **out, size_t size) {
   hw.ProcessAllControls();
 
-  deltarget = hw.knob[2].Process();
-  flanger.SetFeedback(hw.knob[3].Process());
-  float val = hw.knob[4].Process();
+  deltarget = hw.controls[2].Process();
+  flanger.SetFeedback(hw.controls[3].Process());
+  float val = hw.controls[4].Process();
   flanger.SetLfoFreq(val * val * 10.f);
-  lfotarget = hw.knob[5].Process();
+  lfotarget = hw.controls[5].Process();
 
-  effectOn ^= hw.switches[0].RisingEdge();
+  effectOn ^= hw.buttons[0].RisingEdge();
 
   // encoder
   wet += hw.encoder.Increment() * .05f;
@@ -43,7 +43,7 @@ void AudioCallback(float **in, float **out, size_t size) {
 }
 
 void setup() {
-  hw = DAISY.Init(DAISY_PETAL, AUDIO_SR_48K);
+  hw = DAISY.init(DAISY_PETAL, AUDIO_SR_48K);
   float sample_rate = DAISY.AudioSampleRate();
 
   deltarget = del = 0.f;
@@ -58,16 +58,16 @@ void loop() {
   delay(6);
 
   hw.ClearLeds();
-  hw.SetFootswitchLed((DaisyHardware::FootswitchLed)0, (float)effectOn);
+  hw.SetFootswitchLed(0, (float)effectOn);
 
   int wet_int = (int)(wet * 8.f);
   float wet_frac = wet - wet_int;
   for (int i = 0; i < wet_int; i++) {
-    hw.SetRingLed((DaisyHardware::RingLed)i, 1.f, 0.f, 0.f);
+    hw.SetRingLed(i, 1.f, 0.f, 0.f);
   }
 
   if (wet_int < 8) {
-    hw.SetRingLed((DaisyHardware::RingLed)wet_int, wet_frac, 0.f, 0.f);
+    hw.SetRingLed(wet_int, wet_frac, 0.f, 0.f);
   }
 
   hw.UpdateLeds();

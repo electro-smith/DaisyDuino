@@ -36,7 +36,7 @@ static void AudioCallback(float *in, float *out, size_t size) {
 void setup() {
   // initialize petal hardware and oscillator daisysp module
 
-  petal = DAISY.Init(DAISY_PETAL, AUDIO_SR_48K);
+  petal = DAISY.init(DAISY_PETAL, AUDIO_SR_48K);
   ResetBuffer();
 
   // start callback
@@ -45,8 +45,8 @@ void setup() {
 }
 void loop() {
   // leds
-  petal.SetFootswitchLed((DaisyHardware::FootswitchLed)1, play);
-  petal.SetFootswitchLed((DaisyHardware::FootswitchLed)0, rec);
+  petal.SetFootswitchLed(1, play);
+  petal.SetFootswitchLed(0, rec);
   petal.UpdateLeds();
   delay(16); // 60Hz
 }
@@ -67,7 +67,7 @@ void ResetBuffer() {
 
 void UpdateButtons() {
   // switch1 pressed
-  if (petal.switches[0].RisingEdge()) {
+  if (petal.buttons[0].RisingEdge()) {
     if (first && rec) {
       first = false;
       mod = len;
@@ -80,13 +80,13 @@ void UpdateButtons() {
   }
 
   // switch1 held
-  if (petal.switches[0].TimeHeldMs() >= 1000 && res) {
+  if (petal.buttons[0].TimeHeldMs() >= 1000 && res) {
     ResetBuffer();
     res = false;
   }
 
   // switch2 pressed and not empty buffer
-  if (petal.switches[1].RisingEdge() && !(!rec && first)) {
+  if (petal.buttons[1].RisingEdge() && !(!rec && first)) {
     play = !play;
     rec = false;
   }
@@ -97,7 +97,7 @@ void Controls() {
   petal.ProcessAnalogControls();
   petal.ProcessDigitalControls();
 
-  drywet = petal.knob[0].Process();
+  drywet = petal.controls[0].Process();
 
   UpdateButtons();
 }

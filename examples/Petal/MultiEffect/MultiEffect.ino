@@ -91,17 +91,17 @@ void setup() {
   float sample_rate;
 
   // Inits and sample rate
-  petal = DAISY.Init(DAISY_PETAL, AUDIO_SR_48K);
+  petal = DAISY.init(DAISY_PETAL, AUDIO_SR_48K);
   sample_rate = DAISY.AudioSampleRate();
   rev.Init(sample_rate);
   dell.Init();
   delr.Init();
 
   // set parameters
-  reverbLpParam.Init(petal.knob[0], 400, 22000, Parameter::LOGARITHMIC);
-  deltime.Init(petal.knob[2], sample_rate * .05, MAX_DELAY,
+  reverbLpParam.Init(petal.controls[0], 400, 22000, Parameter::LOGARITHMIC);
+  deltime.Init(petal.controls[2], sample_rate * .05, MAX_DELAY,
                deltime.LOGARITHMIC);
-  crushrate.Init(petal.knob[4], 1, 50, crushrate.LOGARITHMIC);
+  crushrate.Init(petal.controls[4], 1, 50, crushrate.LOGARITHMIC);
 
   // reverb parameters
   rev.SetLpFreq(18000.0f);
@@ -137,15 +137,15 @@ void loop() {
 
 void UpdateKnobs() {
   rev.SetLpFreq(reverbLpParam.Process());
-  rev.SetFeedback(petal.knob[1].Process());
+  rev.SetFeedback(petal.controls[1].Process());
 
   delayTarget = deltime.Process();
-  feedback = petal.knob[3].Process();
+  feedback = petal.controls[3].Process();
 
   crushmod = (int)crushrate.Process();
 
-  wah[0].SetWah(petal.knob[5].Process());
-  wah[1].SetWah(petal.knob[5].Process());
+  wah[0].SetWah(petal.controls[5].Process());
+  wah[1].SetWah(petal.controls[5].Process());
 }
 
 void UpdateEncoder() {
@@ -165,10 +165,10 @@ void UpdateLeds() {
   petal.ClearLeds();
 
   // footswitch leds
-  petal.SetFootswitchLed((DaisyHardware::FootswitchLed)0, effectOn[REV]);
-  petal.SetFootswitchLed((DaisyHardware::FootswitchLed)1, effectOn[DEL]);
-  petal.SetFootswitchLed((DaisyHardware::FootswitchLed)2, effectOn[CRUSH]);
-  petal.SetFootswitchLed((DaisyHardware::FootswitchLed)3, effectOn[WAH]);
+  petal.SetFootswitchLed(0, effectOn[REV]);
+  petal.SetFootswitchLed(1, effectOn[DEL]);
+  petal.SetFootswitchLed(2, effectOn[CRUSH]);
+  petal.SetFootswitchLed(3, effectOn[WAH]);
 
   // ring leds
   int32_t whole;
@@ -205,13 +205,13 @@ void UpdateSwitches() {
   // turn the effect on or off if a footswitch is pressed
 
   effectOn[REV] =
-      petal.switches[0].RisingEdge() ? !effectOn[REV] : effectOn[REV];
+      petal.buttons[0].RisingEdge() ? !effectOn[REV] : effectOn[REV];
   effectOn[DEL] =
-      petal.switches[1].RisingEdge() ? !effectOn[DEL] : effectOn[DEL];
+      petal.buttons[1].RisingEdge() ? !effectOn[DEL] : effectOn[DEL];
   effectOn[CRUSH] =
-      petal.switches[2].RisingEdge() ? !effectOn[CRUSH] : effectOn[CRUSH];
+      petal.buttons[2].RisingEdge() ? !effectOn[CRUSH] : effectOn[CRUSH];
   effectOn[WAH] =
-      petal.switches[3].RisingEdge() ? !effectOn[WAH] : effectOn[WAH];
+      petal.buttons[3].RisingEdge() ? !effectOn[WAH] : effectOn[WAH];
 }
 
 void Controls() {

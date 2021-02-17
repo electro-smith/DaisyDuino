@@ -60,7 +60,7 @@ void InitDelays(float samplerate) {
     delMems[i].Init();
     delays[i].del = &delMems[i];
     // 3 delay times
-    params[i].Init(petal.knob[i * 2], samplerate * .05, MAX_DELAY,
+    params[i].Init(petal.controls[i * 2], samplerate * .05, MAX_DELAY,
                    Parameter::LOGARITHMIC);
   }
 }
@@ -69,7 +69,7 @@ void UpdateOled();
 
 void setup() {
   float samplerate;
-  petal = DAISY.Init(
+  petal = DAISY.init(
       DAISY_PETAL, AUDIO_SR_48K); // Initialize hardware (daisy seed, and petal)
   samplerate = DAISY.AudioSampleRate();
 
@@ -111,7 +111,7 @@ void ProcessControls() {
   // knobs
   for (int i = 0; i < 3; i++) {
     delays[i].delayTarget = params[i].Process();
-    delays[i].feedback = petal.knob[(i * 2) + 1].Process();
+    delays[i].feedback = petal.controls[(i * 2) + 1].Process();
   }
 
   // encoder
@@ -120,7 +120,7 @@ void ProcessControls() {
   drywet < 0 ? drywet = 0 : drywet = drywet;
 
   // footswitch
-  if (petal.switches[0].RisingEdge()) {
+  if (petal.buttons[0].RisingEdge()) {
     passThruOn = !passThruOn;
   }
 }

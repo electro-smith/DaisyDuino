@@ -10,11 +10,11 @@ int waveform;
 void AudioCallback(float **in, float **out, size_t size) {
   hw.ProcessAllControls();
 
-  treml.SetFreq(hw.knob[2].Process() * 20.f); // 0 - 20 Hz
-  tremr.SetFreq(hw.knob[2].Value() * 20.f);
+  treml.SetFreq(hw.controls[2].Process() * 20.f); // 0 - 20 Hz
+  tremr.SetFreq(hw.controls[2].Value() * 20.f);
 
-  treml.SetDepth(hw.knob[3].Process());
-  tremr.SetDepth(hw.knob[3].Value());
+  treml.SetDepth(hw.controls[3].Process());
+  tremr.SetDepth(hw.controls[3].Value());
 
   waveform += hw.encoder.Increment();
   waveform = (waveform % 5 + 5) % 5;
@@ -22,7 +22,7 @@ void AudioCallback(float **in, float **out, size_t size) {
   treml.SetWaveform(waveform);
   tremr.SetWaveform(waveform);
 
-  effectOn ^= hw.switches[0].RisingEdge(); // flip effectOn when you press fs
+  effectOn ^= hw.buttons[0].RisingEdge(); // flip effectOn when you press fs
 
   for (size_t i = 0; i < size; i++) {
     out[0][i] = effectOn ? treml.Process(in[0][i]) : in[0][i];
@@ -31,7 +31,7 @@ void AudioCallback(float **in, float **out, size_t size) {
 }
 
 void setup() {
-  hw = DAISY.Init(DAISY_PETAL, AUDIO_SR_48K);
+  hw = DAISY.init(DAISY_PETAL, AUDIO_SR_48K);
   float sample_rate = DAISY.AudioSampleRate();
 
   treml.Init(sample_rate);
