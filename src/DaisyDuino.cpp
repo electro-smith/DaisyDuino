@@ -170,7 +170,7 @@ void DaisyHardware::ProcessAnalogControls() {
 }
 
 void DaisyHardware::ProcessDigitalControls() {
-  if (device_ == DAISY_PATCH || device_ == DAISY_POD) {
+  if (device_ == DAISY_PATCH || device_ == DAISY_POD || device_ == DAISY_PETAL) {
     encoder.Debounce();
   }
 
