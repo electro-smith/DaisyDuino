@@ -53,7 +53,7 @@ DaisyHardware AudioClass::init(DaisyDuinoDevice device, DaisyDuinoSampleRate sr)
     // Set Audio Device, num channels, etc.
     // Only difference is Daisy Patch has second AK4556 and 4 channels
     HAL_Init();
-    //SCB_DisableDCache(); // Still needs to wait for linker..
+    SCB_DisableDCache(); // Still needs to wait for linker..
     SCB_EnableDCache();
     SCB_EnableICache();
     _device = device;
