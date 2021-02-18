@@ -92,13 +92,13 @@ void DaisyHardware::InitPetal(float control_update_rate) {
 
   expression.Init(PIN_PETAL_EXPRESSION, control_update_rate);
 
-  buttons[0].Init(control_update_rate, false, PIN_PETAL_SWITCH_1, INPUT_PULLUP);
-  buttons[1].Init(control_update_rate, false, PIN_PETAL_SWITCH_2, INPUT_PULLUP);
-  buttons[2].Init(control_update_rate, false, PIN_PETAL_SWITCH_3, INPUT_PULLUP);
-  buttons[3].Init(control_update_rate, false, PIN_PETAL_SWITCH_4, INPUT_PULLUP);
-  buttons[4].Init(control_update_rate, false, PIN_PETAL_SWITCH_5, INPUT_PULLUP);
-  buttons[5].Init(control_update_rate, false, PIN_PETAL_SWITCH_6, INPUT_PULLUP);
-  buttons[6].Init(control_update_rate, false, PIN_PETAL_SWITCH_7, INPUT_PULLUP);
+  buttons[0].Init(control_update_rate, true, PIN_PETAL_SWITCH_1, INPUT_PULLUP);
+  buttons[1].Init(control_update_rate, true, PIN_PETAL_SWITCH_2, INPUT_PULLUP);
+  buttons[2].Init(control_update_rate, true, PIN_PETAL_SWITCH_3, INPUT_PULLUP);
+  buttons[3].Init(control_update_rate, true, PIN_PETAL_SWITCH_4, INPUT_PULLUP);
+  buttons[4].Init(control_update_rate, true, PIN_PETAL_SWITCH_5, INPUT_PULLUP);
+  buttons[5].Init(control_update_rate, true, PIN_PETAL_SWITCH_6, INPUT_PULLUP);
+  buttons[6].Init(control_update_rate, true, PIN_PETAL_SWITCH_7, INPUT_PULLUP);
 }
 
 void DaisyHardware::InitField(float control_update_rate) {
