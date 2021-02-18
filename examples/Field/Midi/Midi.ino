@@ -1,6 +1,10 @@
+#include <U8g2lib.h>
 
 #include "DaisyDuino.h"
 #include <string>
+
+U8G2_SSD1309_128X64_NONAME2_F_4W_SW_SPI
+    oled(U8G2_R0, /* clock=*/8, /* data=*/10, /* cs=*/7, /* dc=*/9);
 
 DaisyHardware hw;
 MidiHandler midi;
@@ -172,6 +176,11 @@ void setup() {
   samplerate = DAISY.AudioSampleRate();
   midi.Init(MidiHandler::INPUT_MODE_UART1, MidiHandler::OUTPUT_MODE_NONE);
   voice_handler.Init(samplerate);
+
+  oled.setFont(u8g2_font_inb16_mf);
+  oled.setFontDirection(0);
+  oled.setFontMode(1);
+  oled.begin();
 
   // display
   const char str[] = "Midi";

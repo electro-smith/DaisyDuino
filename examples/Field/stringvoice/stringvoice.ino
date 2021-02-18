@@ -22,8 +22,8 @@ void AudioCallback(float **in, float **out, size_t size) {
   hw.ProcessAnalogControls();
   hw.ProcessDigitalControls();
 
-  octaves += hw.sw[0].RisingEdge() ? -1 : 0;
-  octaves += hw.sw[1].RisingEdge() ? 1 : 0;
+  octaves += hw.buttons[0].RisingEdge() ? -1 : 0;
+  octaves += hw.buttons[1].RisingEdge() ? 1 : 0;
   octaves = DSY_MIN(DSY_MAX(0, octaves), 4);
 
   for (int i = 0; i < NUM_CONTROLS; i++) {
@@ -50,29 +50,24 @@ void AudioCallback(float **in, float **out, size_t size) {
 
 void UpdateLeds(float *knob_vals) {
   // knob_vals is exactly 8 members
-  size_t knob_leds[] = {
-      DaisyHardware::LED_KNOB_1, DaisyHardware::LED_KNOB_2,
-      DaisyHardware::LED_KNOB_3, DaisyHardware::LED_KNOB_4,
-      DaisyHardware::LED_KNOB_5, DaisyHardware::LED_KNOB_6,
-      DaisyHardware::LED_KNOB_7, DaisyHardware::LED_KNOB_8,
-  };
-  size_t keyboard_leds[] = {
-      DaisyHardware::LED_KEY_A1, DaisyHardware::LED_KEY_A2,
-      DaisyHardware::LED_KEY_A3, DaisyHardware::LED_KEY_A4,
-      DaisyHardware::LED_KEY_A5, DaisyHardware::LED_KEY_A6,
-      DaisyHardware::LED_KEY_A7, DaisyHardware::LED_KEY_A8,
-      DaisyHardware::LED_KEY_B2, DaisyHardware::LED_KEY_B3,
-      DaisyHardware::LED_KEY_B5, DaisyHardware::LED_KEY_B6,
-      DaisyHardware::LED_KEY_B7,
-  };
   for (size_t i = 0; i < 8; i++) {
     float val = i < NUM_CONTROLS ? knob_vals[i] : 0.f;
-    hw.led_driver.SetLed(knob_leds[i], val);
+    hw.SetKnobLed(i, val);
   }
-  for (size_t i = 0; i < 13; i++) {
-    hw.led_driver.SetLed(keyboard_leds[i], 1.f);
+  
+  // white keys
+  for (size_t i = 0; i < 8; i++) {
+    hw.SetKeyboardLed(1, i, 1.f);
   }
-  hw.led_driver.SwapBuffersAndTransmit();
+
+  // black keys
+  hw.SetKeyboardLed(0, 1, 1.f);
+  hw.SetKeyboardLed(0, 2, 1.f);
+  hw.SetKeyboardLed(0, 4, 1.f);
+  hw.SetKeyboardLed(0, 5, 1.f);
+  hw.SetKeyboardLed(0, 6, 1.f);
+  
+  hw.led_driver_.SwapBuffersAndTransmit();
 }
 
 void setup() {
