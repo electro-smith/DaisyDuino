@@ -58,10 +58,8 @@ void setup() {
 
 void loop() {
   // LED stuff
-  petal.SetFootswitchLed(0, 0);
-  petal.SetFootswitchLed(1, 1);
-  petal.SetFootswitchLed(2, 1);
-  petal.SetFootswitchLed(3, 0);
+  petal.SetFootswitchLed(0, !bypassSoft);
+  petal.SetFootswitchLed(1, !bypassHard);
 
   for (int i = 0; i < 8; i++) {
     petal.SetRingLed(i, 1.f, 0.f, 0.f);

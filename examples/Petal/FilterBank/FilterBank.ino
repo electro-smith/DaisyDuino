@@ -99,7 +99,7 @@ void loop() {
   UpdateLeds();
   delay(6);
 }
-}
+
 
 void UpdateControls() {
   petal.ProcessAnalogControls();
@@ -112,7 +112,7 @@ void UpdateControls() {
   bank = petal.encoder.RisingEdge() ? 0 : bank;
 
   // Toggle Pass thru
-  if (petal.buttons[petal.SW_1].RisingEdge())
+  if (petal.buttons[0].RisingEdge())
     passthru = !passthru;
 
   // controls
@@ -134,7 +134,7 @@ void UpdateLeds() {
                      (bank == 1) * filters[i].amp, filters[i].amp);
   }
 
-  petal.SetFootswitchLed(DaisyHardware::FOOTSWITCH_LED_1, !passthru);
+  petal.SetFootswitchLed(0, !passthru);
 
   petal.UpdateLeds();
 }

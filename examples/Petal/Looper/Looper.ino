@@ -39,6 +39,9 @@ void setup() {
   petal = DAISY.init(DAISY_PETAL, AUDIO_SR_48K);
   ResetBuffer();
 
+  rec = false;
+  play = false;
+
   // start callback
 
   DAISY.begin(AudioCallback);
@@ -48,8 +51,7 @@ void loop() {
   petal.SetFootswitchLed(1, play);
   petal.SetFootswitchLed(0, rec);
   petal.UpdateLeds();
-  delay(16); // 60Hz
-}
+  delay(6);
 }
 
 // Resets the buffer
@@ -94,9 +96,8 @@ void UpdateButtons() {
 
 // Deals with analog controls
 void Controls() {
-  petal.ProcessAnalogControls();
-  petal.ProcessDigitalControls();
-
+  petal.ProcessAllControls();
+  
   drywet = petal.controls[0].Process();
 
   UpdateButtons();

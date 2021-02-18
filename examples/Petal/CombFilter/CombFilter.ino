@@ -1,4 +1,3 @@
-
 #include "DaisyDuino.h"
 
 DaisyHardware petal;
@@ -16,6 +15,8 @@ Parameter faderPosParam;
 float targetCombFreq, combFreq;
 
 void AudioCallback(float **in, float **out, size_t size) {
+    UpdateControls();
+
   for (size_t i = 0; i < size; i++) {
     fonepole(combFreq, targetCombFreq, .0001f);
     float f = combFreq + lfo.Process() + 50.f;
@@ -53,6 +54,7 @@ void setup() {
   fader.Init();
 
   ringlednum = 0;
+  bypassOn = false;
 
   DAISY.begin(AudioCallback);
 }
@@ -90,6 +92,5 @@ void UpdateLeds(){
 }
 
 void loop() {
-  UpdateControls();
-  //UpdateLeds();
+  UpdateLeds();
 }

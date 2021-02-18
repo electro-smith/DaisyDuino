@@ -133,7 +133,6 @@ void loop() {
   UpdateLeds();
   delay(6);
 }
-}
 
 void UpdateKnobs() {
   rev.SetLpFreq(reverbLpParam.Process());
@@ -179,7 +178,7 @@ void UpdateLeds() {
   // Set full bright
   for (int i = 0; i < whole; i++) {
     petal.SetRingLed(
-        static_cast<DaisyHardware::RingLed>(i),
+        i,
         (dryWetMode == CRUSH || dryWetMode == REV || dryWetMode == ALL) *
             1.f,                                        // red
         (dryWetMode == WAH || dryWetMode == ALL) * 1.f, // green
@@ -190,7 +189,7 @@ void UpdateLeds() {
   // Set Frac
   if (whole < 7 && whole > 0) {
     petal.SetRingLed(
-        static_cast<DaisyHardware::RingLed>(whole - 1),
+        whole - 1,
         (dryWetMode == CRUSH || dryWetMode == REV || dryWetMode == ALL) *
             frac,                                        // red
         (dryWetMode == WAH || dryWetMode == ALL) * frac, // green
