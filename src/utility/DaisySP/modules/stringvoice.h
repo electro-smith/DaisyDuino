@@ -86,7 +86,7 @@ class StringVoice
 
     Dust   dust_;
     Svf    excitation_filter_;
-    String string_;
+    StringOsc string_;
     size_t remaining_noise_samples_;
 };
 } // namespace daisysp
