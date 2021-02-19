@@ -1,13 +1,15 @@
-#include <U8g2lib.h>
+// Requires the arduino MIDI Library by Francois Best and lathoub.
+// FortySevenEffects on Github This example simply triggers the envelope and
+// changes the note when MIDI messages come in It works with the TRS midi on the
+// Daisy Pod, NOT the USB Midi
+#include <MIDI.h>
 
 #include "DaisyDuino.h"
 #include <string>
 
-U8G2_SSD1309_128X64_NONAME2_F_4W_SW_SPI
-    oled(U8G2_R0, /* clock=*/8, /* data=*/10, /* cs=*/7, /* dc=*/9);
+MIDI_CREATE_DEFAULT_INSTANCE();
 
 DaisyHardware hw;
-MidiHandler midi;
 
 class Voice {
 public:
@@ -134,10 +136,10 @@ void AudioCallback(float *in, float *out, size_t size) {
   float sum = 0.f;
   hw.ProcessDigitalControls();
   hw.ProcessAnalogControls();
-  if (hw.GetSwitch(hw.SW_1)->FallingEdge()) {
+  if (hw.buttons[0].FallingEdge()) {
     voice_handler.FreeAllVoices();
   }
-  voice_handler.SetCutoff(250.f + hw.GetKnobValue(hw.KNOB_1) * 8000.f);
+  voice_handler.SetCutoff(250.f + hw.GetKnobValue(0) * 8000.f);
 
   for (size_t i = 0; i < size; i += 2) {
     sum = 0.f;
@@ -147,26 +149,21 @@ void AudioCallback(float *in, float *out, size_t size) {
   }
 }
 
-// Typical Switch case for Message Type.
-void HandleMidiMessage(MidiEvent m) {
-  switch (m.type) {
-  case NoteOn: {
-    NoteOnEvent p = m.AsNoteOn();
-    // Note Off can come in as Note On w/ 0 Velocity
-    if (p.velocity == 0.f) {
-      voice_handler.OnNoteOff(p.note, p.velocity);
-    } else {
-      voice_handler.OnNoteOn(p.note, p.velocity);
-    }
-  } break;
-  case NoteOff: {
-    NoteOnEvent p = m.AsNoteOn();
-    voice_handler.OnNoteOff(p.note, p.velocity);
-  } break;
-  default:
-    break;
+void handleNoteOn(byte inChannel, byte inNote, byte inVelocity) {
+  // Note Off can come in as Note On w/ 0 Velocity
+  if (inVelocity == 0.f) {
+    voice_handler.OnNoteOff(inNote, inVelocity);
+  } 
+  else {
+    voice_handler.OnNoteOn(inNote, inVelocity);
   }
 }
+
+
+void  handleNoteOff(byte inChannel, byte inNote, byte inVelocity) {
+  voice_handler.OnNoteOff(inNote, inVelocity);
+}
+
 
 // Main -- Init, and Midi Handling
 void setup() {
@@ -174,29 +171,14 @@ void setup() {
   float samplerate;
   hw = DAISY.init(DAISY_FIELD, AUDIO_SR_48K);
   samplerate = DAISY.AudioSampleRate();
-  midi.Init(MidiHandler::INPUT_MODE_UART1, MidiHandler::OUTPUT_MODE_NONE);
   voice_handler.Init(samplerate);
 
-  oled.setFont(u8g2_font_inb16_mf);
-  oled.setFontDirection(0);
-  oled.setFontMode(1);
-  oled.begin();
-
-  // display
-  const char str[] = "Midi";
-  char *cstr = (char *)str;
-  oled.drawStr(0, 0, cstr);
-  oled.sendBuffer()();
-
-  // Start stuff.
-  midi.StartReceive();
+  MIDI.setHandleNoteOn(handleNoteOn);
+  MIDI.setHandleNoteOff(handleNoteOff);
+  MIDI.begin(MIDI_CHANNEL_OMNI); // Listen to all incoming messages
 
   DAISY.begin(AudioCallback);
 }
 void loop() {
-  midi.Listen();
-  // Handle MIDI Events
-  while (midi.HasEvents()) {
-    HandleMidiMessage(midi.PopEvent());
-  }
+  MIDI.read();
 }
