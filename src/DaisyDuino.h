@@ -12,8 +12,6 @@
 #include "daisy_petal.h"
 #include "daisy_pod.h"
 
-#include "utility/adc.h"
-
 #include "utility/ctrl.h"
 #include "utility/encoder.h"
 #include "utility/gatein.h"
