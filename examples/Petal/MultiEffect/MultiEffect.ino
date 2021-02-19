@@ -54,7 +54,6 @@ void GetSample(float &inl, float &inr, effectTypes type) {
 
 void AudioCallback(float *in, float *out, size_t size) {
   Controls();
-
   // audio
   for (size_t i = 0; i < size; i += 2) {
     float sigl = in[i];
@@ -130,8 +129,10 @@ void setup() {
   DAISY.begin(AudioCallback);
 }
 void loop() {
+  petal.ProcessAnalogControls();
+  
   UpdateLeds();
-  delay(6);
+  UpdateKnobs();
 }
 
 void UpdateKnobs() {
@@ -214,13 +215,9 @@ void UpdateSwitches() {
 }
 
 void Controls() {
-  petal.ProcessAnalogControls();
   petal.ProcessDigitalControls();
 
-  UpdateKnobs();
-
   UpdateEncoder();
-
   UpdateSwitches();
 }
 
