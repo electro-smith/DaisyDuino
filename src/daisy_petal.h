@@ -1,0 +1,67 @@
+#include "utility/led_driver.h"
+
+#define PIN_PETAL_SWITCH_1 8
+#define PIN_PETAL_SWITCH_2 9
+#define PIN_PETAL_SWITCH_3 10
+#define PIN_PETAL_SWITCH_4 13
+#define PIN_PETAL_SWITCH_5 25
+#define PIN_PETAL_SWITCH_6 26
+#define PIN_PETAL_SWITCH_7 7
+
+#define PIN_PETAL_ENC_A 28
+#define PIN_PETAL_ENC_B 27
+#define PIN_PETAL_ENC_CLICK 14
+
+#define PIN_PETAL_EXPRESSION 15
+#define PIN_PETAL_POT_1 16
+#define PIN_PETAL_POT_2 19
+#define PIN_PETAL_POT_3 17
+#define PIN_PETAL_POT_4 20
+#define PIN_PETAL_POT_5 18
+#define PIN_PETAL_POT_6 21
+
+//2x pca9685 led driver
+#define PIN_PETAL_I2C1_SDA 12
+#define PIN_PETAL_I2C1_SCL 11
+
+static LedDriverPca9685<2, true>::DmaBuffer DMA_BUFFER_MEM_SECTION
+  petal_led_dma_buffer_a,
+  petal_led_dma_buffer_b;
+
+enum LedOrder
+{
+    PETAL_LED_RING_1_R,
+    PETAL_LED_RING_1_G,
+    PETAL_LED_RING_1_B,
+    PETAL_LED_RING_5_R,
+    PETAL_LED_RING_5_G,
+    PETAL_LED_RING_5_B,
+    PETAL_LED_RING_2_R,
+    PETAL_LED_RING_2_G,
+    PETAL_LED_RING_2_B,
+    PETAL_LED_RING_6_R,
+    PETAL_LED_RING_6_G,
+    PETAL_LED_RING_6_B,
+    PETAL_LED_RING_3_R,
+    PETAL_LED_RING_3_G,
+    PETAL_LED_RING_3_B,
+    PETAL_LED_FS_1,
+    PETAL_LED_RING_4_R,
+    PETAL_LED_RING_4_G,
+    PETAL_LED_RING_4_B,
+    PETAL_LED_RING_7_R,
+    PETAL_LED_RING_7_G,
+    PETAL_LED_RING_7_B,
+    PETAL_LED_RING_8_R,
+    PETAL_LED_RING_8_G,
+    PETAL_LED_RING_8_B,
+    PETAL_LED_FS_2,
+    PETAL_LED_FS_3,
+    PETAL_LED_FS_4,
+    PETAL_LED_FAKE1,
+    PETAL_LED_FAKE2,
+    PETAL_LED_FAKE3,
+    PETAL_LED_FAKE4,
+    PETAL_LED_LAST,
+};
+

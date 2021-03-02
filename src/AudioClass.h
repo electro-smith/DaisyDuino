@@ -1,10 +1,10 @@
 #ifndef DSY_ARDUINO_AUDIO_H
 #define DSY_ARDUINO_AUDIO_H
 
-#include <stdio.h>
 #include "utility/audio.h"
 #include "utility/sai.h"
 #include "utility/sdram.h"
+#include <stdio.h>
 
 using namespace daisy;
 

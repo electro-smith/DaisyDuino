@@ -18,6 +18,7 @@ DaisyHardware pod;
 static Oscillator osc, lfo;
 static MoogLadder flt;
 static AdEnv ad;
+static Parameter  pitchParam, cutoffParam, lfoParam;
 
 int wave, mode;
 float vibrato, oscFreq, lfoFreq, lfoAmp, attack, release, cutoff;
@@ -53,55 +54,60 @@ void MyCallback(float **in, float **out, size_t size) {
 }
 
 void setup() {
-  float sample_rate, callback_rate;
+    float sample_rate, callback_rate;
 
-  pod = DAISY.init(DAISY_POD, AUDIO_SR_48K);
-  sample_rate = DAISY.get_samplerate();
-  callback_rate = DAISY.get_callbackrate();
+    pod = DAISY.init(DAISY_POD, AUDIO_SR_48K); 
+    sample_rate = DAISY.get_samplerate();
+    callback_rate = DAISY.get_callbackrate();
 
-  // Set global variables
-  mode = 0;
-  vibrato = 0.0f;
-  oscFreq = 1000.0f;
-  oldk1 = oldk2 = 0;
-  k1 = k2 = 0;
-  attack = .01f;
-  release = .2f;
-  cutoff = 10000;
-  lfoAmp = 1.0f;
-  lfoFreq = 0.1f;
-  selfCycle = false;
+    // Set global variables
+    mode = 0;
+    vibrato = 0.0f;
+    oscFreq = 1000.0f;
+    oldk1 = oldk2 = 0;
+    k1 = k2 = 0;
+    attack = .01f;
+    release = .2f;
+    cutoff = 10000;
+    lfoAmp = 1.0f;
+    lfoFreq = 0.1f;
+    selfCycle = false;
+    
+    //Init everything
+    osc.Init(sample_rate);
+    flt.Init(sample_rate);
+    ad.Init(sample_rate);
+    lfo.Init(sample_rate);
 
-  // Init everything
-  osc.Init(sample_rate);
-  flt.Init(sample_rate);
-  ad.Init(sample_rate);
-  lfo.Init(sample_rate);
+    //Set filter parameters
+    flt.SetFreq(10000);
+    flt.SetRes(0.8);
+    
+    // Set parameters for oscillator
+    osc.SetWaveform(osc.WAVE_SAW);
+    wave = osc.WAVE_SAW;
+    osc.SetFreq(440);
+    osc.SetAmp(1);
 
-  // Set filter parameters
-  flt.SetFreq(10000);
-  flt.SetRes(0.8);
+    // Set parameters for lfo
+    lfo.SetWaveform(osc.WAVE_SIN);
+    lfo.SetFreq(0.1);
+    lfo.SetAmp(1);
+    
+    //Set envelope parameters
+    ad.SetTime( ADENV_SEG_ATTACK, 0.01);
+    ad.SetTime( ADENV_SEG_DECAY, .2);
+    ad.SetMax(1);
+    ad.SetMin(0);
+    ad.SetCurve(0.5);
 
-  // Set parameters for oscillator
-  osc.SetWaveform(osc.WAVE_SAW);
-  wave = osc.WAVE_SAW;
-  osc.SetFreq(440);
-  osc.SetAmp(1);
+    //set parameter parameters
+    cutoffParam.Init(pod.controls[0], 100, 20000, cutoffParam.LOGARITHMIC);
+    pitchParam.Init(pod.controls[1], 50, 3000, pitchParam.LOGARITHMIC);
+    lfoParam.Init(pod.controls[0], 0.25, 1000, lfoParam.LOGARITHMIC);
 
-  // Set parameters for lfo
-  lfo.SetWaveform(osc.WAVE_SIN);
-  lfo.SetFreq(0.1);
-  lfo.SetAmp(1);
-
-  // Set envelope parameters
-  ad.SetTime(ADENV_SEG_ATTACK, 0.01);
-  ad.SetTime(ADENV_SEG_DECAY, .2);
-  ad.SetMax(1);
-  ad.SetMin(0);
-  ad.SetCurve(0.5);
-
-  // start the audio callback
-  DAISY.begin(MyCallback);
+    //start the audio callback
+    DAISY.begin(MyCallback);
 }
 
 void loop() {}
@@ -130,35 +136,45 @@ void UpdateEncoder() {
   mode = (mode % 3 + 3) % 3;
 }
 
-void UpdateKnobs() {
-  k1 = (float)analogRead(PIN_POD_POT_1) / 1023.f; // 10 bit reading
-  k2 = (float)analogRead(PIN_POD_POT_2) / 1023.f;
+void UpdateKnobs()
+{
+    k1 = pod.controls[0].Value();
+    k2 = pod.controls[1].Value();
 
-  switch (mode) {
-  case 0:
-    ConditionalParameter(oldk1, k1, cutoff, k1 * 20000);
-    ConditionalParameter(oldk2, k2, oscFreq, k2 * 5000);
-    flt.SetFreq(cutoff);
-    break;
-  case 1:
-    ConditionalParameter(oldk1, k1, attack, k1);
-    ConditionalParameter(oldk2, k2, release, k2);
-    ad.SetTime(ADENV_SEG_ATTACK, attack);
-    ad.SetTime(ADENV_SEG_DECAY, release);
-    break;
-  case 2:
-    ConditionalParameter(oldk1, k1, lfoFreq, k1 * 1000 + .25);
-    ConditionalParameter(oldk2, k2, lfoAmp, k2 * 100);
-    lfo.SetFreq(lfoFreq);
-    lfo.SetAmp(lfoAmp);
-  default:
-    break;
-  }
+    switch (mode)
+    {
+        case 0:
+            ConditionalParameter(oldk1, k1, cutoff, cutoffParam.Process());
+            ConditionalParameter(oldk2, k2, oscFreq, pitchParam.Process());
+            flt.SetFreq(cutoff);
+            break;
+        case 1:
+            ConditionalParameter(oldk1, k1, attack, k1 + .02);
+            ConditionalParameter(oldk2, k2, release, k2 + .02);
+            ad.SetTime(ADENV_SEG_ATTACK, attack);
+            ad.SetTime(ADENV_SEG_DECAY, release);
+            break;
+        case 2:
+            ConditionalParameter(oldk1, k1, lfoFreq, lfoParam.Process());
+            ConditionalParameter(oldk2, k2, lfoAmp, k2 * 100);
+            lfo.SetFreq(lfoFreq);
+            lfo.SetAmp(lfoAmp);
+        default:
+            break;
+    }
+
+    oldk1 = k1;
+    oldk2 = k2;    
+
 }
 
 void UpdateLeds() {
   pod.leds[0].Set(mode == 2, mode == 1, mode == 0);
   pod.leds[1].Set(false, selfCycle, selfCycle);
+
+  //just for now until the led pwm stuff is resolved
+  pod.leds[0].Update();
+  pod.leds[1].Update();
 
   oldk1 = k1;
   oldk2 = k2;
@@ -174,8 +190,9 @@ void UpdateButtons() {
   }
 }
 
-void Controls() {
-  pod.DebounceControls();
+void Controls()
+{
+  pod.ProcessAllControls();
 
   UpdateEncoder();
 

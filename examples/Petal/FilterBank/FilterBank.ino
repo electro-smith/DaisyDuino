@@ -1,0 +1,140 @@
+#include "DaisyDuino.h"
+
+#include <string>
+
+DaisyHardware petal;
+int freqs[8];
+
+int bank;
+
+struct ConditionalUpdate {
+  float oldVal = 0;
+
+  bool Process(float newVal) {
+    if (abs(newVal - oldVal) > .04) {
+      oldVal = newVal;
+      return true;
+    }
+
+    return false;
+  }
+};
+
+ConditionalUpdate condUpdates[4];
+
+struct Filter {
+  Svf filt;
+  float amp;
+
+  void Init(float samplerate, float freq) {
+    filt.Init(samplerate);
+    filt.SetRes(1);
+    filt.SetDrive(.002);
+    filt.SetFreq(freq);
+    amp = .5f;
+  }
+
+  float Process(float in) {
+    filt.Process(in);
+    return filt.Peak() * amp;
+  }
+};
+
+Filter filters[8];
+bool passthru;
+void UpdateControls();
+
+static void AudioCallback(float **in, float **out, size_t size) {
+  UpdateControls();
+
+  for (size_t i = 0; i < size; i++) {
+    float sig = 0.f;
+    for (int j = 0; j < 8; j++) {
+      sig += filters[j].Process(in[0][i]);
+    }
+    sig *= .06;
+
+    if (!passthru) {
+      out[0][i] = out[1][i] = sig;
+    } else {
+      out[0][i] = in[0][i];
+      out[1][i] = in[1][i];
+    }
+  }
+}
+
+void InitFreqs() {
+  freqs[0] = 350;
+  freqs[1] = 500;
+  freqs[2] = 750;
+  freqs[3] = 1100;
+  freqs[4] = 2200;
+  freqs[5] = 3600;
+  freqs[6] = 5200;
+  freqs[7] = 7500;
+}
+
+void InitFilters(float samplerate) {
+  for (int i = 0; i < 8; i++) {
+    filters[i].Init(samplerate, freqs[i]);
+  }
+}
+
+void UpdateLeds();
+
+void setup() {
+  float samplerate;
+  petal = DAISY.init(
+      DAISY_PETAL, AUDIO_SR_48K); // Initialize hardware (daisy seed, and petal)
+  samplerate = DAISY.AudioSampleRate();
+
+  InitFreqs();
+  InitFilters(samplerate);
+  bank = 0;
+  passthru = false;
+
+  DAISY.begin(AudioCallback);
+}
+void loop() {
+  UpdateLeds();
+  delay(6);
+}
+
+
+void UpdateControls() {
+  petal.ProcessAnalogControls();
+  petal.ProcessDigitalControls();
+
+  // encoder
+  bank += petal.encoder.Increment();
+  bank = (bank % 2 + 2) % 2;
+
+  bank = petal.encoder.RisingEdge() ? 0 : bank;
+
+  // Toggle Pass thru
+  if (petal.buttons[0].RisingEdge())
+    passthru = !passthru;
+
+  // controls
+  for (int i = 0; i < 4; i++) {
+    float val = petal.controls[i + 2].Process();
+    if (condUpdates[i].Process(val)) {
+      filters[i + bank * 4].amp = val;
+    }
+  }
+}
+
+void UpdateLeds() {
+  for (int i = 0; i < 4; i++) {
+    petal.SetRingLed(i, filters[i].amp,
+                     (bank == 0) * filters[i].amp, filters[i].amp);
+  }
+  for (int i = 4; i < 8; i++) {
+    petal.SetRingLed(i, filters[i].amp,
+                     (bank == 1) * filters[i].amp, filters[i].amp);
+  }
+
+  petal.SetFootswitchLed(0, !passthru);
+
+  petal.UpdateLeds();
+}
