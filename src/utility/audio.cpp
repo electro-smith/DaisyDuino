@@ -444,12 +444,6 @@ void AudioHandle::Impl::InternalCallback(int32_t* in, int32_t* out, size_t size)
             default: break;
         }
     }
-	
-	//temporary bandaid until the cache fix is released via stm32duino
-	for(int i = 0; i < kAudioMaxChannels / 2; i++){
-		dsy_dma_invalidate_cache_for_buffer(dsy_audio_rx_buffer[i], kAudioMaxBufferSize);
-		dsy_dma_clear_cache_for_buffer(dsy_audio_tx_buffer[i], kAudioMaxBufferSize);
-	}
 
 }
 
