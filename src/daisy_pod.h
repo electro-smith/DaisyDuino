@@ -1,5 +1,5 @@
-#define PIN_POD_POT_1 21
-#define PIN_POD_POT_2 15
+#define PIN_POD_POT_1 A6
+#define PIN_POD_POT_2 A0
 #define POD_NUM_POTS 2
 
 #define PIN_POD_SWITCH_1 27

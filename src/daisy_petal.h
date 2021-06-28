@@ -12,13 +12,13 @@
 #define PIN_PETAL_ENC_B 27
 #define PIN_PETAL_ENC_CLICK 14
 
-#define PIN_PETAL_EXPRESSION 15
-#define PIN_PETAL_POT_1 16
-#define PIN_PETAL_POT_2 19
-#define PIN_PETAL_POT_3 17
-#define PIN_PETAL_POT_4 20
-#define PIN_PETAL_POT_5 18
-#define PIN_PETAL_POT_6 21
+#define PIN_PETAL_EXPRESSION A0
+#define PIN_PETAL_POT_1 A1
+#define PIN_PETAL_POT_2 A4
+#define PIN_PETAL_POT_3 A2
+#define PIN_PETAL_POT_4 A5
+#define PIN_PETAL_POT_5 A3
+#define PIN_PETAL_POT_6 A6
 
 //2x pca9685 led driver
 #define PIN_PETAL_I2C1_SDA 12
