@@ -14,9 +14,12 @@
 
 #define PIN_FIELD_GATE_OUT 15
 
-#define PIN_FIELD_ADC_POT_MUX 16
-#define PIN_FIELD_ADC_CV_1 17
-#define PIN_FIELD_ADC_CV_2 18
+#define PIN_FIELD_ADC_POT_MUX A1
+
+#define PIN_FIELD_ADC_CV_1 A2
+#define PIN_FIELD_ADC_CV_2 A3
+#define PIN_FIELD_ADC_CV_4 A9 // Jumped on Rev2 from 22
+#define PIN_FIELD_ADC_CV_3 A10 // Jumped on Rev2 from 23
 
 #define PIN_FIELD_MUX_SEL_2 19
 #define PIN_FIELD_MUX_SEL_1 20
@@ -31,8 +34,6 @@
 
 #define PIN_FIELD_DAC_2 22    // Jumped on Rev2 from 24
 #define PIN_FIELD_DAC_1 23    // Jumped on Rev2 from 25
-#define PIN_FIELD_ADC_CV_4 24 // Jumped on Rev2 from 22
-#define PIN_FIELD_ADC_CV_3 25 // Jumped on Rev2 from 23
 
 static LedDriverPca9685<2, true>::DmaBuffer DMA_BUFFER_MEM_SECTION
     field_led_dma_buffer_a,

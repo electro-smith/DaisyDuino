@@ -12,7 +12,7 @@ uint8_t knob_pin;
 
 void setup() {
   led_pin = 28;
-  knob_pin = 21;
+  knob_pin = A6;
   pinMode(led_pin, OUTPUT);
   pinMode(knob_pin, INPUT);
 }

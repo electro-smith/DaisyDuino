@@ -137,15 +137,15 @@ void loop() {
 
 void UpdateKnobs() {
   rev.SetLpFreq(reverbLpParam.Process());
-  rev.SetFeedback(petal.controls[1].Process());
+  rev.SetFeedback(petal.controls[1].Value());
 
   delayTarget = deltime.Process();
-  feedback = petal.controls[3].Process();
+  feedback = petal.controls[3].Value();
 
   crushmod = (int)crushrate.Process();
 
-  wah[0].SetWah(petal.controls[5].Process());
-  wah[1].SetWah(petal.controls[5].Process());
+  wah[0].SetWah(petal.controls[5].Value());
+  wah[1].SetWah(petal.controls[5].Value());
 }
 
 void UpdateEncoder() {
