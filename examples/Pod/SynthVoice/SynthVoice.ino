@@ -172,10 +172,6 @@ void UpdateLeds() {
   pod.leds[0].Set(mode == 2, mode == 1, mode == 0);
   pod.leds[1].Set(false, selfCycle, selfCycle);
 
-  //just for now until the led pwm stuff is resolved
-  pod.leds[0].Update();
-  pod.leds[1].Update();
-
   oldk1 = k1;
   oldk2 = k2;
 }
