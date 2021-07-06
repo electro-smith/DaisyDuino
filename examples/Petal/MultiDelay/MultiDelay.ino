@@ -126,7 +126,7 @@ void ProcessControls()
     for(int i = 0; i < 3; i++)
     {
         delays[i].delayTarget = params[i].Process();
-        delays[i].feedback    = petal.controls[(i * 2) + 1].Process();
+        delays[i].feedback    = petal.controls[(i * 2) + 1].Value();
     }
 
     //encoder
