@@ -42,8 +42,9 @@ void setup() {
   rec = false;
   play = false;
 
-  // start callback
+  petal.ClearLeds();
 
+  // start callback
   DAISY.begin(AudioCallback);
 }
 void loop() {
@@ -98,7 +99,7 @@ void UpdateButtons() {
 void Controls() {
   petal.ProcessAllControls();
   
-  drywet = petal.controls[0].Process();
+  drywet = petal.controls[0].Value();
 
   UpdateButtons();
 }

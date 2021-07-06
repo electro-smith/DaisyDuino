@@ -168,7 +168,7 @@ void UpdateControls()
     //controls
     for (int i = 0 ; i < 4; i++)
     {
-        float val = patch.controls[i].Process();
+        float val = patch.controls[i].Value();
         if (condUpdates[i].Process(val))
         {
             filters[i + bank * 4].amp = val;
