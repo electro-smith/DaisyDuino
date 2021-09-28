@@ -1,0 +1,21 @@
+#define PIN_PATCH_SM_ADC_1 0
+#define PIN_PATCH_SM_ADC_2 0
+#define PIN_PATCH_SM_ADC_3 0
+#define PIN_PATCH_SM_ADC_4 0
+#define PIN_PATCH_SM_ADC_5 0
+#define PIN_PATCH_SM_ADC_6 0
+#define PIN_PATCH_SM_ADC_7 0
+#define PIN_PATCH_SM_ADC_8 0
+#define PIN_PATCH_SM_ADC_9 0
+#define PIN_PATCH_SM_ADC_10 0
+#define PIN_PATCH_SM_ADC_11 0
+#define PIN_PATCH_SM_ADC_12 0
+
+#define PIN_PATCH_SM_GATE_IN_1 0
+#define PIN_PATCH_SM_GATE_IN_2 0
+
+#define PIN_PATCH_SM_GATE_OUT_1 0
+#define PIN_PATCH_SM_GATE_OUT_2 0
+
+#define PIN_PATCH_SM_DAC_1 0
+#define PIN_PATCH_SM_DAC_2 0

@@ -11,6 +11,7 @@
 #include "daisy_patch.h"
 #include "daisy_petal.h"
 #include "daisy_pod.h"
+#include "daisy_patch_sm.h"
 
 #include "utility/ctrl.h"
 #include "utility/encoder.h"
@@ -29,6 +30,7 @@ enum DaisyDuinoDevice : short {
   DAISY_PETAL,
   DAISY_FIELD,
   DAISY_PATCH,
+  DAISY_PATCH_SM,
   DAISY_LAST,
 };
 
@@ -39,7 +41,7 @@ public:
   DaisyHardware() {}
 
   Switch buttons[7];
-  AnalogControl controls[8];
+  AnalogControl controls[12];
   AnalogControl cv[4]; // for use with field
 
   //  Switch* switches = buttons; //these compile, but don't actually work....
@@ -99,6 +101,7 @@ private:
   void InitPatch(float control_update_rate);
   void InitPetal(float control_update_rate);
   void InitField(float control_update_rate);
+  void InitPatchSM(float control_update_rate);
 
   DaisyDuinoDevice device_;
 
