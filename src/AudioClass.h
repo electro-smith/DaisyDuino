@@ -4,7 +4,10 @@
 #include "utility/audio.h"
 #include "utility/sai.h"
 #include "utility/sdram.h"
+#include "utility/codec_pcm3060.h"
 #include <stdio.h>
+
+#include <Wire.h>
 
 using namespace daisy;
 
@@ -76,6 +79,8 @@ class AudioClass
 		AudioHandle audio_handle;
 		DaisyDuinoDevice _device;
         dsy_sdram_handle sdram_handle;
+		Pcm3060 sm_codec;
+		TwoWire i2c_handle;
 	void ConfigureSdram();
 };
 
