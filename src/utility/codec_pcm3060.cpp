@@ -46,6 +46,7 @@ namespace daisy
 {
 Pcm3060::Result Pcm3060::Init(TwoWire* wire)
 {
+
     _wire = wire;
 
     // TODO: bit 1 can be set via hardware and should be configurable.
@@ -53,14 +54,12 @@ Pcm3060::Result Pcm3060::Init(TwoWire* wire)
 
     // Reset the codec (though by default we may not need to do this)
     uint8_t sysreg = 0x00;
-
     // MRST
     if(ReadRegister(kAddrRegSysCtrl, &sysreg) != Result::OK)
         return Result::ERR;
     sysreg &= ~(kMrstBitMask);
     if(WriteRegister(kAddrRegSysCtrl, sysreg) != Result::OK)
         return Result::ERR;
-    //dsy_system_delay(4);
     System::Delay(4);
 
     // SRST
@@ -100,29 +99,20 @@ Pcm3060::Result Pcm3060::ReadRegister(uint8_t addr, uint8_t* data)
 {
     _wire->beginTransmission(dev_addr_);
     _wire->write(addr);
-
-    if(_wire->endTransmission() > 0){
-        return Result::ERR;
-    }
-
-    if (_wire->requestFrom(addr, (uint8_t)1) != 1){
-        return Result::ERR;
-    }
-
+    _wire->endTransmission();
+    _wire->requestFrom(addr, (uint8_t)1);
     *data = _wire->read();
+
     return Result::OK;
 }
 
 Pcm3060::Result Pcm3060::WriteRegister(uint8_t addr, uint8_t val)
 {
     _wire->beginTransmission(dev_addr_);
-
     _wire->write(addr);
     _wire->write(val);
+    _wire->endTransmission();
 
-    if(_wire->endTransmission() > 0){
-        return Result::ERR;
-    }
     return Result::OK;
 }
 

@@ -80,7 +80,6 @@ class AudioClass
 		DaisyDuinoDevice _device;
         dsy_sdram_handle sdram_handle;
 		Pcm3060 sm_codec;
-		TwoWire i2c_handle;
 	void ConfigureSdram();
 };
 
