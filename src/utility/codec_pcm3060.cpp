@@ -46,8 +46,11 @@ namespace daisy
 {
 Pcm3060::Result Pcm3060::Init(TwoWire* wire)
 {
+    pinMode(LED_BUILTIN, OUTPUT);
+    digitalWrite(LED_BUILTIN, HIGH);
 
     _wire = wire;
+    _wire->begin(PB11, PB10);
 
     // TODO: bit 1 can be set via hardware and should be configurable.
     dev_addr_ = 0x8c;
@@ -101,7 +104,7 @@ Pcm3060::Result Pcm3060::ReadRegister(uint8_t addr, uint8_t* data)
     _wire->write(addr);
     _wire->endTransmission();
     _wire->requestFrom(addr, (uint8_t)1);
-    *data = _wire->read();
+    *data = Wire.read();
 
     return Result::OK;
 }

@@ -2,6 +2,7 @@
 #ifndef DSY_CODEC_PCM3060_H
 #define DSY_CODEC_PCM3060_H
 
+#include <Arduino.h>
 #include <Wire.h>
 
 namespace daisy
