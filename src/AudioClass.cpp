@@ -84,11 +84,7 @@ DaisyHardware AudioClass::init(DaisyDuinoDevice device,
 
   // i2c for patch_sm
   if(_device == DAISY_PATCH_SM){
-    TwoWire i2c_handle;
-    // i2c_handle.setClock(400000); //400 kHz
-    // i2c_handle.begin(PB11, PB10);
     sm_codec.Init();
-    i2c_handle.end();
   }
 
   // SAI2

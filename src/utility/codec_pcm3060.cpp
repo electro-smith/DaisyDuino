@@ -46,17 +46,18 @@ namespace daisy
 {
 Pcm3060::Result Pcm3060::Init(TwoWire* wire)
 {
-    pinMode(LED_BUILTIN, OUTPUT);
-    digitalWrite(LED_BUILTIN, HIGH);
-
     _wire = wire;
-    _wire->begin(PB11, PB10);
+    _wire->setClock(400000);
+    _wire->setSDA(PB11);
+    _wire->setSCL(PB10);
+    _wire->begin();
 
     // TODO: bit 1 can be set via hardware and should be configurable.
     dev_addr_ = 0x8c;
 
     // Reset the codec (though by default we may not need to do this)
     uint8_t sysreg = 0x00;
+
     // MRST
     if(ReadRegister(kAddrRegSysCtrl, &sysreg) != Result::OK)
         return Result::ERR;
@@ -100,10 +101,10 @@ Pcm3060::Result Pcm3060::Init(TwoWire* wire)
 
 Pcm3060::Result Pcm3060::ReadRegister(uint8_t addr, uint8_t* data)
 {
-    _wire->beginTransmission(dev_addr_);
+    _wire->beginTransmission(dev_addr_ >> 1);
     _wire->write(addr);
     _wire->endTransmission();
-    _wire->requestFrom(addr, (uint8_t)1);
+    _wire->requestFrom(dev_addr_ >> 1, (uint8_t)1);
     *data = Wire.read();
 
     return Result::OK;
@@ -111,7 +112,7 @@ Pcm3060::Result Pcm3060::ReadRegister(uint8_t addr, uint8_t* data)
 
 Pcm3060::Result Pcm3060::WriteRegister(uint8_t addr, uint8_t val)
 {
-    _wire->beginTransmission(dev_addr_);
+    _wire->beginTransmission(dev_addr_ >> 1);
     _wire->write(addr);
     _wire->write(val);
     _wire->endTransmission();
