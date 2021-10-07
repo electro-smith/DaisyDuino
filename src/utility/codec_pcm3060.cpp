@@ -103,8 +103,8 @@ Pcm3060::Result Pcm3060::ReadRegister(uint8_t addr, uint8_t* data)
 {
     _wire->beginTransmission(dev_addr_ >> 1);
     _wire->write(addr);
-    _wire->endTransmission();
-    _wire->requestFrom(dev_addr_ >> 1, (uint8_t)1);
+    _wire->endTransmission(false);
+    _wire->requestFrom(dev_addr_ >> 1, 1);
     *data = Wire.read();
 
     return Result::OK;
