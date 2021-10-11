@@ -1,3 +1,6 @@
+// these are only valid using the generic H750 variant 
+#ifdef ARDUINO_GENERIC_H750IBKX
+
 //analog pins
 #define PIN_PATCH_SM_CV_1 A3
 #define PIN_PATCH_SM_CV_2 A6
@@ -75,3 +78,8 @@
 #define PIN_PATCH_SM_D8 PC2_C
 #define PIN_PATCH_SM_D9 PC3_C
 #define PIN_PATCH_SM_D10 PG11
+
+// HSE is 16MHz on Daisy.
+// #define HSE_VALUE               (16000000UL)
+
+#endif // variant H750
