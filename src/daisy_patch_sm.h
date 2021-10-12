@@ -79,7 +79,4 @@
 #define PIN_PATCH_SM_D9 PC3_C
 #define PIN_PATCH_SM_D10 PG11
 
-// HSE is 16MHz on Daisy.
-// #define HSE_VALUE               (16000000UL)
-
 #endif // variant H750
