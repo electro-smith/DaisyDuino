@@ -281,17 +281,3 @@ void DaisyHardware::UpdateLeds() {
 
   led_driver_.SwapBuffersAndTransmit();
 }
-
-DaisyHardware::BoardVersion DaisyHardware::BoardVersionCheck(){
-    /** Version Checks:
-     *  * Fall through is Daisy Seed v1 (aka Daisy Seed rev4)
-     *  * PD3 tied to gnd is Daisy Seed v1.1 (aka Daisy Seed rev5)
-     *  * PD4 tied to gnd reserved for future hardware
-     */
-    // 49 == PD3
-    pinMode(49, INPUT_PULLUP);
-    if(!digitalRead(49))
-        return BoardVersion::DAISY_SEED_1_1;
-    else
-        return BoardVersion::DAISY_SEED;
-}

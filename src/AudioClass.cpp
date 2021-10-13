@@ -4,9 +4,10 @@
 #include "utility/dma.h"
 #include "utility/gpio.h"
 #include "utility/sys_mpu.h"
+#include "utility/codec_wm8731.h"
+#include "utility/codec_ak4556.h"
 
-#define PIN_AK4556_RESET 14
-#define PORT_AK4556_RESET DSY_GPIOB
+#include <Wire.h>
 
 using namespace daisy;
 
@@ -64,13 +65,48 @@ DaisyHardware AudioClass::init(DaisyDuinoDevice device,
   sai_config[0].bit_depth = SaiHandle::Config::BitDepth::SAI_24BIT;
   sai_config[0].a_sync = SaiHandle::Config::Sync::MASTER;
   sai_config[0].b_sync = SaiHandle::Config::Sync::SLAVE;
-  sai_config[0].a_dir = SaiHandle::Config::Direction::TRANSMIT;
-  sai_config[0].b_dir = SaiHandle::Config::Direction::RECEIVE;
   sai_config[0].pin_config.fs = {DSY_GPIOE, 4};
   sai_config[0].pin_config.mclk = {DSY_GPIOE, 2};
   sai_config[0].pin_config.sck = {DSY_GPIOE, 5};
-  sai_config[0].pin_config.sa = {DSY_GPIOE, 6};
-  sai_config[0].pin_config.sb = {DSY_GPIOE, 3};
+
+  // which seed version are we on?
+  switch(BoardVersionCheck())
+  {
+    case BoardVersion::DAISY_SEED_1_1:
+    {
+      // Data Line Directions
+      sai_config[0].a_dir         = SaiHandle::Config::Direction::RECEIVE;
+      sai_config[0].pin_config.sa = {DSY_GPIOE, 6};
+      sai_config[0].b_dir         = SaiHandle::Config::Direction::TRANSMIT;
+      sai_config[0].pin_config.sb = {DSY_GPIOE, 3};
+
+      TwoWire wire;
+      wire.setSDA(27); // PB11
+      wire.setSCL(114); // PH4
+      wire.setClock(400000);
+
+      Wm8731::Config codec_cfg;
+      codec_cfg.Defaults();
+      Wm8731 codec;
+      codec.Init(codec_cfg, &wire);
+    }
+    break;
+
+    case BoardVersion::DAISY_SEED:
+    default:
+    {
+      // Data Line Directions
+      sai_config[0].a_dir         = SaiHandle::Config::Direction::TRANSMIT;
+      sai_config[0].pin_config.sa = {DSY_GPIOE, 6};
+      sai_config[0].b_dir         = SaiHandle::Config::Direction::RECEIVE;
+      sai_config[0].pin_config.sb = {DSY_GPIOE, 3};
+      
+      Ak4556 codec;
+      codec.Init({DSY_GPIOB, 11});
+    }
+    break;
+  }
+
   // Then Initialize
   SaiHandle sai_handle[2];
   sai_handle[0].Init(sai_config[0]);
@@ -99,13 +135,8 @@ DaisyHardware AudioClass::init(DaisyDuinoDevice device,
 
   if (_device == DAISY_PATCH) {
     // Reset External Codec
-    ak4556_reset_pin.pin = dsy_pin(PORT_AK4556_RESET, PIN_AK4556_RESET);
-    ak4556_reset_pin.mode = DSY_GPIO_MODE_OUTPUT_PP;
-    ak4556_reset_pin.pull = DSY_GPIO_NOPULL;
-    dsy_gpio_init(&ak4556_reset_pin);
-    dsy_gpio_write(&ak4556_reset_pin, 0);
-    delay(1);
-    dsy_gpio_write(&ak4556_reset_pin, 1);
+    Ak4556 codec;
+    codec.Init({DSY_GPIOB, 14});
 
     cfg.postgain = 0.5f;
     audio_handle.Init(cfg, sai_handle[0], sai_handle[1]);
@@ -181,3 +212,17 @@ void AudioClass::SetAudioBlockSize(size_t blocksize) {
 size_t AudioClass::AudioBlockSize() { return get_blocksize(); }
 
 float AudioClass::AudioCallbackRate() { return get_callbackrate(); }
+
+AudioClass::BoardVersion AudioClass::BoardVersionCheck(){
+    /** Version Checks:
+     *  * Fall through is Daisy Seed v1 (aka Daisy Seed rev4)
+     *  * PD3 tied to gnd is Daisy Seed v1.1 (aka Daisy Seed rev5)
+     *  * PD4 tied to gnd reserved for future hardware
+     */
+    // 49 == PD3
+    pinMode(49, INPUT_PULLUP);
+    if(!digitalRead(49))
+        return BoardVersion::DAISY_SEED_1_1;
+    else
+        return BoardVersion::DAISY_SEED;
+}
