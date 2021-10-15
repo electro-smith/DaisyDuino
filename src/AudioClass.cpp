@@ -83,13 +83,8 @@ DaisyHardware AudioClass::init(DaisyDuinoDevice device,
   sai_handle[0].Init(sai_config[0]);
 
   #ifdef ARDUINO_DAISY_PATCH_SM
-    TwoWire wire;
-    wire.setClock(400000);
-    wire.setSDA(PB11);
-    wire.setSCL(PB10);
-
 		Pcm3060 codec;
-    codec.Init(&wire);
+    codec.Init();
   #endif
 
   // SAI2

@@ -47,6 +47,11 @@ namespace daisy
 Pcm3060::Result Pcm3060::Init(TwoWire* wire)
 {
     _wire = wire;
+
+    _wire->setClock(400000);
+    _wire->setSDA(PB11);
+    _wire->setSCL(PB10);
+
     _wire->begin();
 
     // TODO: bit 1 can be set via hardware and should be configurable.
