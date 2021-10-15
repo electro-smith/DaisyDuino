@@ -142,7 +142,7 @@ void DaisyHardware::InitField(float control_update_rate) {
 
 void DaisyHardware::InitPatchSM(float control_update_rate) {
   //the patch sm only works with the generic variant for now
-  #ifdef ARDUINO_GENERIC_H750IBKX
+  #ifdef ARDUINO_DAISY_PATCH_SM
   num_channels = 2;
   numControls = 12;
   numGates = 2;

@@ -1,4 +1,4 @@
-// these are only valid using the generic H750 variant 
+// these are only valid using the Patch SM variant
 #ifdef ARDUINO_DAISY_PATCH_SM
 
 //analog pins
@@ -79,4 +79,4 @@
 #define PIN_PATCH_SM_D9 PC3_C
 #define PIN_PATCH_SM_D10 PG11
 
-#endif // variant H750
+#endif // variant ARDUINO_DAISY_PATCH_SM

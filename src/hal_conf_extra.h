@@ -5,10 +5,6 @@
 #define HAL_MDMA_MODULE_ENABLED
 #define INSTRUCTION_CACHE_ENABLE
 
-// both of these are needed for the patch_sm to work with the generic variant
-#define HSE_VALUE    (16000000UL)
-#define LED_BUILTIN PC7
-
 // In order for the Cache to work and still allow the DMA to work 
 // for audio (without a bunch of cache-maintenance) we need to add 
 // the following to the linker script:

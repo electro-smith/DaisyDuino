@@ -79,7 +79,6 @@ class AudioClass
 		AudioHandle audio_handle;
 		DaisyDuinoDevice _device;
         dsy_sdram_handle sdram_handle;
-		Pcm3060 sm_codec;
 	void ConfigureSdram();
 };
 
