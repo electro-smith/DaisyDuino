@@ -1,5 +1,5 @@
 // these are only valid using the generic H750 variant 
-#ifdef ARDUINO_GENERIC_H750IBKX
+#ifdef ARDUINO_DAISY_PATCH_SM
 
 //analog pins
 #define PIN_PATCH_SM_CV_1 A3
