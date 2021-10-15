@@ -82,10 +82,10 @@ DaisyHardware AudioClass::init(DaisyDuinoDevice device,
   SaiHandle sai_handle[2];
   sai_handle[0].Init(sai_config[0]);
 
-  #ifdef ARDUINO_DAISY_PATCH_SM
-		Pcm3060 codec;
+  if(_device == DAISY_PATCH_SM){
+    Pcm3060 codec;
     codec.Init();
-  #endif
+  }
 
   // SAI2
   if (_device == DAISY_PATCH) {
