@@ -22,6 +22,11 @@
 #include "utility/sr_4021.h"
 #include "utility/switch.h"
 
+#define OUT_L out[0]
+#define OUT_R out[1]
+#define IN_L in[0]
+#define IN_R in[1]
+
 using namespace daisy;
 
 enum DaisyDuinoDevice : short {
