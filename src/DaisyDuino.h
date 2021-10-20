@@ -68,7 +68,11 @@ public:
   }
 
   int VoltsToAnalogWrite(float volts){
-    return (float)volts * 51.2f;
+    return constrain(volts * 51.2f, 0, 255);
+  }
+
+  void WriteCvOut(uint8_t pin, float voltage){
+    analogWrite(pin, VoltsToAnalogWrite(voltage));
   }
 
   // set ring led color. For use with daisy petal

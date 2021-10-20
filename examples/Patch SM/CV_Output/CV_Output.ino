@@ -13,19 +13,19 @@ void setup()
 void loop()
 {
     /** Write 0V to CV_OUT_2 */
-    analogWrite(PIN_PATCH_SM_CV_OUT_2, 0);
+    patch.WriteCvOut(PIN_PATCH_SM_CV_OUT_2, 0);
 
     /** Wait for 1000 ms (1 second) */
     delay(1000);
 
     /** Write 2.5V to CV_OUT_2 */
-    analogWrite(PIN_PATCH_SM_CV_OUT_2, 128);
+    patch.WriteCvOut(PIN_PATCH_SM_CV_OUT_2, 2.5);
 
     /** Wait for 1000 ms (1 second) */
     delay(1000);
 
     /** Write 5V to CV_OUT_2 */
-    analogWrite(PIN_PATCH_SM_CV_OUT_2, 255);
+    patch.WriteCvOut(PIN_PATCH_SM_CV_OUT_2, 5);
 
     /** Wait for 1000 ms (1 second) */
     delay(1000);
