@@ -62,6 +62,15 @@ public:
 
   void Init(float control_update_rate, DaisyDuinoDevice device);
 
+  float AnalogReadToVolts(int input){
+    float ret = (512.f - (float)input) * .009765625f;
+    return constrain(ret, 0, 1024);
+  }
+
+  int VoltsToAnalogWrite(float volts){
+    return (float)volts * 51.2f;
+  }
+
   // set ring led color. For use with daisy petal
   void SetRingLed(uint8_t idx, float r, float g, float b);
 

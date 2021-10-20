@@ -16,20 +16,14 @@ void loop()
     /** Update the control ins */
     patch.ProcessAllControls();
 
-    /** Read from CV_1 (1024, 0) */
-    float value = analogRead(PIN_PATCH_SM_CV_5);
+    /** Read from CV_1 */
+    int value = analogRead(PIN_PATCH_SM_CV_5);
 
-    /** Flip range (1024, 0) -> (0, 1024) */
-    value = 1024 - value;
-
-    /** Convert to volts (0, 1024) -> (0V, 10V) */
-    value /= 102.4;
-
-    /** Offset (0V, 10V) -> (-5V, 5V) */
-    value -= 5;
+    /** Convert AnalogRead range to volts */
+    float volts = patch.AnalogReadToVolts(value);
 
     /** If the Adc value is greater than 0V... */
-    if(value > 0)
+    if(volts > 0)
     {
         /** Turn the led on */
         digitalWrite(LED_BUILTIN, HIGH);
