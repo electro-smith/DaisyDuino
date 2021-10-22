@@ -2,21 +2,21 @@
 #ifdef ARDUINO_DAISY_PATCH_SM
 
 //analog pins
-#define PIN_PATCH_SM_CV_1 A3
-#define PIN_PATCH_SM_CV_2 A6
+#define PIN_PATCH_SM_CV_1 A0
+#define PIN_PATCH_SM_CV_2 A1 
 #define PIN_PATCH_SM_CV_3 A2
-#define PIN_PATCH_SM_CV_4 A7
-#define PIN_PATCH_SM_CV_5 A11
-#define PIN_PATCH_SM_CV_6 A10
-#define PIN_PATCH_SM_CV_7 A9
-#define PIN_PATCH_SM_CV_8 A12
-#define PIN_PATCH_SM_ADC_9 A1
-#define PIN_PATCH_SM_ADC_10 A0
-#define PIN_PATCH_SM_ADC_11 A31
-#define PIN_PATCH_SM_ADC_12 A30
+#define PIN_PATCH_SM_CV_4 A3
+#define PIN_PATCH_SM_CV_5 A4
+#define PIN_PATCH_SM_CV_6 A5
+#define PIN_PATCH_SM_CV_7 A6
+#define PIN_PATCH_SM_CV_8 A7
+#define PIN_PATCH_SM_ADC_9 A8
+#define PIN_PATCH_SM_ADC_10 A9
+#define PIN_PATCH_SM_ADC_11 A10
+#define PIN_PATCH_SM_ADC_12 A11
 
-#define PIN_PATCH_SM_CV_OUT_1 A4
-#define PIN_PATCH_SM_CV_OUT_2 A5
+#define PIN_PATCH_SM_CV_OUT_1 A12
+#define PIN_PATCH_SM_CV_OUT_2 A13
 
 // digital pins
 #define PIN_PATCH_SM_GATE_IN_1 PG13
