@@ -68,7 +68,10 @@ DaisyHardware AudioClass::init(DaisyDuinoDevice device,
   sai_config[0].pin_config.fs = {DSY_GPIOE, 4};
   sai_config[0].pin_config.mclk = {DSY_GPIOE, 2};
   sai_config[0].pin_config.sck = {DSY_GPIOE, 5};
+  sai_config[0].pin_config.sa = {DSY_GPIOE, 6};
+  sai_config[0].pin_config.sb = {DSY_GPIOE, 3};
 
+  #ifdef ARDUINO_DAISY_SEED
   // which seed version are we on?
   switch(BoardVersionCheck())
   {
@@ -76,9 +79,7 @@ DaisyHardware AudioClass::init(DaisyDuinoDevice device,
     {
       // Data Line Directions
       sai_config[0].a_dir         = SaiHandle::Config::Direction::RECEIVE;
-      sai_config[0].pin_config.sa = {DSY_GPIOE, 6};
       sai_config[0].b_dir         = SaiHandle::Config::Direction::TRANSMIT;
-      sai_config[0].pin_config.sb = {DSY_GPIOE, 3};
 
       TwoWire wire;
       wire.setSDA(27); // PB11
@@ -97,19 +98,29 @@ DaisyHardware AudioClass::init(DaisyDuinoDevice device,
     {
       // Data Line Directions
       sai_config[0].a_dir         = SaiHandle::Config::Direction::TRANSMIT;
-      sai_config[0].pin_config.sa = {DSY_GPIOE, 6};
       sai_config[0].b_dir         = SaiHandle::Config::Direction::RECEIVE;
-      sai_config[0].pin_config.sb = {DSY_GPIOE, 3};
       
       Ak4556 codec;
       codec.Init({DSY_GPIOB, 11});
     }
     break;
   }
+  #endif
+
+  //patch SM flips these
+  #ifdef ARDUINO_DAISY_PATCH_SM
+    sai_config[0].a_dir = SaiHandle::Config::Direction::RECEIVE;
+    sai_config[0].b_dir = SaiHandle::Config::Direction::TRANSMIT;
+  #endif
 
   // Then Initialize
   SaiHandle sai_handle[2];
   sai_handle[0].Init(sai_config[0]);
+
+  if(_device == DAISY_PATCH_SM){
+    Pcm3060 codec;
+    codec.Init();
+  }
 
   // SAI2
   if (_device == DAISY_PATCH) {

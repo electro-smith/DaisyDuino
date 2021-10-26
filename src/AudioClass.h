@@ -4,7 +4,10 @@
 #include "utility/audio.h"
 #include "utility/sai.h"
 #include "utility/sdram.h"
+#include "utility/codec_pcm3060.h"
 #include <stdio.h>
+
+#include <Wire.h>
 
 using namespace daisy;
 

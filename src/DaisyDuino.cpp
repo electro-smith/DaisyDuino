@@ -23,7 +23,9 @@ void DaisyHardware::Init(float control_update_rate, DaisyDuinoDevice device) {
   case DAISY_PATCH:
     InitPatch(control_update_rate);
     break;
-
+  case DAISY_PATCH_SM:
+    InitPatchSM(control_update_rate);
+    break;
   default:
     break;
   }
@@ -136,6 +138,36 @@ void DaisyHardware::InitField(float control_update_rate) {
   //cv outs
   pinMode(PIN_FIELD_DAC_1, OUTPUT);
   pinMode(PIN_FIELD_DAC_2, OUTPUT);
+}
+
+void DaisyHardware::InitPatchSM(float control_update_rate) {
+  //the patch sm only works with the generic variant for now
+  #ifdef ARDUINO_DAISY_PATCH_SM
+  num_channels = 2;
+  numControls = 12;
+  numGates = 2;
+
+  gateIns[0].Init(PIN_PATCH_SM_GATE_IN_1, INPUT, true);
+  gateIns[1].Init(PIN_PATCH_SM_GATE_IN_2, INPUT, true);
+
+  controls[0].InitBipolarCv(PIN_PATCH_SM_CV_1, control_update_rate);
+  controls[1].InitBipolarCv(PIN_PATCH_SM_CV_2, control_update_rate);
+  controls[2].InitBipolarCv(PIN_PATCH_SM_CV_3, control_update_rate);
+  controls[3].InitBipolarCv(PIN_PATCH_SM_CV_4, control_update_rate);
+  controls[4].InitBipolarCv(PIN_PATCH_SM_CV_5, control_update_rate);
+  controls[5].InitBipolarCv(PIN_PATCH_SM_CV_6, control_update_rate);
+  controls[6].InitBipolarCv(PIN_PATCH_SM_CV_7, control_update_rate);
+  controls[7].InitBipolarCv(PIN_PATCH_SM_CV_8, control_update_rate);
+  controls[8].Init(PIN_PATCH_SM_ADC_9, control_update_rate);
+  controls[9].Init(PIN_PATCH_SM_ADC_10, control_update_rate);
+  controls[10].Init(PIN_PATCH_SM_ADC_11, control_update_rate);
+  controls[11].Init(PIN_PATCH_SM_ADC_12, control_update_rate);
+
+  pinMode(PIN_PATCH_SM_CV_OUT_1, OUTPUT);
+  pinMode(PIN_PATCH_SM_CV_OUT_2, OUTPUT);
+  pinMode(PIN_PATCH_SM_GATE_OUT_1, OUTPUT);
+  pinMode(PIN_PATCH_SM_GATE_OUT_2, OUTPUT);
+  #endif
 }
 
 float DaisyHardware::GetKnobValue(uint8_t idx) {
