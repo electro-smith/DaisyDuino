@@ -1,3 +1,15 @@
+/* Toggle_Switch.ino
+
+author: beserge
+
+This example shows how to use a toggle switch with the Patch SM.
+The example simply turns on the built in led when the switch is high, and off when it's low.
+
+To test this, connect a toggle switch to pin B8 on the Patch SM.
+Check the figures from the Patch SM datasheet for help connecting peripherals.
+You can use the built in toggle switch on the patch.Init()
+*/
+
 #include "DaisyDuino.h"
 
 DaisyHardware patch;

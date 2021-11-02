@@ -1,3 +1,16 @@
+/* CV_Output.ino
+
+author: beserge
+
+This example shows how to use the Patch SM's CV outputs.
+Stepped voltage is output on the CV OUT 2 pin.
+This cycles through 0V, 2.5V, 5V stepping ahead once per second.
+
+To test this example, connect an led to CV OUT 2 on your Patch SM.
+Check the figures from the Patch SM datasheet for help connecting peripherals.
+On the patch.Init() this is connected to the front panel led.
+*/
+
 #include "DaisyDuino.h"
 
 DaisyHardware patch;

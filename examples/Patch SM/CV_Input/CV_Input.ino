@@ -1,3 +1,16 @@
+/* CV_Input.ino
+
+author: beserge
+
+This example shows how to use the Patch SM's bipolar CV inputs.
+When the input receives negative voltage, it turns the built in led off.
+If the input receives positive voltage, it turns the built in led on.
+
+To test this you can connect a jack to CV IN 5 on your Patch SM, and connect a voltage source to that jack.
+Check the figures from the Patch SM datasheet for help connecting peripherals.
+You can also use the patch.Init().
+*/
+
 #include "DaisyDuino.h"
 
 DaisyHardware patch;

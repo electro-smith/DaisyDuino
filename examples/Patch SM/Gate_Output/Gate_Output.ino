@@ -1,3 +1,17 @@
+/* Gate_Output.ino
+
+author: beserge
+
+This example demonstrates using the Patch SM's Gate Outputs.
+The example simply toggles the gate output on and off four times a second.
+
+To test this example, connect a jack to the Patch SM's Gate Out 1.
+Patch that jack to any module accepting a gate input.
+Check the figures from the Patch SM datasheet for help connecting peripherals.
+You can also use gate_out_2 on the patch.Init()
+
+*/
+
 #include "DaisyDuino.h"
 
 DaisyHardware patch;

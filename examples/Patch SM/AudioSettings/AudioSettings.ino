@@ -1,3 +1,16 @@
+/* AudioSettings.ino
+
+author: beserge
+
+This example shows how to set custom audio settings (callback rate, block size)
+Once it sets up the custom audio, it simply passes audio through from the input to the output.
+
+To test this example, you should connect audio jacks to the Patch SM's audio IO.
+Check the figures from the Patch SM datasheet for help connecting peripherals.
+You can also use the patch.Init().
+
+*/
+
 #include "DaisyDuino.h"
 
 DaisyHardware patch;
