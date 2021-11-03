@@ -48,29 +48,17 @@ void AudioCallback(float**  in, float** out, size_t size)
     patch.ProcessAnalogControls();
 
     // Get the raw course tune value in volts (0 - 5)
-    float coarse_tune = patch.AnalogReadToVolts(analogRead(PIN_PATCH_SM_CV_1));
-
-    // convert to 0 - 1
-    coarse_tune /= 5;
-
-    /** convert again to midi note numbers */
-    coarse_tune = 12.f + (coarse_tune * 72.f);
+    float coarse_tune = 12.f + (patch.GetAdcValue(0) * 72.f);
 
     /** Using the second analog input we'll use a fine tune of the primary
    * frequency. */
-    float fine_tune = patch.AnalogReadToVolts(analogRead(PIN_PATCH_SM_CV_2));
-
-    /** we'll convert that 0 - 5V to 0 - 10 */
-    fine_tune *= 2;
+    float fine_tune = patch.GetAdcValue(1) * 10.f;
 
     /** Convert those values from midi notes to frequency */
     float freq_a = mtof(coarse_tune + fine_tune);
 
     /** Our third control will detune the voices from each other (0 - 5V) */
-    float detune_amt = patch.AnalogReadToVolts(analogRead(PIN_PATCH_SM_CV_3));
-
-    /** We'll need to convert that to 0 - 1 */
-    detune_amt /= 5;
+    float detune_amt = patch.GetAdcValue(2);
 
     /**  Detuning each of the other oscillators by upto 5% of the primary
    * frequency */
