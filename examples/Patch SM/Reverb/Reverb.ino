@@ -2,6 +2,13 @@
 
 author: beserge
 
+Reverb example for the Daisy Patch SM.
+Controls 1 - 4 map to reverb time, color, dry level, and send amount.
+
+To test this, connect pots to CV1 - CV4 on your Patch SM, and connect jacks to the audio IO.
+Check the figures from the Patch SM datasheet for help connecting peripherals.
+You can also use the patch.Init() as is.
+
 */
 
 #include "DaisyDuino.h"
@@ -29,11 +36,8 @@ ReverbSc reverb;
  */
 void AudioCallback(float**  in, float** out, size_t size)
 {
-    /** First we'll tell the hardware to process the 8 analog inputs */
-    patch.ProcessAnalogControls();
-
     /** The first control will set the reverb time */
-    float cv_read = patch.AnalogReadToVolts(analogRead(PIN_PATCH_SM_CV_1)) * .2;
+    float cv_read = patch.controls[0].Process();
     float rev_time = 0.3 + (0.67 * cv_read);
     reverb.SetFeedback(rev_time);
 
@@ -43,7 +47,7 @@ void AudioCallback(float**  in, float** out, size_t size)
      */
     const float kDampFreqMin = log(1000.f);
     const float kDampFreqMax = log(19000.f);
-    float       damp_control = patch.AnalogReadToVolts(analogRead(PIN_PATCH_SM_CV_2)) * .2;
+    float       damp_control = patch.controls[1].Process();
     float       damping
         = exp(kDampFreqMin + (damp_control * (kDampFreqMax - kDampFreqMin)));
     reverb.SetLpFreq(damping);
@@ -53,11 +57,10 @@ void AudioCallback(float**  in, float** out, size_t size)
    * dry amount and the effects send amount. */
 
     /** The third control will be the dry level going to the output */
-    float inlevel = patch.AnalogReadToVolts(analogRead(PIN_PATCH_SM_CV_1)) * .2;
+    float inlevel = patch.controls[2].Process();
 
-    /** The fourth controll will control how much of the input is sent to the
-   * reverb */
-    float sendamt = patch.AnalogReadToVolts(analogRead(PIN_PATCH_SM_CV_1)) * .2;
+    /** The fourth control will control how much of the input is sent to the reverb */
+    float sendamt = patch.controls[3].Process();
 
 
     /** This loop will allow us to process the individual samples of audio */
