@@ -26,6 +26,9 @@ void DaisyHardware::Init(float control_update_rate, DaisyDuinoDevice device) {
   case DAISY_PATCH_SM:
     InitPatchSM(control_update_rate);
     break;
+  case DAISY_PETAL_SM:
+    InitPetalSM(control_update_rate);
+    break;
   default:
     break;
   }
@@ -168,6 +171,25 @@ void DaisyHardware::InitPatchSM(float control_update_rate) {
   pinMode(PIN_PATCH_SM_GATE_OUT_1, OUTPUT);
   pinMode(PIN_PATCH_SM_GATE_OUT_2, OUTPUT);
   #endif
+}
+
+void DaisyHardware::InitPetalSM(float control_update_rate) {
+  num_channels = 2;
+  numControls = 6;
+  numSwitches = 2; // 2 footswitches
+  numToggles = 3; // 3 toggle switches
+  numLeds = 6;
+
+  controls[0].Init(PIN_PETAL_SM_POT_1, control_update_rate);
+  controls[1].Init(PIN_PETAL_SM_POT_2, control_update_rate);
+  controls[2].Init(PIN_PETAL_SM_POT_3, control_update_rate);
+  controls[3].Init(PIN_PETAL_SM_POT_4, control_update_rate);
+  controls[4].Init(PIN_PETAL_SM_POT_5, control_update_rate);
+  controls[5].Init(PIN_PETAL_SM_POT_6, control_update_rate);
+
+  toggles[0].Init(PIN_PETAL_SM_TOGGLE_1, PIN_PETAL_SM_TOGGLE_1B);
+  toggles[2].Init(PIN_PETAL_SM_TOGGLE_2A, PIN_PETAL_SM_TOGGLE_2B);
+  toggles[1].Init(PIN_PETAL_SM_TOGGLE_3A, PIN_PETAL_SM_TOGGLE_3B);
 }
 
 float DaisyHardware::GetKnobValue(uint8_t idx) {
