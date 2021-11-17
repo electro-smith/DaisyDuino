@@ -51,11 +51,9 @@ public:
   AnalogControl controls[12];
   AnalogControl cv[4]; // for use with field
 
-  //  Switch* switches = buttons; //these compile, but don't actually work....
-  //  AnalogControl* knobs = controls;
   Switch3 toggles[3]; // used with petal SM
   Encoder encoder;
-  Led leds[2];
+  Led leds[5];
   GateIn gateIns[2];
   AnalogControl expression;
   LedDriverPca9685<2, true> led_driver_; // public for now

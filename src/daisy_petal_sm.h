@@ -9,6 +9,7 @@
 #define PIN_PETAL_SM_LED_2 14 // B7
 #define PIN_PETAL_SM_LED_3 7 // G10
 #define PIN_PETAL_SM_LED_4_R PIN_A7 // A5
+#define PIN_PETAL_SM_LED_4_G 0 // B6 TODO
 #define PIN_PETAL_SM_LED_4_B 0 // D7 TODO
 #define PIN_PETAL_SM_LED_5 0 // G14 TODO
 
@@ -25,4 +26,3 @@
 #define PIN_PETAL_SM_EXPRESSION PIN_A0 // C0
 
 #define PIN_PETAL_SM_RELAY 0 // G13 TODO
-

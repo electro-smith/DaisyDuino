@@ -190,6 +190,19 @@ void DaisyHardware::InitPetalSM(float control_update_rate) {
   toggles[0].Init(PIN_PETAL_SM_TOGGLE_1, PIN_PETAL_SM_TOGGLE_1B);
   toggles[2].Init(PIN_PETAL_SM_TOGGLE_2A, PIN_PETAL_SM_TOGGLE_2B);
   toggles[1].Init(PIN_PETAL_SM_TOGGLE_3A, PIN_PETAL_SM_TOGGLE_3B);
+
+  leds[0].Init(PIN_PETAL_SM_LED_1);
+  leds[1].Init(PIN_PETAL_SM_LED_2);
+  leds[2].Init(PIN_PETAL_SM_LED_3);
+  leds[3].Init(PIN_PETAL_SM_LED_4_R, PIN_PETAL_SM_LED_4_G, PIN_PETAL_SM_LED_4_B);
+  leds[4].Init(PIN_PETAL_SM_LED_5);
+
+  buttons[0].Init(control_update_rate, true, PIN_PETAL_SM_SWITCH_1, INPUT_PULLUP);
+  buttons[1].Init(control_update_rate, true, PIN_PETAL_SM_SWITCH_2, INPUT_PULLUP);
+
+  expression.Init(PIN_PETAL_SM_EXPRESSION, control_update_rate);
+
+  pinMode(PIN_PETAL_SM_RELAY, OUTPUT);
 }
 
 float DaisyHardware::GetKnobValue(uint8_t idx) {
@@ -218,7 +231,7 @@ void DaisyHardware::ProcessAnalogControls() {
     controls[i].Process();
   }
 
-  if (device_ == DAISY_PETAL) {
+  if (device_ == DAISY_PETAL || device_ == DAISY_PETAL_SM) {
     expression.Process();
   }
 }
