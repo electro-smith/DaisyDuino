@@ -22,6 +22,7 @@
 #include "utility/parameter.h"
 #include "utility/sr_4021.h"
 #include "utility/switch.h"
+#include "utility/switch3.h"
 
 #define OUT_L out[0]
 #define OUT_R out[1]
