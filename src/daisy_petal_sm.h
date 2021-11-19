@@ -1,15 +1,15 @@
 #define PIN_PETAL_SM_POT_1 PIN_A1 // A3
 #define PIN_PETAL_SM_POT_2 PIN_A4 // A6
 #define PIN_PETAL_SM_POT_3 PIN_A2 // B1
-#define PIN_PETAL_SM_POT_4 PIN_A11 // A2
+#define PIN_PETAL_SM_POT_4 PIN_A6 // A2
 #define PIN_PETAL_SM_POT_5 PIN_A3 // A7
-#define PIN_PETAL_SM_POT_6 PIN_A6 // C4
+#define PIN_PETAL_SM_POT_6 PIN_A5 // C4
 
 #define PIN_PETAL_SM_LED_1 10 // B5
 #define PIN_PETAL_SM_LED_2 14 // B7
 #define PIN_PETAL_SM_LED_3 7 // G10
-#define PIN_PETAL_SM_LED_4_R PIN_A7 // A5
-#define PIN_PETAL_SM_LED_4_G 0 // B6 TODO
+#define PIN_PETAL_SM_LED_4_R 22 // A5
+#define PIN_PETAL_SM_LED_4_G 13 // B6
 #define PIN_PETAL_SM_LED_4_B 0 // D7 TODO
 #define PIN_PETAL_SM_LED_5 0 // G14 TODO
 

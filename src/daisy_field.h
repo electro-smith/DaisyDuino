@@ -18,8 +18,16 @@
 
 #define PIN_FIELD_ADC_CV_1 A2
 #define PIN_FIELD_ADC_CV_2 A3
+
+#ifdef ARDUINO_DAISY_SEED // these pins are incompatible with the petal_sm variant...
 #define PIN_FIELD_ADC_CV_4 A9 // Jumped on Rev2 from 22
 #define PIN_FIELD_ADC_CV_3 A10 // Jumped on Rev2 from 23
+
+#else // dummy defines to make the compiler happy
+#define PIN_FIELD_ADC_CV_4 PNUM_NOT_DEFINED
+#define PIN_FIELD_ADC_CV_3 PNUM_NOT_DEFINED
+
+#endif
 
 #define PIN_FIELD_MUX_SEL_2 19
 #define PIN_FIELD_MUX_SEL_1 20
