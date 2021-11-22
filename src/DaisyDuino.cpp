@@ -202,7 +202,8 @@ void DaisyHardware::InitPetalSM(float control_update_rate) {
 
   expression.Init(PIN_PETAL_SM_EXPRESSION, control_update_rate);
 
-  pinMode(PIN_PETAL_SM_RELAY, OUTPUT);
+  pinMode(PIN_PETAL_SM_RELAY_1, OUTPUT);
+  pinMode(PIN_PETAL_SM_RELAY_2, OUTPUT);
 }
 
 float DaisyHardware::GetKnobValue(uint8_t idx) {
