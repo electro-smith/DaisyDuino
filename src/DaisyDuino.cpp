@@ -188,8 +188,8 @@ void DaisyHardware::InitPetalSM(float control_update_rate) {
   controls[5].Init(PIN_PETAL_SM_POT_6, control_update_rate);
 
   toggles[0].Init(PIN_PETAL_SM_TOGGLE_1A, PIN_PETAL_SM_TOGGLE_1B);
-  toggles[2].Init(PIN_PETAL_SM_TOGGLE_2A, PIN_PETAL_SM_TOGGLE_2B);
-  toggles[1].Init(PIN_PETAL_SM_TOGGLE_3A, PIN_PETAL_SM_TOGGLE_3B);
+  toggles[1].Init(PIN_PETAL_SM_TOGGLE_2A, PIN_PETAL_SM_TOGGLE_2B);
+  toggles[2].Init(PIN_PETAL_SM_TOGGLE_3A, PIN_PETAL_SM_TOGGLE_3B);
 
   leds[0].Init(PIN_PETAL_SM_LED_1);
   leds[1].Init(PIN_PETAL_SM_LED_2);

@@ -83,10 +83,21 @@ DaisyHardware AudioClass::init(DaisyDuinoDevice device,
   sai_handle[0].Init(sai_config[0]);
 
   // codec init over i2c for both sm devices
-  if(_device == DAISY_PATCH_SM || _device == DAISY_PETAL_SM){
+  if(_device == DAISY_PATCH_SM){
     Pcm3060 codec;
-    codec.Init();
+    TwoWire wire;
+    wire.setSDA(PB_11);
+    wire.setSCL(PB_10);
+    codec.Init(&wire);
   }
+  else if(_device == DAISY_PETAL_SM){
+    Pcm3060 codec;
+    TwoWire wire;
+    wire.setSDA(PB_9);
+    wire.setSCL(PB_8);
+    codec.Init(&wire);
+  }
+
 
   // SAI2
   if (_device == DAISY_PATCH) {
