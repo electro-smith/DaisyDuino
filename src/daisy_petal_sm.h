@@ -8,7 +8,7 @@
 #define PIN_PETAL_SM_LED_1 10 // B5
 #define PIN_PETAL_SM_LED_2 14 // B7
 #define PIN_PETAL_SM_LED_3 7 // G10
-#define PIN_PETAL_SM_LED_4_R 22 // A5
+#define PIN_PETAL_SM_LED_4_R 23 // A5
 #define PIN_PETAL_SM_LED_4_G 13 // B6
 #define PIN_PETAL_SM_LED_4_B 32 // D7
 #define PIN_PETAL_SM_LED_5 33 // G14
