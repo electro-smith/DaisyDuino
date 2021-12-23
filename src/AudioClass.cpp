@@ -9,6 +9,46 @@
 
 #include <Wire.h>
 
+//*** I2C ***
+// This is a workaround to support a missing pin within the DaisySeed variant
+#ifdef ARDUINO_DAISY_SEED
+#ifdef HAL_I2C_MODULE_ENABLED
+const PinMap PinMap_I2C_SDA[] = {
+  {PB_7_ALT1, I2C1, STM_PIN_DATA(STM_MODE_AF_OD, GPIO_NOPULL, GPIO_AF4_I2C1)},
+  {PB_7,      I2C4, STM_PIN_DATA(STM_MODE_AF_OD, GPIO_NOPULL, GPIO_AF6_I2C4)},
+  {PB_9,      I2C1, STM_PIN_DATA(STM_MODE_AF_OD, GPIO_NOPULL, GPIO_AF4_I2C1)},
+  {PB_9_ALT1, I2C4, STM_PIN_DATA(STM_MODE_AF_OD, GPIO_NOPULL, GPIO_AF6_I2C4)},
+  {PB_11,     I2C2, STM_PIN_DATA(STM_MODE_AF_OD, GPIO_NOPULL, GPIO_AF4_I2C2)},
+  // {PC_9,      I2C3, STM_PIN_DATA(STM_MODE_AF_OD, GPIO_NOPULL, GPIO_AF4_I2C3)},
+  // {PD_13,     I2C4, STM_PIN_DATA(STM_MODE_AF_OD, GPIO_NOPULL, GPIO_AF4_I2C4)},
+  // {PF_0,      I2C2, STM_PIN_DATA(STM_MODE_AF_OD, GPIO_NOPULL, GPIO_AF4_I2C2)},
+  // {PF_15,     I2C4, STM_PIN_DATA(STM_MODE_AF_OD, GPIO_NOPULL, GPIO_AF4_I2C4)},
+  // {PH_5,      I2C2, STM_PIN_DATA(STM_MODE_AF_OD, GPIO_NOPULL, GPIO_AF4_I2C2)},
+  // {PH_8,      I2C3, STM_PIN_DATA(STM_MODE_AF_OD, GPIO_NOPULL, GPIO_AF4_I2C3)},
+  // {PH_12,     I2C4, STM_PIN_DATA(STM_MODE_AF_OD, GPIO_NOPULL, GPIO_AF4_I2C4)},
+  {NC,        NP,   0}
+};
+#endif //ifdef HAL_I2C_MODULE_ENABLED
+
+#ifdef HAL_I2C_MODULE_ENABLED
+const PinMap PinMap_I2C_SCL[] = {
+  // {PA_8,      I2C3, STM_PIN_DATA(STM_MODE_AF_OD, GPIO_NOPULL, GPIO_AF4_I2C3)},
+  {PB_6_ALT1, I2C1, STM_PIN_DATA(STM_MODE_AF_OD, GPIO_NOPULL, GPIO_AF4_I2C1)},
+  {PB_6,      I2C4, STM_PIN_DATA(STM_MODE_AF_OD, GPIO_NOPULL, GPIO_AF6_I2C4)},
+  {PB_8,      I2C1, STM_PIN_DATA(STM_MODE_AF_OD, GPIO_NOPULL, GPIO_AF4_I2C1)},
+  {PB_8_ALT1, I2C4, STM_PIN_DATA(STM_MODE_AF_OD, GPIO_NOPULL, GPIO_AF6_I2C4)},
+  // {PB_10,     I2C2, STM_PIN_DATA(STM_MODE_AF_OD, GPIO_NOPULL, GPIO_AF4_I2C2)},
+  // {PD_12,     I2C4, STM_PIN_DATA(STM_MODE_AF_OD, GPIO_NOPULL, GPIO_AF4_I2C4)},
+  // {PF_1,      I2C2, STM_PIN_DATA(STM_MODE_AF_OD, GPIO_NOPULL, GPIO_AF4_I2C2)},
+  // {PF_14,     I2C4, STM_PIN_DATA(STM_MODE_AF_OD, GPIO_NOPULL, GPIO_AF4_I2C4)},
+  {PH_4,      I2C2, STM_PIN_DATA(STM_MODE_AF_OD, GPIO_NOPULL, GPIO_AF4_I2C2)},
+  // {PH_7,      I2C3, STM_PIN_DATA(STM_MODE_AF_OD, GPIO_NOPULL, GPIO_AF4_I2C3)},
+  // {PH_11,     I2C4, STM_PIN_DATA(STM_MODE_AF_OD, GPIO_NOPULL, GPIO_AF4_I2C4)},
+  {NC,        NP,   0}
+};
+#endif //ifdef HAL_I2C_MODULE_ENABLED
+#endif // ifdef ARDUINO_DAISY_SEED
+
 using namespace daisy;
 
 dsy_gpio ak4556_reset_pin;
@@ -81,15 +121,10 @@ DaisyHardware AudioClass::init(DaisyDuinoDevice device,
       sai_config[0].a_dir         = SaiHandle::Config::Direction::RECEIVE;
       sai_config[0].b_dir         = SaiHandle::Config::Direction::TRANSMIT;
 
-      TwoWire wire;
-      wire.setSDA(27); // PB11
-      wire.setSCL(114); // PH4
-      wire.setClock(400000);
-
       Wm8731::Config codec_cfg;
       codec_cfg.Defaults();
       Wm8731 codec;
-      codec.Init(codec_cfg, &wire);
+      codec.Init(codec_cfg);
     }
     break;
 
@@ -105,6 +140,7 @@ DaisyHardware AudioClass::init(DaisyDuinoDevice device,
     }
     break;
   }
+
   #endif
 
   //patch SM flips these
