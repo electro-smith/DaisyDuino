@@ -71,8 +71,6 @@ DaisyHardware AudioClass::init(DaisyDuinoDevice device,
   sai_config[0].pin_config.sa = {DSY_GPIOE, 6};
   sai_config[0].pin_config.sb = {DSY_GPIOE, 3};
 
-
-
   #ifdef ARDUINO_DAISY_SEED
   // which seed version are we on?
   switch(BoardVersionCheck())
@@ -110,10 +108,10 @@ DaisyHardware AudioClass::init(DaisyDuinoDevice device,
   #endif
 
   //patch SM flips these
-  #ifdef ARDUINO_DAISY_PATCH_SM
+  if(_device == DAISY_PATCH_SM){
     sai_config[0].a_dir = SaiHandle::Config::Direction::RECEIVE;
     sai_config[0].b_dir = SaiHandle::Config::Direction::TRANSMIT;
-  #endif
+  }
 
   // Then Initialize
   SaiHandle sai_handle[2];

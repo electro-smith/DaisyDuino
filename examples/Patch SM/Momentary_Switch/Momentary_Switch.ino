@@ -1,3 +1,15 @@
+/** Momentary_Switch.ino
+
+author: beserge
+
+This example shows how to use a momentary switch with the Patch SM.
+When the button is held down the onboard led will be lit up.
+
+To test this, connect a momentary switch to the Patch SM's pin B7.
+Check the figures from the Patch SM datasheet for help connecting peripherals.
+You can also use the momentary switch on the patch.Init()
+*/
+
 #include "DaisyDuino.h"
 
 DaisyHardware patch;

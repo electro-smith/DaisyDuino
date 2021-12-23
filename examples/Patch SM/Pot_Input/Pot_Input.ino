@@ -1,3 +1,17 @@
+/* Pot_Input.ino
+
+author: beserge
+
+This example shows how to use a potentiometer with the Patch SM.
+Turning the pot above its halfway point turns on the builtin led.
+Turning the pot below its halfway point turns off the builtin led.
+
+To test this, connect a pot to pin CV 1 on your Patch SM.
+Check the figures from the Patch SM datasheet for help connecting peripherals.
+You can also use the CV_1 pot on the patch.Init()
+
+*/
+
 #include "DaisyDuino.h"
 
 DaisyHardware patch;

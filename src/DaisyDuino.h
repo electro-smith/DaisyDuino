@@ -75,6 +75,14 @@ public:
     analogWrite(pin, VoltsToAnalogWrite(voltage));
   }
 
+  //Gets the value from a control
+  float GetAdcValue(size_t idx){
+    if(idx < numControls){
+      return controls[idx].Value();
+    }
+    return 0.f;
+  }
+
   // set ring led color. For use with daisy petal
   void SetRingLed(uint8_t idx, float r, float g, float b);
 
