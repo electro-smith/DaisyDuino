@@ -39,7 +39,7 @@ enum DaisyDuinoDevice : short {
   DAISY_LAST,
 };
 
-class AudioClass; /// forward declaration
+class AudioClass; // forward declaration
 
 class DaisyHardware {
 public:

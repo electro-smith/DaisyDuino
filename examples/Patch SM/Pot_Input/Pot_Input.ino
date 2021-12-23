@@ -11,6 +11,7 @@ Check the figures from the Patch SM datasheet for help connecting peripherals.
 You can also use the CV_1 pot on the patch.Init()
 
 */
+
 #include "DaisyDuino.h"
 
 DaisyHardware patch;
