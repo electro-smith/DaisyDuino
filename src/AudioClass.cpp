@@ -71,9 +71,21 @@ DaisyHardware AudioClass::init(DaisyDuinoDevice device,
   sai_config[0].pin_config.sck = {DSY_GPIOE, 5};
   sai_config[0].pin_config.sa = {DSY_GPIOE, 6};
   sai_config[0].pin_config.sb = {DSY_GPIOE, 3};
+
+  //patch SM flips these
+  if(_device == DAISY_PATCH_SM){
+    sai_config[0].a_dir = SaiHandle::Config::Direction::RECEIVE;
+    sai_config[0].b_dir = SaiHandle::Config::Direction::TRANSMIT;
+  }
+
   // Then Initialize
   SaiHandle sai_handle[2];
   sai_handle[0].Init(sai_config[0]);
+
+  if(_device == DAISY_PATCH_SM){
+    Pcm3060 codec;
+    codec.Init();
+  }
 
   // SAI2
   if (_device == DAISY_PATCH) {
