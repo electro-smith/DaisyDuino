@@ -89,6 +89,9 @@ Wm8731::Result Wm8731::Init(const Wm8731::Config &config, TwoWire* wire)
 {
     wire_ = wire;
     cfg_ = config;
+    wire_->setClock(400000);
+    wire_->setSDA(PB_11);
+    wire_->setSCL(PH_4);
 
     wire_->begin();
 
