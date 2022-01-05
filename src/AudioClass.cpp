@@ -54,6 +54,7 @@ using namespace daisy;
 dsy_gpio ak4556_reset_pin;
 
 AudioClass DAISY;
+TwoWire daisy_i2c2;
 
 void AudioClass::ConfigureSdram() {
   dsy_gpio_pin *pin_group;
@@ -124,7 +125,7 @@ DaisyHardware AudioClass::init(DaisyDuinoDevice device,
       Wm8731::Config codec_cfg;
       codec_cfg.Defaults();
       Wm8731 codec;
-      codec.Init(codec_cfg);
+      codec.Init(codec_cfg, &daisy_i2c2);
     }
     break;
 
@@ -155,7 +156,7 @@ DaisyHardware AudioClass::init(DaisyDuinoDevice device,
 
   if(_device == DAISY_PATCH_SM){
     Pcm3060 codec;
-    codec.Init();
+    codec.Init(&daisy_i2c2);
   }
 
   // SAI2
