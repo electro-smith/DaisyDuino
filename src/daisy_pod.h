@@ -1,3 +1,4 @@
+#ifdef ARDUINO_DAISY_SEED
 #define PIN_POD_POT_1 A6
 #define PIN_POD_POT_2 A0
 #define POD_NUM_POTS 2
@@ -17,3 +18,4 @@
 #define PIN_POD_ENC_A 26
 #define PIN_POD_ENC_B 25
 #define PIN_POD_ENC_CLICK 13
+#endif

@@ -112,7 +112,6 @@ DaisyHardware AudioClass::init(DaisyDuinoDevice device,
   sai_config[0].pin_config.sa = {DSY_GPIOE, 6};
   sai_config[0].pin_config.sb = {DSY_GPIOE, 3};
 
-  #ifdef ARDUINO_DAISY_SEED
   // which seed version are we on?
   switch(BoardVersionCheck())
   {
@@ -130,7 +129,6 @@ DaisyHardware AudioClass::init(DaisyDuinoDevice device,
     break;
 
     case BoardVersion::DAISY_SEED:
-    default:
     {
       // Data Line Directions
       sai_config[0].a_dir         = SaiHandle::Config::Direction::TRANSMIT;
@@ -140,14 +138,14 @@ DaisyHardware AudioClass::init(DaisyDuinoDevice device,
       codec.Init({DSY_GPIOB, 11});
     }
     break;
-  }
-
-  #endif
-
-  //patch SM flips these
-  if(_device == DAISY_PATCH_SM){
-    sai_config[0].a_dir = SaiHandle::Config::Direction::RECEIVE;
-    sai_config[0].b_dir = SaiHandle::Config::Direction::TRANSMIT;
+    case BoardVersion::DAISY_SM:
+    {
+      sai_config[0].a_dir = SaiHandle::Config::Direction::RECEIVE;
+      sai_config[0].b_dir = SaiHandle::Config::Direction::TRANSMIT;
+    }
+    break;
+    default:
+    break;
   }
 
   // Then Initialize
@@ -156,6 +154,15 @@ DaisyHardware AudioClass::init(DaisyDuinoDevice device,
 
   if(_device == DAISY_PATCH_SM){
     Pcm3060 codec;
+    daisy_i2c2.setSDA(PB_11);
+    daisy_i2c2.setSCL(PB_10);
+    codec.Init(&daisy_i2c2);
+  }
+  else if(_device == DAISY_PETAL_SM)
+  {
+    Pcm3060 codec;
+    daisy_i2c2.setSDA(PB_9);
+    daisy_i2c2.setSCL(PB_8);
     codec.Init(&daisy_i2c2);
   }
 
@@ -268,6 +275,7 @@ AudioClass::BoardVersion AudioClass::BoardVersionCheck(){
      *  * PD4 tied to gnd reserved for future hardware
      */
 
+    #ifdef ARDUINO_DAISY_SEED
     pinMode(PD3, INPUT_PULLUP);
 
     if(!digitalRead(PD3)){
@@ -276,4 +284,6 @@ AudioClass::BoardVersion AudioClass::BoardVersionCheck(){
     else{
         return BoardVersion::DAISY_SEED;
     }
+    #endif
+    return BoardVersion::DAISY_SM;
 }

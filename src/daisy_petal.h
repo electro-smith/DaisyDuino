@@ -1,3 +1,4 @@
+#ifdef ARDUINO_DAISY_SEED
 #include "utility/led_driver.h"
 
 #define PIN_PETAL_SWITCH_1 8
@@ -64,4 +65,4 @@ enum LedOrder
     PETAL_LED_FAKE4,
     PETAL_LED_LAST,
 };
-
+#endif
