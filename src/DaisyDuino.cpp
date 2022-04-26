@@ -183,7 +183,7 @@ void DaisyHardware::InitPatchSM(float control_update_rate) {
 
 void DaisyHardware::InitPetalSM(float control_update_rate) {
   #ifdef ARDUINO_DAISY_PETAL_SM
-  num_channels = 2;
+  num_channels = 1;
   numControls = 6;
   numSwitches = 2; // 2 footswitches
   numToggles = 3; // 3 toggle switches
