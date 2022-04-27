@@ -48,9 +48,8 @@ Pcm3060::Result Pcm3060::Init(TwoWire* wire)
 {
     _wire = wire;
 
-    _wire->setClock(400000);
-
     _wire->begin();
+    _wire->setClock(400000L);
 
     // TODO: bit 1 can be set via hardware and should be configurable.
     dev_addr_ = 0x8c;
@@ -62,6 +61,7 @@ Pcm3060::Result Pcm3060::Init(TwoWire* wire)
     if(ReadRegister(kAddrRegSysCtrl, &sysreg) != Result::OK)
         return Result::ERR;
     sysreg &= ~(kMrstBitMask);
+    sysreg = 0x40;
     if(WriteRegister(kAddrRegSysCtrl, sysreg) != Result::OK)
         return Result::ERR;
     System::Delay(4);
@@ -70,6 +70,7 @@ Pcm3060::Result Pcm3060::Init(TwoWire* wire)
     if(ReadRegister(kAddrRegSysCtrl, &sysreg) != Result::OK)
         return Result::ERR;
     sysreg &= ~(kSrstBitMask);
+    sysreg = 0xB0;
     if(WriteRegister(kAddrRegSysCtrl, sysreg) != Result::OK)
         return Result::ERR;
     System::Delay(4);
@@ -82,6 +83,8 @@ Pcm3060::Result Pcm3060::Init(TwoWire* wire)
         return Result::ERR;
     dac_ctrl |= (kFmtBitMask & 1);
     adc_ctrl |= (kFmtBitMask & 1);
+    dac_ctrl = 0x01;
+    adc_ctrl = 0x01;
     if(WriteRegister(kAddrRegDacCtrl1, dac_ctrl) != Result::OK)
         return Result::ERR;
     if(WriteRegister(kAddrRegAdcCtrl1, adc_ctrl) != Result::OK)
@@ -92,6 +95,7 @@ Pcm3060::Result Pcm3060::Init(TwoWire* wire)
         return Result::ERR;
     sysreg &= ~(kAdcPsvBitMask);
     sysreg &= ~(kDacPsvBitMask);
+    sysreg = 0xC0;
     if(WriteRegister(kAddrRegSysCtrl, sysreg) != Result::OK)
         return Result::ERR;
 
