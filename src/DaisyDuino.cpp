@@ -196,23 +196,22 @@ void DaisyHardware::InitPetalSM(float control_update_rate) {
   controls[4].Init(PIN_PETAL_SM_POT_5, control_update_rate);
   controls[5].Init(PIN_PETAL_SM_POT_6, control_update_rate);
 
-  toggles[0].Init(PIN_PETAL_SM_TOGGLE_1A, PIN_PETAL_SM_TOGGLE_1B);
-  toggles[1].Init(PIN_PETAL_SM_TOGGLE_2A, PIN_PETAL_SM_TOGGLE_2B);
-  toggles[2].Init(PIN_PETAL_SM_TOGGLE_3A, PIN_PETAL_SM_TOGGLE_3B);
+  toggles[0].Init(PIN_PETAL_SM_TOGGLE_1B, PIN_PETAL_SM_TOGGLE_1A);
+  toggles[1].Init(PIN_PETAL_SM_TOGGLE_2B, PIN_PETAL_SM_TOGGLE_2A);
+  toggles[2].Init(PIN_PETAL_SM_TOGGLE_3B, PIN_PETAL_SM_TOGGLE_3A);
 
-  leds[0].Init(PIN_PETAL_SM_LED_1);
-  leds[1].Init(PIN_PETAL_SM_LED_2);
-  leds[2].Init(PIN_PETAL_SM_LED_3);
-  leds[3].Init(PIN_PETAL_SM_LED_4_R, PIN_PETAL_SM_LED_4_G, PIN_PETAL_SM_LED_4_B);
-  leds[4].Init(PIN_PETAL_SM_LED_5);
+  leds[0].Init(PIN_PETAL_SM_LED_1_R, PIN_PETAL_SM_LED_1_G, PIN_PETAL_SM_LED_1_B);
+  leds[1].Init(PIN_PETAL_SM_LED_2, false);
+  leds[2].Init(PIN_PETAL_SM_LED_3_R, PIN_PETAL_SM_LED_3_G, PIN_PETAL_SM_LED_3_B);
+  leds[3].Init(PIN_PETAL_SM_LED_4, false);
+  leds[4].Init(PIN_PETAL_SM_LED_5, false);
 
   buttons[0].Init(control_update_rate, true, PIN_PETAL_SM_SWITCH_1, INPUT_PULLUP);
   buttons[1].Init(control_update_rate, true, PIN_PETAL_SM_SWITCH_2, INPUT_PULLUP);
 
   expression.Init(PIN_PETAL_SM_EXPRESSION, control_update_rate);
 
-  pinMode(PIN_PETAL_SM_RELAY_1, OUTPUT);
-  pinMode(PIN_PETAL_SM_RELAY_2, OUTPUT);
+  pinMode(PIN_PETAL_SM_RELAY, OUTPUT);
   #endif
 }
 

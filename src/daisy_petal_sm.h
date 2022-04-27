@@ -6,13 +6,15 @@
 #define PIN_PETAL_SM_POT_5 PIN_A5 // A7
 #define PIN_PETAL_SM_POT_6 PIN_A6 // C4
 
-#define PIN_PETAL_SM_LED_1 10 // B5
-#define PIN_PETAL_SM_LED_2 14 // B7
-#define PIN_PETAL_SM_LED_3 7 // G10
-#define PIN_PETAL_SM_LED_4_R 23 // A5
-#define PIN_PETAL_SM_LED_4_G 13 // B6
-#define PIN_PETAL_SM_LED_4_B 32 // D7
-#define PIN_PETAL_SM_LED_5 33 // G14
+#define PIN_PETAL_SM_LED_1_R 23 // A5
+#define PIN_PETAL_SM_LED_1_G 13 // B6
+#define PIN_PETAL_SM_LED_1_B 32 // D7
+#define PIN_PETAL_SM_LED_2 33 // G14
+#define PIN_PETAL_SM_LED_3_R 7 // G10
+#define PIN_PETAL_SM_LED_3_G 2 // C10
+#define PIN_PETAL_SM_LED_3_B 1 // C11
+#define PIN_PETAL_SM_LED_4 10 // B5
+#define PIN_PETAL_SM_LED_5 14 // B7
 
 #define PIN_PETAL_SM_TOGGLE_1A 9 // B4
 #define PIN_PETAL_SM_TOGGLE_1B 6 // C12
@@ -26,6 +28,5 @@
 
 #define PIN_PETAL_SM_EXPRESSION PIN_A0 // C0
 
-#define PIN_PETAL_SM_RELAY_1 37 // G13
-#define PIN_PETAL_SM_RELAY_2 2 // C10
+#define PIN_PETAL_SM_RELAY 37 // G13
 #endif
