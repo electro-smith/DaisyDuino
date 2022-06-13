@@ -26,12 +26,16 @@ void DaisyHardware::Init(float control_update_rate, DaisyDuinoDevice device) {
   case DAISY_PATCH_SM:
     InitPatchSM(control_update_rate);
     break;
+  case DAISY_PETAL_SM:
+    InitPetalSM(control_update_rate);
+    break;
   default:
     break;
   }
 }
 
 void DaisyHardware::InitPod(float control_update_rate) {
+  #ifdef ARDUINO_DAISY_SEED
   buttons[0].Init(control_update_rate, true, PIN_POD_SWITCH_1, INPUT_PULLUP);
   buttons[1].Init(control_update_rate, true, PIN_POD_SWITCH_2, INPUT_PULLUP);
 
@@ -47,9 +51,11 @@ void DaisyHardware::InitPod(float control_update_rate) {
   controls[1].Init(PIN_POD_POT_2, control_update_rate);
 
   numSwitches = numLeds = numControls = 2;
+  #endif
 }
 
 void DaisyHardware::InitPatch(float control_update_rate) {
+  #ifdef ARDUINO_DAISY_SEED
   encoder.Init(control_update_rate, PIN_PATCH_ENC_A, PIN_PATCH_ENC_B,
                PIN_PATCH_ENC_CLICK, INPUT_PULLUP, INPUT_PULLUP, INPUT_PULLUP);
 
@@ -68,9 +74,11 @@ void DaisyHardware::InitPatch(float control_update_rate) {
   pinMode(PIN_PATCH_CV_1, OUTPUT);
   pinMode(PIN_PATCH_CV_1, OUTPUT);
   pinMode(PIN_PATCH_GATE_OUT, OUTPUT);
+  #endif
 }
 
 void DaisyHardware::InitPetal(float control_update_rate) {
+  #ifdef ARDUINO_DAISY_SEED
   numSwitches = 7;
   numLeds = 12;
   num_channels = 2;
@@ -101,9 +109,11 @@ void DaisyHardware::InitPetal(float control_update_rate) {
   buttons[4].Init(control_update_rate, true, PIN_PETAL_SWITCH_5, INPUT_PULLUP);
   buttons[5].Init(control_update_rate, true, PIN_PETAL_SWITCH_6, INPUT_PULLUP);
   buttons[6].Init(control_update_rate, true, PIN_PETAL_SWITCH_7, INPUT_PULLUP);
+  #endif
 }
 
 void DaisyHardware::InitField(float control_update_rate) {
+  #ifdef ARDUINO_DAISY_SEED
   numSwitches = 2;
   num_channels = 2;
 
@@ -138,6 +148,7 @@ void DaisyHardware::InitField(float control_update_rate) {
   //cv outs
   pinMode(PIN_FIELD_DAC_1, OUTPUT);
   pinMode(PIN_FIELD_DAC_2, OUTPUT);
+  #endif
 }
 
 void DaisyHardware::InitPatchSM(float control_update_rate) {
@@ -170,11 +181,47 @@ void DaisyHardware::InitPatchSM(float control_update_rate) {
   #endif
 }
 
+void DaisyHardware::InitPetalSM(float control_update_rate) {
+  #ifdef ARDUINO_DAISY_PETAL_SM
+  num_channels = 1;
+  numControls = 6;
+  numSwitches = 2; // 2 footswitches
+  numToggles = 3; // 3 toggle switches
+  numLeds = 6;
+
+  controls[0].Init(PIN_PETAL_SM_POT_1, control_update_rate);
+  controls[1].Init(PIN_PETAL_SM_POT_2, control_update_rate);
+  controls[2].Init(PIN_PETAL_SM_POT_3, control_update_rate);
+  controls[3].Init(PIN_PETAL_SM_POT_4, control_update_rate);
+  controls[4].Init(PIN_PETAL_SM_POT_5, control_update_rate);
+  controls[5].Init(PIN_PETAL_SM_POT_6, control_update_rate);
+
+  toggles[0].Init(PIN_PETAL_SM_TOGGLE_1B, PIN_PETAL_SM_TOGGLE_1A);
+  toggles[1].Init(PIN_PETAL_SM_TOGGLE_2B, PIN_PETAL_SM_TOGGLE_2A);
+  toggles[2].Init(PIN_PETAL_SM_TOGGLE_3B, PIN_PETAL_SM_TOGGLE_3A);
+
+  leds[0].Init(PIN_PETAL_SM_LED_1_R, PIN_PETAL_SM_LED_1_G, PIN_PETAL_SM_LED_1_B);
+  leds[1].Init(PIN_PETAL_SM_LED_2, false);
+  leds[2].Init(PIN_PETAL_SM_LED_3_R, PIN_PETAL_SM_LED_3_G, PIN_PETAL_SM_LED_3_B);
+  leds[3].Init(PIN_PETAL_SM_LED_4, false);
+  leds[4].Init(PIN_PETAL_SM_LED_5, false);
+
+  buttons[0].Init(control_update_rate, true, PIN_PETAL_SM_SWITCH_1, INPUT_PULLUP);
+  buttons[1].Init(control_update_rate, true, PIN_PETAL_SM_SWITCH_2, INPUT_PULLUP);
+
+  expression.Init(PIN_PETAL_SM_EXPRESSION, control_update_rate);
+
+  pinMode(PIN_PETAL_SM_RELAY, OUTPUT);
+  #endif
+}
+
 float DaisyHardware::GetKnobValue(uint8_t idx) {
+  #ifdef ARDUINO_DAISY_SEED
   uint8_t pots[8] = {0, 3, 1, 4, 2, 5, 6, 7};
   digitalWrite(PIN_FIELD_MUX_SEL_0, pots[idx] & 1);
   digitalWrite(PIN_FIELD_MUX_SEL_1, (pots[idx] & 2) >> 1);
   digitalWrite(PIN_FIELD_MUX_SEL_2, (pots[idx] & 4) >> 2);
+  #endif
 
   return controls[0].Process();
 }
@@ -196,7 +243,7 @@ void DaisyHardware::ProcessAnalogControls() {
     controls[i].Process();
   }
 
-  if (device_ == DAISY_PETAL) {
+  if (device_ == DAISY_PETAL || device_ == DAISY_PETAL_SM) {
     expression.Process();
   }
 }
@@ -233,6 +280,7 @@ void DaisyHardware::ProcessAllControls() {
 
 // petal led setters
 void DaisyHardware::SetRingLed(uint8_t idx, float r, float g, float b) {
+  #ifdef ARDUINO_DAISY_SEED
   if (idx < 0 || idx > 7 || device_ != DAISY_PETAL) {
     return; // bad idx or wrong board
   }
@@ -253,9 +301,11 @@ void DaisyHardware::SetRingLed(uint8_t idx, float r, float g, float b) {
   led_driver_.SetLed(r_addr[idx], r);
   led_driver_.SetLed(g_addr[idx], g);
   led_driver_.SetLed(b_addr[idx], b);
+  #endif
 }
 
 void DaisyHardware::SetFootswitchLed(uint8_t idx, float bright) {
+  #ifdef ARDUINO_DAISY_SEED
   if (idx < 0 || idx > 3 || device_ != DAISY_PETAL) {
     return;
   }
@@ -263,6 +313,7 @@ void DaisyHardware::SetFootswitchLed(uint8_t idx, float bright) {
   uint8_t fs_addr[4] = {PETAL_LED_FS_1, PETAL_LED_FS_2, PETAL_LED_FS_3,
                         PETAL_LED_FS_4};
   led_driver_.SetLed(fs_addr[idx], bright);
+  #endif
 }
 
 // field led setters

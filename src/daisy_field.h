@@ -1,3 +1,4 @@
+#ifdef ARDUINO_DAISY_SEED
 #include "utility/led_driver.h"
 
 #define PIN_FIELD_GATE_IN 0
@@ -67,3 +68,4 @@ enum
     FIELD_LED_KNOB_8, 
     FIELD_LED_LAST    
 };
+#endif

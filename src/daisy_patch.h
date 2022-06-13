@@ -1,3 +1,4 @@
+#ifdef ARDUINO_DAISY_SEED
 #define PIN_PATCH_ENC_CLICK 0
 #define PIN_PATCH_ENC_B 11
 #define PIN_PATCH_ENC_A 12
@@ -19,3 +20,4 @@
 
 #define PIN_PATCH_CV_1 23
 #define PIN_PATCH_CV_2 22
+#endif

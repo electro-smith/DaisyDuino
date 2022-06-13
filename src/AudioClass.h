@@ -94,6 +94,8 @@ class AudioClass
 				*  This is a pin-compatible version of the Daisy Seed
 				*  that uses the WM8731 codec instead of the AK4430 */
 			DAISY_SEED_1_1,
+			/** Not a Daisy Seed, but in fact a submodule of some sort **/
+			DAISY_SM,
 		};
 
 		BoardVersion BoardVersionCheck();

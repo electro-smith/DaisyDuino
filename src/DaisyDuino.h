@@ -12,6 +12,7 @@
 #include "daisy_petal.h"
 #include "daisy_pod.h"
 #include "daisy_patch_sm.h"
+#include "daisy_petal_sm.h"
 
 #include "utility/ctrl.h"
 #include "utility/encoder.h"
@@ -21,6 +22,7 @@
 #include "utility/parameter.h"
 #include "utility/sr_4021.h"
 #include "utility/switch.h"
+#include "utility/switch3.h"
 
 #define OUT_L out[0]
 #define OUT_R out[1]
@@ -36,6 +38,7 @@ enum DaisyDuinoDevice : short {
   DAISY_FIELD,
   DAISY_PATCH,
   DAISY_PATCH_SM,
+  DAISY_PETAL_SM,
   DAISY_LAST,
 };
 
@@ -51,14 +54,15 @@ public:
 
   //  Switch* switches = buttons; //these compile, but don't actually work....
   //  AnalogControl* knobs = controls;
+  Switch3 toggles[3];
   Encoder encoder;
-  Led leds[2];
+  Led leds[5];
   GateIn gateIns[2];
   AnalogControl expression;
   LedDriverPca9685<2, true> led_driver_; // public for now
 
   int num_channels;
-  int numSwitches, numLeds, numGates, numControls;
+  int numSwitches, numLeds, numGates, numControls, numToggles;
 
   void Init(float control_update_rate, DaisyDuinoDevice device);
 
@@ -128,6 +132,7 @@ private:
   void InitPetal(float control_update_rate);
   void InitField(float control_update_rate);
   void InitPatchSM(float control_update_rate);
+  void InitPetalSM(float control_update_rate);
 
   DaisyDuinoDevice device_;
 
