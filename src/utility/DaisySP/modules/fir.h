@@ -8,7 +8,7 @@
 #include <utility>
 
 #ifdef USE_ARM_DSP
-#include <arm_math.h> // required for platform-optimized version
+#include "arm_math.h" // required for platform-optimized version
 #endif
 
 /**   @brief FIR Filter implementation, generic and ARM CMSIS DSP based

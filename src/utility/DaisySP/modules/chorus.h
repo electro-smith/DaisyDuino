@@ -4,7 +4,7 @@
 #ifdef __cplusplus
 
 #include <stdint.h>
-#include "Utility/delayline.h"
+#include "delayline.h"
 
 /** @file chorus.h */
 
