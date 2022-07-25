@@ -4,7 +4,7 @@
 #ifdef __cplusplus
 
 #include <stdint.h>
-#include "delayline.h"
+#include "Utility/delayline.h"
 
 /** @file flanger.h */
 
@@ -49,7 +49,7 @@ class Flanger
     void SetDelay(float delay);
 
     /** Set the delay time in ms.
-        \param ms Delay time in ms.
+        \param ms Delay time in ms, .1 to 7 ms.
     */
     void SetDelayMs(float ms);
 

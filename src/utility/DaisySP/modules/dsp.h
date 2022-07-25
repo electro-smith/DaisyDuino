@@ -3,7 +3,10 @@
 #pragma once
 #ifndef DSY_CORE_DSP
 #define DSY_CORE_DSP
-#include <math.h>
+#include <cassert>
+#include <cstdint>
+#include <random>
+#include <cmath>
 
 /** PIs
 */
@@ -13,6 +16,7 @@
 #define DSY_MIN(in, mn) (in < mn ? in : mn)
 #define DSY_MAX(in, mx) (in > mx ? in : mx)
 #define DSY_CLAMP(in, mn, mx) (DSY_MIN(DSY_MAX(in, mn), mx))
+#define DSY_COUNTOF(_arr) (sizeof(_arr) / sizeof(_arr[0]))
 
 namespace daisysp
 {
@@ -133,6 +137,43 @@ inline void fonepole(float &out, float in, float coeff)
     out += coeff * (in - out);
 }
 
+/** Curves to use with the fmap function */
+enum class Mapping
+{
+    LINEAR,
+    EXP,
+    LOG,
+};
+
+/** Maps a float between a specified range, using a specified curve. 
+ * 
+ *  \param in a value between 0 to 1 that will be mapped to the new range.
+ *  \param min the new minimum value
+ *  \param max the new maxmimum value
+ *  \param curve a Mapping Value to adjust the response curve of the transformation
+ *               defaults to Linear. @see Mapping
+ * 
+ *  When using the log curve min and max, must be greater than zero.
+ * 
+ *  \retval returns the transformed float within the new range.
+*/
+inline float
+fmap(float in, float min, float max, Mapping curve = Mapping::LINEAR)
+{
+    switch(curve)
+    {
+        case Mapping::EXP:
+            return fclamp(min + (in * in) * (max - min), min, max);
+        case Mapping::LOG:
+        {
+            const float a = 1.f / log10f(max / min);
+            return fclamp(min * powf(10, in / a), min, max);
+        }
+        case Mapping::LINEAR:
+        default: return fclamp(min + in * (max - min), min, max);
+    }
+}
+
 /** Simple 3-point median filter
 c/o stephen mccaul
 */
@@ -192,6 +233,24 @@ inline float SoftClip(float x)
         return SoftLimit(x);
 }
 
+/** Quick check for Invalid float values (NaN, Inf, out of range) 
+ ** \param x value passed by reference, replaced by y if invalid. 
+ ** \param y value to replace x if invalidity is found. 
+ ** 
+ ** When DEBUG is true in the build, this will halt 
+ ** execution for tracing the reason for the invalidity. */
+inline void TestFloat(float &x, float y = 0.f)
+{
+    if(!std::isnormal(x) && x != 0)
+    {
+#if defined(__arm__) && defined(DEBUG)
+        asm("bkpt 255");
+#else
+        x = y;
+#endif
+    }
+}
+
 /** Based on soft saturate from:
 [musicdsp.org](musicdsp.org/en/latest/Effects/42-soft-saturation.html)
 Bram de Jong (2002-01-17)
@@ -209,7 +268,8 @@ inline float soft_saturate(float in, float thresh)
     bool  flip;
     float val, out;
     //val = fabsf(in);
-    flip = val < 0.0f;
+    out  = 0.f;
+    flip = in < 0.0f;
     val  = flip ? -in : in;
     if(val < thresh)
     {
@@ -240,5 +300,37 @@ inline float soft_saturate(float in, float thresh)
     //                                    + (((val - thresh) / (1.0f - thresh))
     //                                       * ((val - thresh) / (1.0f - thresh))));
 }
+constexpr bool is_power2(uint32_t x)
+{
+    return ((x - 1) & x) == 0;
+}
+
+/** Prior to C++14 constexpr functions were required to be a single return statement.
+ *  So this clause guards against that behavior to allow the library, and this function
+ *  to continue to work with C++11.
+ *  The function itself is not currently (12 May 2021) used within the library itself.
+ */
+#if __cplusplus <= 201103L
+inline uint32_t get_next_power2(uint32_t x)
+#else
+constexpr uint32_t get_next_power2(uint32_t x)
+#endif
+{
+    x--;
+    x |= x >> 1;
+    x |= x >> 2;
+    x |= x >> 4;
+    x |= x >> 8;
+    x |= x >> 16;
+    x++;
+
+    assert(is_power2(x));
+    return x;
+}
+
 } // namespace daisysp
+#endif
+
+#ifdef DSY_CUSTOM_DSP
+#include "custom_dsp.h"
 #endif
