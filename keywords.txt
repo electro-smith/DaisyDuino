@@ -32,6 +32,7 @@ Decimator	KEYWORD1
 DelayLine	KEYWORD1
 Drip	KEYWORD1
 Dust	KEYWORD1
+FIR     KEYWORD1
 Flanger	KEYWORD1
 Fm2	KEYWORD1
 Fold	KEYWORD1
@@ -43,6 +44,7 @@ HiHat	KEYWORD1
 Jitter	KEYWORD1
 Limiter	KEYWORD1
 Line	KEYWORD1
+Looper  KEYWORD1
 Maytrig	KEYWORD1
 Metro	KEYWORD1
 ModalVoice	KEYWORD1
@@ -53,11 +55,12 @@ Oscillator	KEYWORD1
 OscillatorBank	KEYWORD1
 Overdrive	KEYWORD1
 Particle	KEYWORD1
+Phaser  KEYWORD1
 Phasor	KEYWORD1
-Port	KEYWORD1
 Pitchshifter	KEYWORD1
-PolyPluck	KEYWORD1
 Pluck	KEYWORD1
+PolyPluck	KEYWORD1
+Port	KEYWORD1
 Resonator	KEYWORD1
 ReverbSc	KEYWORD1
 SampleHold	KEYWORD1
@@ -66,8 +69,8 @@ SmoothRandom	KEYWORD1
 StringOsc	KEYWORD1
 StringVoice	KEYWORD1
 Svf	KEYWORD1
-SynthBassDrum	KEYWORD1
-SynthSnareDrum	KEYWORD1
+SyntheticBassDrum	KEYWORD1
+SyntheticSnareDrum	KEYWORD1
 Tone	KEYWORD1
 Tremolo	KEYWORD1
 VariableSawOscillator	KEYWORD1
@@ -87,6 +90,8 @@ Led		KEYWORD1
 Switch		KEYWORD1
 GateIn		KEYWORD1
 AnalogControl	KEYWORD1
+
+Mapping     KEYWORD1
 
 ###################################
 # Methods and Functions (KEYWORD2)
@@ -140,7 +145,7 @@ SetAudioBlockSize	KEYWORD2
 AudioBlockSize	KEYWORD2
 AudioCallbackRate	KEYWORD2
 
-mtof		KEYWORD2
+mtof		    KEYWORD2
 DSY_CLAMP		KEYWORD2
 fmax			KEYWORD2
 fmin			KEYWORD2
@@ -148,7 +153,8 @@ fclamp			KEYWORD2
 fastpower		KEYWORD2
 fastroot		KEYWORD2
 fonepole		KEYWORD2
-soft_saturate		KEYWORD2
+soft_saturate	KEYWORD2
+fmap            KEYWORD2
 
 ###################################
 # Constants (LITERAL1)
@@ -162,6 +168,8 @@ AUDIO_SR_16K	LITERAL1
 AUDIO_SR_32K	LITERAL1
 AUDIO_SR_48K	LITERAL1
 AUDIO_SR_96K	LITERAL1
+
+FIRFILTER_USER_MEMORY LITERAL1
 
 PIN_POD_POT_1	LITERAL1
 PIN_POD_POT_2	LITERAL1
