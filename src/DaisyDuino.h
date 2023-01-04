@@ -122,6 +122,9 @@ public:
   // process boths
   void ProcessAllControls();
 
+  // Reset the hardware in bootloader mode
+  void ResetToBootloader();
+
 private:
   void InitPod(float control_update_rate);
   void InitPatch(float control_update_rate);

@@ -1,4 +1,5 @@
 #include "DaisyDuino.h"
+#include "utility/gpio.h"
 
 void DaisyHardware::Init(float control_update_rate, DaisyDuinoDevice device) {
   device_ = device;
@@ -312,4 +313,15 @@ void DaisyHardware::UpdateLeds() {
   }
 
   led_driver_.SwapBuffersAndTransmit();
+}
+
+void DaisyHardware::ResetToBootloader() {
+  dsy_gpio_pin bootpin = {DSY_GPIOG, 3};
+  dsy_gpio pin;
+  pin.mode = DSY_GPIO_MODE_OUTPUT_PP;
+  pin.pin = bootpin;
+  dsy_gpio_init(&pin);
+  dsy_gpio_write(&pin, 1);
+  delay(10);
+  HAL_NVIC_SystemReset();
 }
