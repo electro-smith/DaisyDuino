@@ -53,6 +53,22 @@ class System
         bool       use_icache;
     };
 
+    /** Describes the different regions of memory available to the Daisy
+     * 
+     */
+    enum MemoryRegion
+    {
+        INTERNAL_FLASH = 0,
+        ITCMRAM,
+        DTCMRAM,
+        SRAM_D1,
+        SRAM_D2,
+        SRAM_D3,
+        SDRAM,
+        QSPI,
+        INVALID_ADDRESS,
+    };
+
     System() {}
     ~System() {}
 
@@ -131,6 +147,17 @@ class System
      ** Returns a const reference to the Systems Configuration struct
      */
     const Config& GetConfig() const { return cfg_; }
+
+    /** Returns an enum representing the current (primary) memory space used 
+     *  for executing the program.
+     */
+    static MemoryRegion GetProgramMemoryRegion();
+
+    /** Returns an enum representing the the memory region 
+     *  that the given address belongs to.
+     *  \param address The address to be checked
+     */
+    static MemoryRegion GetMemoryRegion(uint32_t address);
 
   private:
     void   ConfigureClocks();
