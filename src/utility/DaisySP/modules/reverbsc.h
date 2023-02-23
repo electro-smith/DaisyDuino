@@ -44,6 +44,10 @@ class ReverbSc
     */
     int Init(float sample_rate);
 
+    /** Process the input through the reverb, and updates values of out with the new processed signal.
+    */
+    int Process(const float &in, float *out);
+
     /** Process the input through the reverb, and updates values of out1, and out2 with the new processed signal.
     */
     int Process(const float &in1, const float &in2, float *out1, float *out2);
