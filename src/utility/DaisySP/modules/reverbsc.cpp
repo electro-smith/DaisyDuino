@@ -307,13 +307,13 @@ int ReverbSc::Process(const float &in,
 
     /* calculate "resultant junction pressure" and mix to input signals */
 
-    a_in_l = a_out_l = a_out_r = 0.0;
+    a_in_l = a_out_l = 0.0;
     for(n = 0; n < 8; n++)
     {
         a_in_l += delay_lines_[n].filter_state;
     }
     a_in_l *= kJpScale;
-    a_in_l = a_in_l + in1;
+    a_in_l = a_in_l + in;
 
     /* loop through all delay lines */
 
@@ -397,14 +397,7 @@ int ReverbSc::Process(const float &in,
 
         /* mix to output */
 
-        if(n & 1)
-        {
-            a_out_r += v0;
-        }
-        else
-        {
-            a_out_l += v0;
-        }
+        a_out_l += v0;
 
         /* start next random line segment if current one has reached endpoint */
 
@@ -413,8 +406,7 @@ int ReverbSc::Process(const float &in,
             NextRandomLineseg(lp, n);
         }
     }
-    /* someday, use a_out_r for multimono out */
 
-    *out1 = a_out_l * kOutputGain;
+    *out = a_out_l * kOutputGain;
     return REVSC_OK;
 }
