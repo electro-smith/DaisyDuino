@@ -116,6 +116,9 @@ class System
      ** \param delay_ticks Time to ddelay in microseconds */
     static void DelayTicks(uint32_t delay_ticks);
 
+    /** Returns the tick rate in Hz with which GetTick() is incremented. */
+    static uint32_t GetTickFreq();
+
     /** Returns the Frequency of the system clock in Hz 
      ** This is the primary system clock that is used to generate
      ** AXI Peripheral, APB, and AHB clocks. */
