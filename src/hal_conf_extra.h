@@ -24,5 +24,5 @@
 */
 
 // Once that is added we can repalce
-//#define DATA_CACHE_ENABLE
+#define DATA_CACHE_ENABLE
 
