@@ -4,6 +4,7 @@
 #define HAL_DMA_MODULE_ENABLED
 #define HAL_MDMA_MODULE_ENABLED
 #define HAL_QSPI_MODULE_ENABLED
+#define HAL_SD_MODULE_ENABLED
 #define INSTRUCTION_CACHE_ENABLE
 
 // In order for the Cache to work and still allow the DMA to work 
