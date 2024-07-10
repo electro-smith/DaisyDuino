@@ -38,4 +38,8 @@ Please read our [Contribution Guidelines](https://github.com/electro-smith/Daisy
 
 ## License
 
-This project uses multiple open source licenses for different files - see the [LICENSE.md](LICENSE.md) file for details
+DaisyDuino is licensed with the permissive MIT open source license.
+
+This allows for modification and reuse in both commercial and personal projects. It does not provide a warranty of any kind.
+
+For the full license, read the LICENSE file in the root directory.
