@@ -29,7 +29,7 @@ void loop()
     /** Update the control ins */
     patch.ProcessAllControls();
 
-    /** Read from CV_1 */
+    /** Read from CV_5 */
     int value = analogRead(PIN_PATCH_SM_CV_5);
 
     /** Convert AnalogRead range to volts */
