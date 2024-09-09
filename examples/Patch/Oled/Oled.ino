@@ -33,7 +33,7 @@ void setup() {
 void loop() {
   oled.clearBuffer();
 
-  char c[] = {str[pos]};
+  char c[] = {str[pos], 0};
   oled.drawStr(x, y, c);
   x += xvel;
   y += yvel;
