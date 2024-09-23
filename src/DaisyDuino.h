@@ -12,6 +12,7 @@
 #include "daisy_petal.h"
 #include "daisy_pod.h"
 #include "daisy_patch_sm.h"
+#include "cleveland_hothouse.h"
 #include "PersistentStorage.h"
 
 #include "utility/ctrl.h"
@@ -37,6 +38,7 @@ enum DaisyDuinoDevice : short {
   DAISY_FIELD,
   DAISY_PATCH,
   DAISY_PATCH_SM,
+	CLEVELAND_HOTHOUSE,
   DAISY_LAST,
 };
 
@@ -46,7 +48,7 @@ class DaisyHardware {
 public:
   DaisyHardware() {}
 
-  Switch buttons[7];
+  Switch buttons[8];   //increase to 8 for Cleveland Music Co Hothouse
   AnalogControl controls[12];
   AnalogControl cv[4]; // for use with field
 
@@ -132,6 +134,7 @@ private:
   void InitPetal(float control_update_rate);
   void InitField(float control_update_rate);
   void InitPatchSM(float control_update_rate);
+	void InitHothouse(float control_update_rate);
 
   DaisyDuinoDevice device_;
 

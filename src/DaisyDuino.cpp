@@ -27,6 +27,9 @@ void DaisyHardware::Init(float control_update_rate, DaisyDuinoDevice device) {
   case DAISY_PATCH_SM:
     InitPatchSM(control_update_rate);
     break;
+	case CLEVELAND_HOTHOUSE:
+		InitHothouse(control_update_rate);
+		break;
   default:
     break;
   }
@@ -46,8 +49,8 @@ void DaisyHardware::InitPod(float control_update_rate) {
 
   controls[0].Init(PIN_POD_POT_1, control_update_rate);
   controls[1].Init(PIN_POD_POT_2, control_update_rate);
-
   numSwitches = numLeds = numControls = 2;
+
 }
 
 void DaisyHardware::InitPatch(float control_update_rate) {
@@ -171,6 +174,44 @@ void DaisyHardware::InitPatchSM(float control_update_rate) {
   #endif
 }
 
+void DaisyHardware::InitHothouse(float control_update_rate) {
+  numSwitches = 8;   // 3 up-mid-down switches (ie, 6 switches) plus 2 footswitches
+  numLeds = 2;
+  num_channels = 2;
+  numControls = 6;   // 6 potentiometers
+
+  // init the led driver...no LED driver on hothouse 
+  uint8_t addr[2] = {0x00, 0x01};
+  led_driver_.Init(addr, petal_led_dma_buffer_a, petal_led_dma_buffer_b);
+  ClearLeds();
+  UpdateLeds();
+
+	// init the potentiometers
+  controls[0].Init(PIN_HOTHOUSE_POT_1, control_update_rate);
+  controls[1].Init(PIN_HOTHOUSE_POT_2, control_update_rate);
+  controls[2].Init(PIN_HOTHOUSE_POT_3, control_update_rate);
+  controls[3].Init(PIN_HOTHOUSE_POT_4, control_update_rate);
+  controls[4].Init(PIN_HOTHOUSE_POT_5, control_update_rate);
+  controls[5].Init(PIN_HOTHOUSE_POT_6, control_update_rate);
+
+	// no expression input on Hothouse
+	//expression.Init(PIN_PETAL_EXPRESSION, control_update_rate);
+
+	// Init the buttons
+  buttons[0].Init(control_update_rate, true, PIN_HOTHOUSE_SWITCH_1, INPUT_PULLUP);
+  buttons[1].Init(control_update_rate, true, PIN_HOTHOUSE_SWITCH_2, INPUT_PULLUP);
+  buttons[2].Init(control_update_rate, true, PIN_HOTHOUSE_SWITCH_3, INPUT_PULLUP);
+  buttons[3].Init(control_update_rate, true, PIN_HOTHOUSE_SWITCH_4, INPUT_PULLUP);
+  buttons[4].Init(control_update_rate, true, PIN_HOTHOUSE_SWITCH_5, INPUT_PULLUP);
+  buttons[5].Init(control_update_rate, true, PIN_HOTHOUSE_SWITCH_6, INPUT_PULLUP);
+  buttons[6].Init(control_update_rate, true, PIN_HOTHOUSE_SWITCH_7, INPUT_PULLUP);
+	buttons[7].Init(control_update_rate, true, PIN_HOTHOUSE_SWITCH_8, INPUT_PULLUP);
+	
+	// Init the LED pins
+  pinMode(PIN_HOTHOUSE_LED_1, OUTPUT);
+  pinMode(PIN_HOTHOUSE_LED_2, OUTPUT);
+}
+
 float DaisyHardware::GetKnobValue(uint8_t idx) {
   uint8_t pots[8] = {0, 3, 1, 4, 2, 5, 6, 7};
   digitalWrite(PIN_FIELD_MUX_SEL_0, pots[idx] & 1);
@@ -257,13 +298,18 @@ void DaisyHardware::SetRingLed(uint8_t idx, float r, float g, float b) {
 }
 
 void DaisyHardware::SetFootswitchLed(uint8_t idx, float bright) {
-  if (idx < 0 || idx > 3 || device_ != DAISY_PETAL) {
+  if (idx < 0 || idx > 3 || ((device_ != DAISY_PETAL) && (device_ != CLEVELAND_HOTHOUSE))) {
     return;
   }
 
-  uint8_t fs_addr[4] = {PETAL_LED_FS_1, PETAL_LED_FS_2, PETAL_LED_FS_3,
-                        PETAL_LED_FS_4};
-  led_driver_.SetLed(fs_addr[idx], bright);
+	if (device_ == DAISY_PETAL) {
+		uint8_t fs_addr[4] = {PETAL_LED_FS_1, PETAL_LED_FS_2, PETAL_LED_FS_3,
+													PETAL_LED_FS_4};
+		led_driver_.SetLed(fs_addr[idx], bright);
+	} else {
+		if (idx == 0) digitalWrite(PIN_HOTHOUSE_LED_1, (int)(bright+0.5f)); //set HIGH or LOW
+		if (idx == 1) digitalWrite(PIN_HOTHOUSE_LED_2, (int)(bright+0.5f)); //set HIGH or LOW
+	}
 }
 
 // field led setters
@@ -304,7 +350,11 @@ void DaisyHardware::ClearLeds() {
       SetKeyboardLed(1, i, 0.f);
       SetKnobLed(i, 0.f);
     }
-  }
+  } else if (device_ == CLEVELAND_HOTHOUSE) {
+		for (size_t i = 0; i < numLeds; i++) {
+			SetFootswitchLed(i, LOW);
+		}
+	}
 }
 
 void DaisyHardware::UpdateLeds() {
