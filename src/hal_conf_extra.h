@@ -1,6 +1,8 @@
 // These things should be added to the variant.h file within STM32Duino
 // DATA_CACHE_ENABLE requires an update to the linker script (detailed below).
+#ifndef HAL_SDRAM_MODULE_ENABLED
 #define HAL_SDRAM_MODULE_ENABLED
+#endif
 #define HAL_DMA_MODULE_ENABLED
 #define HAL_MDMA_MODULE_ENABLED
 #define HAL_QSPI_MODULE_ENABLED
