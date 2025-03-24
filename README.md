@@ -20,7 +20,7 @@ Here are some ways to get support and connect with other users and developers:
 
 - Make a [GitHub Issue](https://github.com/electro-smith/DaisyDuino/issues) 
 
-- Join the [Daisy Discor](https://discord.gg/qPPfHczSZV)
+- Join the [Daisy Discord](https://discord.gg/qPPfHczSZV)
 
 ## Built With
 
